@@ -1,0 +1,198 @@
+
+  /* =====================================================================
+     Blue Sky theme. Loaded last, so it restyles the checklist and study
+     screens through the shared tokens. Sunlight mode stays stark black on
+     white; only Day and Night get the soft sky look.
+     ===================================================================== */
+  body{
+    --ink:#10243e; --muted:#5b6b80; --faint:#a9b8ca;
+    --paper:#f4f8fd; --card:#ffffff; --edge:#e1eaf5; --track:#e3edf8;
+    --accent:#2f7de1; --accent-dark:#1d5fb8; --accent-tint:#e8f1fc; --on-accent:#ffffff;
+    --tick:#1f9e55; --tick-tint:#e5f7ec;
+    --emerg:#e23b3b; --emerg-dark:#b82424; --emerg-tint:#fdeceb;
+    --bar:#2f7de1; --bw:1px;
+    --sky1:#3a8ce4; --sky2:#62b6f2; --streak:#f08a24;
+    --shadow:0 4px 14px rgba(16,36,62,.07); --lift:0 8px 22px rgba(16,36,62,.12);
+    --r:18px;
+    background:var(--paper);
+  }
+  body[data-mode="night"]{
+    --ink:#dfe8f3; --muted:#93a5bb; --faint:#3a4f6a;
+    --paper:#0b1524; --card:#132239; --edge:#20344f; --track:#1b2c44;
+    --accent:#5aa9f5; --accent-dark:#8cc4f5; --accent-tint:#132b47; --on-accent:#06121d;
+    --tick:#3fc27a; --tick-tint:#10291d;
+    --emerg:#e5534b; --emerg-dark:#8f1d1c; --emerg-tint:#2c1416;
+    --bar:#0f2a4d; --sky1:#0f2a4d; --sky2:#173d6b; --streak:#f5a04a;
+    --shadow:0 4px 14px rgba(0,0,0,.25); --lift:0 8px 22px rgba(0,0,0,.35);
+    background:var(--paper);
+  }
+  body[data-mode="sun"]{
+    --sky1:#000; --sky2:#000; --streak:#000; --shadow:none; --lift:none; --r:14px;
+  }
+
+  body, button, input, select, textarea{font-family:"Jakarta","Plus Jakarta Sans",-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
+  body{padding-bottom:calc(170px + env(safe-area-inset-bottom));}
+
+  /* ---------- header: a band of sky ---------- */
+  header{
+    background:linear-gradient(160deg,var(--sky1),var(--sky2));
+    border-radius:0 0 24px 24px;box-shadow:var(--lift);
+    padding:calc(12px + env(safe-area-inset-top)) 16px 14px;
+  }
+  body[data-mode="sun"] header{background:#000;border-radius:0;}
+  .title{text-transform:none;letter-spacing:0;font-size:1.3rem;font-weight:800;}
+  .title small{text-transform:none;letter-spacing:0;font-size:.78rem;font-weight:500;opacity:.85;margin-top:3px;}
+  .hbtn{background:rgba(255,255,255,.2);border:0;border-radius:14px;}
+  body[data-mode="sun"] .hbtn{border:2px solid #fff;background:#000;}
+  .hprog{height:8px;border-radius:99px;background:rgba(255,255,255,.25);}
+  .hprog i{border-radius:99px;background:#fff;}
+
+  /* ---------- bottom tab bar (top-level screens) ---------- */
+  header.top #secTabs{
+    position:fixed;left:0;right:0;bottom:0;z-index:25;max-width:none;margin:0;gap:4px;
+    padding:8px max(10px, env(safe-area-inset-left)) calc(8px + env(safe-area-inset-bottom)) max(10px, env(safe-area-inset-right));
+    background:var(--card);border-top:1px solid var(--edge);box-shadow:0 -6px 20px rgba(16,36,62,.08);
+    justify-content:center;
+  }
+  #secTabs button{
+    flex:1;max-width:150px;min-height:56px;border:0;border-radius:16px;background:transparent;color:var(--muted);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+    text-transform:none;letter-spacing:0;font-size:.74rem;font-weight:700;padding:0 2px;
+  }
+  #secTabs button svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+  #secTabs button.on,
+  body[data-mode="night"] #secTabs button.on{background:var(--accent-tint);color:var(--accent);border:0;}
+  @media (min-width:600px){ #secTabs button{font-size:.8rem;letter-spacing:0;} }
+  body[data-mode="sun"] header.top #secTabs{border-top:2px solid #000;box-shadow:none;}
+  body[data-mode="sun"] #secTabs button{color:#000;}
+  body[data-mode="sun"] #secTabs button.on{background:#000;color:#fff;}
+
+  /* Emergency button and toast sit above the tab bar */
+  #emergFab{border-radius:18px;box-shadow:0 8px 20px rgba(226,59,59,.35);}
+  header.top ~ #emergFab{bottom:calc(88px + env(safe-area-inset-bottom));}
+  #toast{bottom:calc(160px + env(safe-area-inset-bottom));border-radius:14px;}
+  body[data-mode="sun"] #emergFab{box-shadow:none;border:2px solid #000;}
+
+  /* ---------- cards: soft, rounded, lifted ---------- */
+  .pbtn, .ibtn, .stale, .pnote, .resetbtn, .seg button, .bigbtn.ghost, .xbtn,
+  #studyView .card, #studyView .opt, #studyView .req, #studyView .xcard, #studyView .fcard,
+  #studyView .lcard, #studyView .miss, #studyView .expl, #studyView .calcrow{
+    border-radius:var(--r);box-shadow:var(--shadow);
+  }
+  .pbtn:active, .ibtn:active, .bigbtn:active, .cont:active, .resetbtn:active, .ebtn:active, #emergFab:active,
+  #studyView .opt:active:not([disabled]), #studyView .xcard:active, #studyView .fcard:active, #studyView .lcard:active{
+    transform:scale(.98);box-shadow:var(--shadow);
+  }
+  .ibtn.checked, .pbtn.done, #studyView .opt.ok, #studyView .opt.no, #studyView .xcard.flown,
+  .seg button.on, .resetbtn.armed{box-shadow:var(--shadow);}
+  .caveat{border-radius:14px;text-transform:none;letter-spacing:0;font-size:.78rem;font-weight:600;}
+
+  /* section labels: sentence case */
+  .grid-label, .sub, .setlabel, #studyView .zlabel{
+    text-transform:none;letter-spacing:0;font-size:.92rem;font-weight:800;color:var(--muted);
+  }
+  .grid-label.red, .sub.red{color:var(--emerg);}
+
+  /* "continue" and primary buttons */
+  .cont{
+    background:linear-gradient(135deg,var(--accent),#5ec2f2);border-radius:22px;
+    box-shadow:0 10px 24px rgba(47,125,225,.3);padding:18px;
+  }
+  body[data-mode="night"] .cont{background:linear-gradient(135deg,#2a6fc4,#3d93d6);box-shadow:var(--lift);color:#fff;}
+  body[data-mode="sun"] .cont{background:#000;box-shadow:none;}
+  .cont .k{text-transform:none;letter-spacing:0;font-size:.78rem;opacity:.9;}
+  .cont .n{font-size:1.2rem;}
+  .cont .arrow{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;font-size:1.3rem;}
+  .bigbtn{border-radius:16px;box-shadow:var(--shadow);}
+  .bigbtn:not(.ghost){box-shadow:0 8px 18px rgba(47,125,225,.28);}
+  body[data-mode="night"] .bigbtn:not(.ghost), body[data-mode="sun"] .bigbtn:not(.ghost){box-shadow:none;}
+  .resetbtn{text-transform:none;letter-spacing:0;font-size:.88rem;}
+  .ebtn{border-radius:var(--r);box-shadow:0 6px 16px rgba(226,59,59,.25);}
+  body[data-mode="sun"] .ebtn{box-shadow:none;}
+  .sheet .panel{border-radius:26px 26px 0 0;}
+  body[data-mode="day"] .sheet .panel{background:var(--paper);}
+  .sheet-head{text-transform:none;letter-spacing:0;font-size:1.1rem;}
+  .xbtn{border-radius:14px;}
+  .seg button.on{box-shadow:0 6px 14px rgba(47,125,225,.25);}
+
+  /* checklist phase tiles: numbered badge, tick when done */
+  .pbtn{padding:14px;min-height:7.5rem;}
+  .pbtn .pnum{
+    position:static;order:-1;width:30px;height:30px;border-radius:10px;
+    background:var(--accent-tint);color:var(--accent);font-size:.8rem;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .pbtn .pname{padding-right:0;}
+  .pbtn .pbar{height:8px;border-radius:99px;}
+  .pbtn .pbar i{border-radius:99px;}
+  .pbtn.done .pnum{background:var(--tick);color:#fff;font-size:0;}
+  .pbtn.done .pnum::after{content:"\2713";font-size:.95rem;}
+  .pbtn.red .pnum{background:rgba(255,255,255,.22);color:#fff;}
+  body[data-mode="sun"] .pbtn .pnum{background:#fff;border:2px solid #000;color:#000;}
+  body[data-mode="sun"] .pbtn.done .pnum{background:#006622;border-color:#006622;color:#fff;}
+
+  /* checklist items */
+  .ibtn{padding:15px;}
+  .ibtn .box{border-radius:10px;}
+  .ibtn.next{outline-offset:3px;outline-width:3px;border-radius:var(--r);}
+  .ibtn .mn{border-radius:7px;}
+
+  /* questions */
+  #studyView .opt{padding:15px;}
+  #studyView .opt .l{border:0;background:var(--accent-tint);border-radius:10px;}
+  body[data-mode="sun"] #studyView .opt .l{border:2px solid #000;background:#fff;}
+  #studyView .opt.ok, #studyView .opt.no{border-width:2px;}
+  #studyView .expl{border-width:0;border-left:5px solid var(--edge);}
+  #studyView .expl.good{background:var(--tick-tint);}
+  #studyView .expl.bad{background:var(--emerg-tint);}
+  #studyView .expl .v{text-transform:none;letter-spacing:0;font-size:1rem;}
+  #studyView .qtag{text-transform:none;letter-spacing:0;font-size:.75rem;background:var(--accent-tint);color:var(--accent);padding:5px 11px;}
+  body[data-mode="sun"] #studyView .qtag{background:#000;color:#fff;}
+  #studyView .pill{text-transform:none;letter-spacing:0;font-size:.8rem;}
+
+  /* numbers in the app's own face, lined up */
+  #studyView .wout .o .v, #studyView .rq1 span, #studyView .fside b{font-family:inherit;font-variant-numeric:tabular-nums;font-weight:800;}
+  #studyView .fpill, #studyView .fdate, #studyView .fdet span{text-transform:none;letter-spacing:0;}
+  #studyView .xcard{min-height:96px;}
+  #studyView .xn{display:inline-flex;align-self:flex-start;padding:2px 8px;border-radius:8px;background:var(--accent-tint);color:var(--accent);}
+  #studyView .xcard.flown .xn{background:var(--tick);color:#fff;}
+  body[data-mode="sun"] #studyView .xn{background:#fff;border:1px solid #000;color:#000;}
+  #studyView .lcard{border-left-width:5px;border-left-color:var(--accent);}
+
+  /* ---------- streak / today card (Exams) ---------- */
+  #studyView .today{display:flex;align-items:center;gap:16px;background:var(--card);border:var(--bw) solid var(--edge);border-radius:22px;box-shadow:var(--shadow);padding:16px;margin:0 0 14px;}
+  #studyView .today .tt{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px;}
+  #studyView .today .tk{font-size:.75rem;font-weight:800;color:var(--accent);}
+  #studyView .today .tn{font-size:1.1rem;font-weight:800;}
+  #studyView .today .tx{font-size:.82rem;color:var(--muted);}
+  #studyView .streak{display:inline-flex;align-self:flex-start;align-items:center;gap:5px;margin-top:4px;padding:4px 10px;border-radius:99px;background:color-mix(in srgb,var(--streak) 15%,transparent);color:var(--streak);font-size:.8rem;font-weight:800;}
+  #studyView .streak.zero{background:var(--track);color:var(--muted);}
+  body[data-mode="sun"] #studyView .streak{border:2px solid #000;background:#fff;color:#000;}
+  .ring{flex:0 0 auto;display:block;}
+  .ring .rt{stroke:var(--track);fill:none;}
+  .ring .rv{fill:none;stroke-linecap:round;transform:rotate(-90deg);transform-origin:center;transform-box:fill-box;}
+  .ring text{font-weight:800;fill:var(--ink);font-family:inherit;}
+  body[data-mode="sun"] .ring .rt{stroke:#ccc;}
+
+  /* ---------- logbook: road to the PPL ---------- */
+  #studyView .journey{border-radius:22px;padding:16px 16px 14px;margin:0 0 14px;color:#fff;
+    background:linear-gradient(135deg,var(--accent),#5ec2f2);box-shadow:0 10px 24px rgba(47,125,225,.28);}
+  body[data-mode="night"] #studyView .journey{background:linear-gradient(135deg,#1f5aa6,#2f86c9);box-shadow:var(--lift);}
+  body[data-mode="sun"] #studyView .journey{background:#000;box-shadow:none;}
+  #studyView .journey .jk{font-size:.78rem;font-weight:800;opacity:.9;}
+  #studyView .journey .jh{font-size:1.4rem;font-weight:800;margin:2px 0 6px;font-variant-numeric:tabular-nums;}
+  #studyView .journey svg{display:block;width:100%;height:auto;}
+  #studyView .journey .jl{display:flex;justify-content:space-between;font-size:.74rem;font-weight:700;opacity:.92;margin-top:2px;}
+  #studyView .reqs{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;}
+  @media (min-width:600px){ #studyView .reqs{grid-template-columns:repeat(4,minmax(0,1fr));} }
+  #studyView .req{display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px;padding:12px 6px;}
+  #studyView .req .rv{stroke:var(--accent);}
+  #studyView .req.done .rv{stroke:var(--tick);}
+  #studyView .req .rb{font-size:.95rem;font-weight:800;font-variant-numeric:tabular-nums;}
+  #studyView .req .rl{font-size:.72rem;color:var(--muted);line-height:1.25;}
+
+  /* tool readouts and diagrams in the app's face */
+  #studyView .wout .o{border-radius:14px;box-shadow:var(--shadow);}
+  #studyView .wout .o.hl{border-color:var(--accent);background:var(--accent-tint);}
+  #studyView .wout .o .k{text-transform:none;letter-spacing:0;}
+  #studyView svg .t, #studyView svg .tb, #studyView svg .big, #studyView svg text{font-family:"Jakarta",-apple-system,"Segoe UI",Roboto,sans-serif;}

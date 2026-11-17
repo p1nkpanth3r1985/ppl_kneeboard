@@ -88,16 +88,17 @@ const Logbook = (() => {
         ["Total", hm(t.total), true], ["Dual", hm(t.dual)], ["Solo", hm(t.solo)], ["Solo XC", hm(t.soloxc)], ["Landings", String(t.ldg)], ["Flights", String(t.n)]
       ].map(([k,v,hl]) => `<div class="o${hl ? " hl" : ""}"><span class="k">${k}</span><span class="v">${v}</span></div>`).join("")));
       // PPL minimums
+      w.appendChild(journey(t));
       w.appendChild(el("div", "grid-label", "Towards the PPL minimums"));
       const rq = el("div", "reqs");
       REQS.forEach(r => {
         const have = t[r.k], pct = Math.min(100, Math.round(100 * have / r.need)), done = have >= r.need;
         rq.appendChild(el("div", "req" + (done ? " done" : ""),
-          `<div class="rq1"><b>${r.label}</b><span>${r.k === "qxc" ? (done ? "✓ Flown" : "Not yet") : `${hm(have)} / ${hm(r.need)}`}</span></div>`+
-          `<div class="pbar"><i style="width:${pct}%"></i></div><div class="rq2">${r.note}</div>`));
+          ring(pct, 64, 8, done ? "✓" : `${pct}%`) +
+          `<b class="rb">${r.k === "qxc" ? (done ? "Flown" : "Not yet") : `${hm(have)} / ${hm(r.need)}`}</b><span class="rl">${r.label}</span>`));
       });
       w.appendChild(rq);
-      w.appendChild(el("div", "fine", "Minimums as published by the CAA for the PPL(A). Your school's records are the official ones."));
+      w.appendChild(el("div", "fine", "Flight instruction: " + REQS[0].note + ". Solo cross-country: " + REQS[2].note + ". Qualifying cross-country: " + REQS[3].note + ". Minimums as published by the CAA for the PPL(A); your school's records are the official ones."));
       // hours by month
       w.appendChild(el("div", "grid-label", "Hours by month"));
       w.appendChild(monthChart());
@@ -118,6 +119,34 @@ const Logbook = (() => {
     }
     w.appendChild(btn("bigbtn ghost", "Backup and import", () => { push({ lg:"backup" }); renderBackup(); }));
     view.appendChild(w);
+  }
+  // progress dial: pct 0-100, size in px, stroke width, label in the middle
+  function ring(pct, size, sw, label){
+    const r = (size - sw) / 2, c = size / 2;
+    return `<svg class="ring" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" aria-hidden="true">`+
+      `<circle class="rt" cx="${c}" cy="${c}" r="${r}" stroke-width="${sw}"/>`+
+      (pct > 0 ? `<circle class="rv" cx="${c}" cy="${c}" r="${r}" stroke-width="${sw}" pathLength="100" stroke-dasharray="${Math.max(1, pct)} 100"/>` : "")+
+      `<text x="${c}" y="${c + size * 0.07}" text-anchor="middle" font-size="${Math.round(size * 0.22)}">${label}</text></svg>`;
+  }
+  // "road to your PPL": first lesson to skills test, plane at the share of instruction hours flown
+  function journey(t){
+    const need = REQS[0].need, f = Math.min(1, t.total / need);
+    const P0 = [8, 34], P1 = [150, -6], P2 = [292, 34];
+    const at = u => [0, 1].map(i => (1-u)*(1-u)*P0[i] + 2*(1-u)*u*P1[i] + u*u*P2[i]);
+    const [x, y] = at(f), [x2, y2] = at(Math.min(1, f + 0.01));
+    const ang = Math.atan2(y2 - y, x2 - x) * 180 / Math.PI;
+    let done = "M8 34"; for(let i = 1; i <= 24; i++){ const p = at(f * i / 24); done += ` L${p[0].toFixed(1)} ${p[1].toFixed(1)}`; }
+    const last = sorted()[0], ex = last && last.ex.length ? "Ex " + last.ex[last.ex.length - 1] : hm(t.total);
+    const left = Math.max(0, need - t.total);
+    const d = el("div", "journey");
+    d.innerHTML = `<div class="jk">Road to your PPL</div>`+
+      `<div class="jh">${left ? `${hm(left)} of instruction to go` : "Instruction hours done"}</div>`+
+      `<svg viewBox="0 0 300 46" aria-hidden="true"><path d="M8 34 Q150 -6 292 34" stroke="rgba(255,255,255,.4)" stroke-width="3.5" fill="none" stroke-dasharray="1 8" stroke-linecap="round"/>`+
+      `<path d="${done}" stroke="#fff" stroke-width="3.5" fill="none" stroke-linecap="round"/>`+
+      `<circle cx="8" cy="34" r="5" fill="#fff"/><circle cx="292" cy="34" r="5" fill="none" stroke="#fff" stroke-width="3"/>`+
+      `<g transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${(ang + 90).toFixed(0)}) scale(1.05)" style="color:#fff"><use href="#ac"/></g></svg>`+
+      `<div class="jl"><span>First lesson</span><span>Latest: ${esc(ex)}</span><span>Skills test</span></div>`;
+    return d;
   }
   function flightCard(f){
     return btn("fcard",

@@ -11,6 +11,13 @@ import pathlib, sys
 here = pathlib.Path(__file__).parent
 src = (here / "c150-original.html").read_text(encoding="utf-8")
 css = (here / "study.css").read_text(encoding="utf-8")
+# Blue Sky theme, with Plus Jakarta Sans (SIL OFL, web/fonts/LICENSE) embedded so it works offline
+import base64
+faces = "".join(
+    f'  @font-face{{font-family:"Jakarta";font-weight:{w};font-style:normal;font-display:swap;'
+    f'src:url(data:font/woff2;base64,{base64.b64encode((here / "fonts" / f"plus-jakarta-sans-latin-{w}-normal.woff2").read_bytes()).decode()}) format("woff2");}}\n'
+    for w in (500, 700, 800))
+css += "\n" + faces + (here / "theme.css").read_text(encoding="utf-8")
 data = "\n\n".join(f.read_text(encoding="utf-8") for f in sorted((here / "subjects").glob("*.js")))
 data += "\n\n" + (here / "lessons.js").read_text(encoding="utf-8") + "\n" + (here / "flashcards.js").read_text(encoding="utf-8")
 app = "\n".join((here / f).read_text(encoding="utf-8") for f in ["widgets.js", "widgets2.js", "study-app.js", "logbook.js"])
@@ -23,10 +30,11 @@ SVG_DEFS = """<svg width="0" height="0" style="position:absolute" aria-hidden="t
 """
 
 TABS = ('  <nav id="secTabs" aria-label="Sections">'
-        '<button id="tabCl" type="button">Checklist</button>'
-        '<button id="tabTr" type="button">Training</button>'
-        '<button id="tabEx" type="button">Exams</button>'
-        '<button id="tabLg" type="button">Logbook</button></nav>\n')
+        '<button id="tabCl" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="3"/><path d="M9 3h6v3H9z"/><path d="M9 13l2 2 4-4"/></svg><span>Checklist</span></button>'
+        '<button id="tabTr" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5c3-1.3 6-1.3 9 0v15c-3-1.3-6-1.3-9 0z"/><path d="M21 5c-3-1.3-6-1.3-9 0v15c3-1.3 6-1.3 9 0z"/></svg><span>Training</span></button>'
+        '<button id="tabEx" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .8-1 1.5V14"/><path d="M12 17.2v.1"/></svg><span>Exams</span></button>'
+        '<button id="tabLg" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 4L3 11l7 2.5L12.5 21z"/><path d="M10 13.5L21 4"/></svg><span>Logbook</span></button>'
+        '</nav>\n')
 
 NAV_JS = r'''$("backBtn").addEventListener("click", () => section === "cl" ? goHome() : section === "lg" ? Logbook.back() : Study.back());
 
@@ -69,6 +77,8 @@ SETTINGS_JS = r'''  const ga = document.createElement("div"); ga.className = "se
 '''
 
 edits = [
+    ('const THEME = { day:"#0e3a5c", sun:"#000000", night:"#05090d" };', 'const THEME = { day:"#3a8ce4", sun:"#000000", night:"#0f2a4d" };'),
+    ('<meta name="theme-color" content="#0e3a5c">', '<meta name="theme-color" content="#3a8ce4">'),
     ("<title>C150/152 Checklist</title>", "<title>PPL Kneeboard</title>"),
     ("</style>\n</head>", css + "</style>\n</head>"),
     ('<body data-mode="day">\n', '<body data-mode="day">\n' + SVG_DEFS),

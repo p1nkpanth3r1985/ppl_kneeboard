@@ -44,7 +44,41 @@ const Study = (() => {
     }catch(e){}
   }
   function save(){ try{ localStorage.setItem(SKEY, JSON.stringify(store)); }catch(e){} }
-  function rec(id, ok){ const p = store.ans[id] || { n:0, c:0 }; store.ans[id] = { n:p.n+1, c:p.c+(ok?1:0), ok, t:Date.now() }; save(); }
+  // local calendar day, so a late-evening session counts for that evening
+  const dayKey = ms => { const d = new Date(ms); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`; };
+  function rec(id, ok){
+    const p = store.ans[id] || { n:0, c:0 }; store.ans[id] = { n:p.n+1, c:p.c+(ok?1:0), ok, t:Date.now() };
+    const k = dayKey(Date.now()); store.days = store.days || {}; store.days[k] = (store.days[k] || 0) + 1;
+    save();
+  }
+  // Days with at least one answer: the daily log, plus older answers' timestamps from before it existed
+  function studyDays(){
+    const d = Object.assign({}, store.days || {});
+    Object.values(store.ans).forEach(r => { if(r.t){ const k = dayKey(r.t); if(!d[k]) d[k] = 1; } });
+    return d;
+  }
+  // consecutive days up to today (or yesterday, so the streak survives until you've had a chance today)
+  function streak(){
+    const d = studyDays(), day = new Date(); let n = 0;
+    if(!d[dayKey(day)]) day.setDate(day.getDate() - 1);
+    while(d[dayKey(day)]){ n++; day.setDate(day.getDate() - 1); }
+    return n;
+  }
+  function ring(pct, size, sw, label){
+    const r = (size - sw) / 2, c = size / 2;
+    return `<svg class="ring" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" aria-hidden="true">`+
+      `<circle class="rt" cx="${c}" cy="${c}" r="${r}" stroke-width="${sw}"/>`+
+      (pct > 0 ? `<circle class="rv" cx="${c}" cy="${c}" r="${r}" stroke-width="${sw}" pathLength="100" stroke-dasharray="${Math.max(1, pct)} 100" style="stroke:var(--accent)"/>` : "")+
+      `<text x="${c}" y="${c + size * 0.07}" text-anchor="middle" font-size="${Math.round(size * 0.22)}">${label}</text></svg>`;
+  }
+  function todayCard(){
+    const n = (store.days || {})[dayKey(Date.now())] || 0, goal = MOCK_N, st = streak();
+    return el("div", "today",
+      ring(Math.min(100, Math.round(100 * n / goal)), 72, 9, n >= goal ? "✓" : `${n}/${goal}`) +
+      `<div class="tt"><span class="tk">Today</span><span class="tn">${n >= goal ? "Daily goal done" : n ? `${goal - n} more for today's goal` : "Ready for some practice?"}</span>`+
+      `<span class="tx">Goal: ${goal} questions a day, one mock's worth</span>`+
+      `<span class="streak${st ? "" : " zero"}">${st ? `▲ ${st}-day streak` : "Start a streak today"}</span></div>`);
+  }
   function reset(){ store = { ans:{} }; save(); try{ localStorage.removeItem(OLD_KEY); }catch(e){} }
 
   function stats(list){ let a=0, ok=0; list.forEach(x => { const r = store.ans[x.id]; if(r){ a++; if(r.ok) ok++; } }); return { a, ok, n:list.length }; }
@@ -145,6 +179,7 @@ const Study = (() => {
     const all = stats(ALLQ);
     title("Exams", `Practice papers · pass mark ${PASS}%`);
     view.innerHTML = "";
+    view.appendChild(todayCard());
     view.appendChild(el("div", "caveat", "Original practice questions — not the CAA question bank"));
     view.appendChild(el("div", "stat", all.a
       ? `<b>${all.a}</b> of ${all.n} questions tried · <b>${Math.round(100*all.ok/all.a)}%</b> right on last attempt`
