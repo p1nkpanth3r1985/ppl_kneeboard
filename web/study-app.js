@@ -128,7 +128,9 @@ const Study = (() => {
     const st = stats(qsOfTopic(s,t));
     const w = el("div", "topic");
     w.appendChild(el("p", "lede", esc(t.blurb)));
-    w.appendChild(el("div", "card", `<div class="learn">${t.learn()}</div>`));
+    const notes = el("div", "card", `<div class="learn">${t.learn()}</div>`);
+    w.appendChild(notes);
+    mountWidgets(notes);
     w.appendChild(btn("bigbtn", `Practise this topic · ${st.n} questions${st.a ? " (" + st.ok + " right so far)" : ""}`,
       () => start("topic", shuffle(qsOfTopic(s,t).map(x => x.id)), { s:s.id, t:t.id, from:"tr" }, false)));
     const i = s.topics.indexOf(t), nt = s.topics[i+1];
@@ -174,9 +176,9 @@ const Study = (() => {
       ? `<b>${st.a}</b> of ${st.n} tried · <b>${Math.round(100*st.ok/st.a)}%</b> right on last attempt · pass mark ${PASS}%`
       : `${st.n} questions · pass mark ${PASS}%`));
     const row = el("div", "row2");
-    const n = Math.min(MOCK_N, qs.length);
-    row.appendChild(btn("cont", `<span class="ct"><span class="k">Mock paper</span><div class="n">${n} random ${esc(s.name)} questions</div><div class="x">Marked at the end against ${PASS}%</div></span><span class="arrow">›</span>`,
-      () => start("mock", shuffle(qs.map(x => x.id)).slice(0, n), { s:s.id, from:"ex" }, false)));
+    const n = Math.min(MOCK_N, qs.filter(x => typeOf(x.q) === "mc").length);
+    row.appendChild(btn("cont", `<span class="ct"><span class="k">Mock paper</span><div class="n">${n} random ${esc(s.name)} questions</div><div class="x">Multiple choice, like the real paper · marked at the end against ${PASS}%</div></span><span class="arrow">›</span>`,
+      () => start("mock", shuffle(qs.filter(x => typeOf(x.q) === "mc").map(x => x.id)).slice(0, n), { s:s.id, from:"ex" }, false)));
     const m = missedIn(qs).length;
     row.appendChild(btn("bigbtn ghost", `Review misses · ${m}`, () => start("review", shuffle(missedIn(qs)), { s:s.id, from:"ex" }, false), m ? null : { disabled:"" }));
     w.appendChild(row);
@@ -194,17 +196,26 @@ const Study = (() => {
   }
 
   // ---------- questions ----------
+  // Question types: multiple choice (default, o: answers with the correct one first),
+  // "calc" (typed number; fixed a/tol/unit/steps or gen() returning fresh numbers each time),
+  // "order" (items listed in the correct order) and "match" (pairs [left, right]).
+  const typeOf = q => q.type || "mc";
   function start(kind, ids, ctx, replaceEntry){
+    if(kind === "mock") ids = ids.filter(id => typeOf(byQ[id].q) === "mc");   // mocks mirror the real multiple-choice paper
     if(!ids.length) return;
-    sess = { kind, ids, i:0, log:[], cur:null, picked:null, ctx };
+    sess = { kind, ids, i:0, log:[], cur:null, ctx };
     nextQ();
     (replaceEntry ? replace : push)({ st:"q" });
     renderQ();
   }
   function nextQ(){
-    const id = sess.ids[sess.i], x = byQ[id];
-    sess.cur = { id, opts:shuffle(x.q.o.map((t,i) => ({ t, ok:i === 0 }))) };
-    sess.picked = null;
+    const id = sess.ids[sess.i], q = byQ[id].q, type = typeOf(q);
+    const cur = { id, type, done:false, ok:false };
+    if(type === "mc"){ cur.text = q.q; cur.opts = shuffle(q.o.map((t,i) => ({ t, ok:i === 0 }))); cur.picked = null; cur.e = q.e; }
+    if(type === "calc"){ const g = q.gen ? q.gen() : q; Object.assign(cur, { text:g.q, a:g.a, tol:g.tol || 0, unit:g.unit || "", steps:g.steps || [], e:g.e || q.e || "", neg:!!(g.neg || q.neg), val:"" }); }
+    if(type === "order"){ cur.text = q.q; cur.items = q.items; cur.pool = shuffle(q.items.map((t,i) => i)); while(cur.pool.length > 1 && cur.pool.every((v,i) => v === i)) cur.pool = shuffle(cur.pool); cur.seq = []; cur.e = q.e; }
+    if(type === "match"){ cur.text = q.q; cur.pairs = q.pairs; cur.right = shuffle(q.pairs.map((p,i) => i)); cur.sel = null; cur.map = {}; cur.e = q.e; }
+    sess.cur = cur;
   }
   function sessLabel(){
     const s = sess.ctx.s && subjectById(sess.ctx.s);
@@ -212,25 +223,25 @@ const Study = (() => {
     if(sess.kind === "review") return s ? `${s.name} misses` : "All misses";
     return topicOf(s, sess.ctx.t).title;
   }
+  const fmt = n => (Math.round(n * 100) / 100).toLocaleString("en-GB");
   function renderQ(){
     enter(sess.ctx.from, "quiz");
-    const x = byQ[sess.cur.id], mock = sess.kind === "mock", picked = sess.picked;
+    const cur = sess.cur, x = byQ[cur.id];
+    const tag = { mc:"", calc:"Work it out", order:"Put in order", match:"Match the pairs" }[cur.type];
     title(sessLabel(), `Question ${sess.i+1} of ${sess.ids.length}` + (sess.ctx.s ? "" : ` · ${x.s.name}`));
     hprogBar.style.width = (sess.i / sess.ids.length * 100) + "%";
     view.innerHTML = "";
     const w = el("div", "quiz");
-    const q = el("p", "qtext"); q.textContent = x.q.q; w.appendChild(q);
-    const opts = el("div", "opts");
-    const answered = !mock && picked !== null;
-    sess.cur.opts.forEach((o,k) => {
-      let cls = "opt";
-      if(answered){ if(o.ok) cls += " ok"; else if(k === picked) cls += " no"; }
-      opts.appendChild(btn(cls, `<span class="l">${"ABCD"[k]}</span><span class="ot">${esc(o.t)}</span>`, () => pick(k), answered ? { disabled:"" } : null));
-    });
-    w.appendChild(opts);
-    if(answered){
-      const ok = sess.cur.opts[picked].ok;
-      const e = el("div", "expl " + (ok ? "good" : "bad"), `<span class="v">${ok ? "Correct" : "Not quite"}</span>${esc(x.q.e)}`);
+    if(tag) w.appendChild(el("div", "qtag", tag));
+    const q = el("p", "qtext"); q.textContent = cur.text; w.appendChild(q);
+    ({ mc:drawMC, calc:drawCalc, order:drawOrder, match:drawMatch })[cur.type](w, cur);
+    if(cur.done && sess.kind !== "mock"){
+      const e = el("div", "expl " + (cur.ok ? "good" : "bad"), `<span class="v">${cur.ok ? "Correct" : "Not quite"}</span>`);
+      if(cur.type === "calc"){
+        e.innerHTML += `<div class="ans">Answer: <b>${fmt(cur.a)}${esc(cur.unit)}</b>${cur.tol ? ` <span class="tolnote">(within ${fmt(cur.tol)}${esc(cur.unit)} accepted)</span>` : ""}</div>`;
+        if(cur.steps.length) e.innerHTML += `<ol class="steps">${cur.steps.map(st => `<li>${esc(st)}</li>`).join("")}</ol>`;
+      }
+      if(cur.e) e.appendChild(el("div", "", esc(cur.e)));
       e.setAttribute("role", "status");
       w.appendChild(e);
       w.appendChild(btn("bigbtn", sess.i >= sess.ids.length - 1 ? "See results ›" : "Next question ›", advance));
@@ -238,15 +249,122 @@ const Study = (() => {
     }
     view.appendChild(w);
   }
-  function pick(k){
-    if(sess.picked !== null && sess.kind !== "mock") return;
-    const o = sess.cur.opts[k];
-    sess.picked = k;
-    sess.log.push({ id:sess.cur.id, k, ok:o.ok, opts:sess.cur.opts });
-    rec(sess.cur.id, o.ok);
+  function finish(ok, yours, correct){
+    const cur = sess.cur;
+    cur.done = true; cur.ok = ok;
+    sess.log.push({ id:cur.id, ok, text:cur.text, yours, correct, why:[cur.type === "calc" && cur.steps.length ? cur.steps.join(" ") : "", cur.e].filter(Boolean).join(" ") });
+    rec(cur.id, ok);
     buzz();
     if(sess.kind === "mock") advance(); else renderQ();
   }
+
+  // multiple choice
+  function drawMC(w, cur){
+    const opts = el("div", "opts");
+    const shown = cur.done && sess.kind !== "mock";
+    cur.opts.forEach((o,k) => {
+      let cls = "opt";
+      if(shown){ if(o.ok) cls += " ok"; else if(k === cur.picked) cls += " no"; }
+      opts.appendChild(btn(cls, `<span class="l">${"ABCD"[k]}</span><span class="ot">${esc(o.t)}</span>`, () => {
+        if(cur.done) return;
+        cur.picked = k;
+        finish(o.ok, o.t, cur.opts.find(z => z.ok).t);
+      }, shown ? { disabled:"" } : null));
+    });
+    w.appendChild(opts);
+  }
+
+  // typed calculation
+  function drawCalc(w, cur){
+    const row = el("div", "calcrow");
+    const inp = document.createElement("input");
+    inp.type = "text"; inp.inputMode = cur.neg ? "text" : "decimal"; inp.id = "calcIn"; inp.className = "calcin";
+    inp.setAttribute("aria-label", "Your answer"); inp.autocomplete = "off"; inp.value = cur.val;
+    if(cur.done){ inp.disabled = true; row.classList.add(cur.ok ? "ok" : "no"); }
+    row.appendChild(inp);
+    if(cur.unit) row.appendChild(el("span", "unit", esc(cur.unit.trim())));
+    w.appendChild(row);
+    if(cur.done) return;
+    const msg = el("div", "calcmsg");
+    const go = () => {
+      const v = parseFloat(String(inp.value).replace(/[\u2212\u2013]/g, "-").replace(/,/g, "").replace(/[^0-9.\-]/g, ""));
+      if(isNaN(v)){ msg.textContent = "Type a number first."; return; }
+      cur.val = inp.value;
+      finish(Math.abs(v - cur.a) <= cur.tol + 1e-9, fmt(v) + cur.unit, fmt(cur.a) + cur.unit);
+    };
+    inp.addEventListener("keydown", e => { if(e.key === "Enter") go(); });
+    w.appendChild(msg);
+    w.appendChild(btn("bigbtn", "Check answer", go));
+    setTimeout(() => { try{ inp.focus({ preventScroll:true }); }catch(e){} }, 50);
+  }
+
+  // put in order: tap items from the pool to build the sequence
+  function drawOrder(w, cur){
+    const ans = el("ol", "seq");
+    const shown = cur.done && sess.kind !== "mock";
+    cur.seq.forEach((idx, pos) => {
+      const li = el("li");
+      const b = btn("chip placed" + (shown ? (idx === pos ? " ok" : " no") : ""), `<span class="cn">${pos+1}</span><span>${esc(cur.items[idx])}</span>`,
+        () => { if(cur.done) return; cur.seq.splice(pos, 1); cur.pool.push(idx); renderQ(); }, shown ? { disabled:"" } : null);
+      li.appendChild(b); ans.appendChild(li);
+    });
+    for(let k = cur.seq.length; k < cur.items.length; k++) ans.appendChild(el("li", "slot", `<span class="cn">${k+1}</span>`));
+    w.appendChild(el("div", "zlabel", cur.done ? "Your order" : "Your order · tap an item to send it back"));
+    w.appendChild(ans);
+    if(shown && !cur.ok){
+      w.appendChild(el("div", "zlabel", "Correct order"));
+      w.appendChild(el("ol", "seq right", cur.items.map((t,i) => `<li><span class="chip ok"><span class="cn">${i+1}</span><span>${esc(t)}</span></span></li>`).join("")));
+    }
+    if(cur.done) return;
+    w.appendChild(el("div", "zlabel", "Tap in order"));
+    const pool = el("div", "pool");
+    cur.pool.forEach((idx, k) => pool.appendChild(btn("chip", esc(cur.items[idx]), () => { cur.pool.splice(k, 1); cur.seq.push(idx); renderQ(); })));
+    w.appendChild(pool);
+    const full = cur.seq.length === cur.items.length;
+    w.appendChild(btn("bigbtn", full ? "Check order" : `Place all ${cur.items.length} items`, () => {
+      const ok = cur.seq.every((v,i) => v === i);
+      finish(ok, cur.seq.map(i => cur.items[i]).join(" → "), cur.items.join(" → "));
+    }, full ? null : { disabled:"" }));
+  }
+
+  // match: tap a numbered item, then the answer that goes with it
+  function drawMatch(w, cur){
+    const shown = cur.done && sess.kind !== "mock";
+    if(!cur.done && cur.sel == null && Object.keys(cur.map).length < cur.pairs.length) cur.sel = cur.pairs.findIndex((p,i) => cur.map[i] == null);
+    const used = {}; Object.entries(cur.map).forEach(([l, r]) => used[r] = +l);
+    w.appendChild(el("div", "zlabel", cur.done ? "Your pairs" : "Tap a numbered item, then its match"));
+    const L = el("div", "mcol");
+    cur.pairs.forEach((p, i) => {
+      const paired = cur.map[i] != null;
+      let cls = "chip left" + (cur.sel === i ? " sel" : "") + (paired ? " paired" : "");
+      if(shown) cls += cur.map[i] === i ? " ok" : " no";
+      L.appendChild(btn(cls, `<span class="cn">${i+1}</span><span>${esc(p[0])}</span>` + (shown && cur.map[i] !== i ? `<span class="fix">→ ${esc(p[1])}</span>` : ""),
+        () => { if(cur.done) return; if(paired){ delete cur.map[i]; cur.sel = i; } else cur.sel = cur.sel === i ? null : i; renderQ(); }, shown ? { disabled:"" } : null));
+    });
+    w.appendChild(L);
+    const R = el("div", "mcol right");
+    cur.right.forEach(ri => {
+      const owner = used[ri];
+      let cls = "chip" + (owner != null ? " paired" : "");
+      R.appendChild(btn(cls, (owner != null ? `<span class="cn">${owner+1}</span>` : `<span class="cn empty"></span>`) + `<span>${esc(cur.pairs[ri][1])}</span>`, () => {
+        if(cur.done) return;
+        if(owner != null){ delete cur.map[owner]; renderQ(); return; }
+        if(cur.sel == null){ return; }
+        cur.map[cur.sel] = ri;
+        const next = cur.pairs.findIndex((p,i) => cur.map[i] == null);
+        cur.sel = next >= 0 ? next : null;
+        renderQ();
+      }, shown ? { disabled:"" } : null));
+    });
+    w.appendChild(R);
+    if(cur.done) return;
+    const full = Object.keys(cur.map).length === cur.pairs.length;
+    w.appendChild(btn("bigbtn", full ? "Check pairs" : `Pair all ${cur.pairs.length} items`, () => {
+      const ok = cur.pairs.every((p,i) => cur.map[i] === i);
+      finish(ok, cur.pairs.map((p,i) => `${p[0]} → ${cur.pairs[cur.map[i]][1]}`).join("; "), cur.pairs.map(p => `${p[0]} → ${p[1]}`).join("; "));
+    }, full ? null : { disabled:"" }));
+  }
+
   function advance(){
     sess.i++;
     if(sess.i >= sess.ids.length){ replace({ st:"res" }); renderResult(); }
@@ -266,17 +384,16 @@ const Study = (() => {
     const wrong = sess.log.filter(l => !l.ok);
     w.appendChild(label(wrong.length ? "Missed, with the reasoning" : "Every question right", !!wrong.length));
     wrong.forEach(l => {
-      const x = byQ[l.id];
       w.appendChild(el("div", "miss",
-        `<div class="mq">${esc(x.q.q)}</div>`+
-        `<div class="ma y"><b>You said</b>${esc(l.opts[l.k].t)}</div>`+
-        `<div class="ma c"><b>Correct</b>${esc(l.opts.find(o => o.ok).t)}</div>`+
-        `<div class="why">${esc(x.q.e)}</div>`));
+        `<div class="mq">${esc(l.text)}</div>`+
+        `<div class="ma y"><b>You said</b>${esc(l.yours)}</div>`+
+        `<div class="ma c"><b>Correct</b>${esc(l.correct)}</div>`+
+        (l.why ? `<div class="why">${esc(l.why)}</div>` : "")));
     });
     const ctx = sess.ctx;
     if(wrong.length) w.appendChild(btn("bigbtn", `Retry the ${wrong.length} missed`, () => start("review", shuffle(wrong.map(l => l.id)), { s:ctx.s, from:ctx.from }, true)));
     if(sess.kind === "mock"){
-      const s = subjectById(ctx.s), qs = qsOf(s);
+      const s = subjectById(ctx.s), qs = qsOf(s).filter(x => typeOf(x.q) === "mc");
       w.appendChild(btn("bigbtn" + (wrong.length ? " ghost" : ""), "Another mock paper",
         () => start("mock", shuffle(qs.map(x => x.id)).slice(0, Math.min(MOCK_N, qs.length)), ctx, true)));
     }

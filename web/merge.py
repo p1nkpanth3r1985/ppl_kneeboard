@@ -12,7 +12,7 @@ here = pathlib.Path(__file__).parent
 src = (here / "c150-original.html").read_text(encoding="utf-8")
 css = (here / "study.css").read_text(encoding="utf-8")
 data = "\n\n".join(f.read_text(encoding="utf-8") for f in sorted((here / "subjects").glob("*.js")))
-app = (here / "study-app.js").read_text(encoding="utf-8")
+app = (here / "widgets.js").read_text(encoding="utf-8") + "\n" + (here / "study-app.js").read_text(encoding="utf-8")
 
 SVG_DEFS = """<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
   <g id="ac"><path d="M0,-12 C2,-10 2,-4 2,2 L1.5,12 L0,13 L-1.5,12 L-2,2 C-2,-4 -2,-10 0,-12Z M-12,-1 L-2,-3.2 L-2,2 L-12,2Z M12,-1 L2,-3.2 L2,2 L12,2Z M-5,10 L-1.5,8.8 L-1.5,12 L-5,12Z M5,10 L1.5,8.8 L1.5,12 L5,12Z" fill="currentColor"/></g>

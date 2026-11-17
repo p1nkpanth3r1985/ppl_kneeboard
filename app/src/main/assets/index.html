@@ -399,6 +399,72 @@
   #studyView .pbtn.off .pref{color:var(--muted);}
   #studyView .grid + .bigbtn{margin-top:0;}
   #studyView > .bigbtn{margin:0 0 18px;}
+
+  /* ---------- new question types ---------- */
+  #studyView .qtag{display:inline-block;font-size:.65rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--on-accent);background:var(--mag);padding:3px 9px;border-radius:99px;margin:0 2px 8px;}
+  body[data-mode="sun"] #studyView .qtag{color:#fff;}
+  #studyView .zlabel{font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-dark);margin:14px 2px 8px;}
+  #studyView .calcrow{display:flex;align-items:center;gap:10px;background:var(--card);border:2px solid var(--edge);border-radius:14px;padding:6px 14px;max-width:340px;}
+  #studyView .calcrow.ok{border-color:var(--tick);background:var(--tick-tint);}
+  #studyView .calcrow.no{border-color:var(--emerg);background:var(--emerg-tint);}
+  #studyView .calcin{flex:1;min-width:0;border:0;background:transparent;color:var(--ink);font:800 1.6rem ui-monospace,Menlo,Consolas,monospace;padding:8px 0;outline:none;}
+  #studyView .calcrow:focus-within{border-color:var(--accent);}
+  #studyView .unit{font-weight:800;font-size:1.1rem;color:var(--muted);}
+  #studyView .calcmsg{font-size:.85rem;color:var(--emerg);font-weight:700;min-height:1.2em;margin:6px 2px 0;}
+  #studyView .expl .ans{font-size:1rem;margin-bottom:6px;}
+  #studyView .tolnote{font-size:.78rem;color:var(--muted);}
+  #studyView .steps{margin:6px 0 8px;padding-left:20px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85rem;line-height:1.6;}
+  #studyView .seq{list-style:none;margin:0;padding:0;display:grid;gap:8px;}
+  #studyView .seq .slot{border:2px dashed var(--edge);border-radius:12px;min-height:48px;display:flex;align-items:center;padding:0 12px;}
+  #studyView .chip{width:100%;display:flex;align-items:center;gap:10px;text-align:left;background:var(--card);border:var(--bw) solid var(--edge);border-radius:12px;box-shadow:0 2px 0 var(--edge);padding:11px 12px;min-height:48px;font-size:.92rem;font-weight:600;}
+  #studyView .chip:active:not([disabled]){transform:translateY(2px);box-shadow:none;}
+  #studyView .cn{flex:0 0 26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:800;background:var(--accent);color:var(--on-accent);}
+  #studyView .cn.empty{background:transparent;border:2px dashed var(--edge);}
+  #studyView .slot .cn{background:transparent;color:var(--muted);border:2px solid var(--edge);}
+  #studyView .chip.placed{border-color:var(--accent);}
+  #studyView .chip.ok{border-color:var(--tick);background:var(--tick-tint);box-shadow:0 2px 0 var(--tick);}
+  #studyView .chip.ok .cn{background:var(--tick);color:#fff;}
+  #studyView .chip.no{border-color:var(--emerg);background:var(--emerg-tint);box-shadow:0 2px 0 var(--emerg);}
+  #studyView .chip.no .cn{background:var(--emerg);color:#fff;}
+  #studyView .pool{display:grid;gap:8px;}
+  #studyView .pool .chip{background:var(--tint);}
+  #studyView .mcol{display:grid;gap:8px;}
+  #studyView .mcol.right{margin-top:14px;padding-top:14px;border-top:2px dashed var(--edge);}
+  #studyView .chip.left.sel{outline:3px solid var(--mag);outline-offset:2px;}
+  #studyView .chip.paired{opacity:.75;}
+  #studyView .chip.paired.ok,#studyView .chip.paired.no{opacity:1;}
+  #studyView .chip .fix{margin-left:auto;font-size:.78rem;color:var(--tick);font-weight:800;text-align:right;}
+  @media (min-width:700px){ #studyView .mcols{display:grid;grid-template-columns:1fr 1fr;gap:14px;} }
+
+  /* ---------- hands-on diagrams in the notes ---------- */
+  #studyView .tryit{margin:22px 0 6px;border:2px solid var(--accent);border-radius:14px;overflow:hidden;background:var(--paper);}
+  #studyView .tryhead{background:var(--accent);color:var(--on-accent);font-size:.72rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;padding:8px 14px;}
+  #studyView .widget{padding:14px;display:grid;gap:12px;}
+  #studyView .wctl{display:grid;gap:4px;}
+  #studyView .wctl label{display:flex;justify-content:space-between;gap:10px;font-size:.82rem;font-weight:700;color:var(--muted);}
+  #studyView .wctl label b{color:var(--ink);font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.95rem;}
+  #studyView .wctl input[type=range]{width:100%;accent-color:var(--accent);height:30px;}
+  #studyView .wgrid{display:grid;grid-template-columns:1fr;gap:12px;}
+  @media (min-width:600px){ #studyView .wgrid{grid-template-columns:1fr 1fr;} }
+  #studyView .wout{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;}
+  #studyView .wout .o{background:var(--card);border:var(--bw) solid var(--edge);border-radius:10px;padding:8px 10px;}
+  #studyView .wout .o .k{display:block;font-size:.65rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);}
+  #studyView .wout .o .v{display:block;font-family:ui-monospace,Menlo,Consolas,monospace;font-weight:800;font-size:1.25rem;color:var(--ink);}
+  #studyView .wout .o.hl{border-color:var(--mag);background:var(--magtint);}
+  #studyView .wmsg{font-size:.88rem;font-weight:600;line-height:1.45;}
+  #studyView .wmsg.warn{color:var(--emerg);}
+  #studyView .wtext{width:100%;border:2px solid var(--edge);border-radius:10px;background:var(--card);color:var(--ink);font:700 1rem ui-monospace,Menlo,Consolas,monospace;padding:10px 12px;}
+  #studyView .wtext:focus{border-color:var(--accent);outline:none;}
+  #studyView .wseg{display:flex;flex-wrap:wrap;gap:6px;}
+  #studyView .wseg button{flex:1 1 auto;padding:9px 10px;border-radius:9px;font-weight:800;font-size:.8rem;background:var(--card);border:var(--bw) solid var(--edge);}
+  #studyView .wseg button.on{background:var(--accent);color:var(--on-accent);border-color:var(--accent-dark);}
+  #studyView .groups{display:flex;flex-wrap:wrap;gap:6px;}
+  #studyView .groups button{font:800 .95rem ui-monospace,Menlo,Consolas,monospace;padding:8px 10px;border-radius:8px;background:var(--card);border:var(--bw) solid var(--edge);}
+  #studyView .groups button.on{background:var(--mag);border-color:var(--mag);color:#fff;}
+  #studyView .groups button.seen{border-color:var(--tick);}
+  #studyView .wsvg svg{width:100%;height:auto;display:block;max-width:460px;margin:0 auto;}
+  #studyView .say{font-size:1.05rem;font-weight:700;line-height:1.5;background:var(--card);border:var(--bw) solid var(--edge);border-radius:10px;padding:10px 12px;}
+  #studyView .say small{display:block;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:2px;}
 </style>
 </head>
 <body data-mode="day">
@@ -835,8 +901,24 @@ const EMERG = [
 
 
 // Subjects register themselves here, one file each (subjects/NNN-name.js).
-// Each topic's questions list the correct answer first; the app shuffles them.
+// Each multiple-choice question lists the correct answer first; the app shuffles them.
+// Other question types: {type:"calc"}, {type:"order"}, {type:"match"} (see study-app.js).
 const SUBJECTS = [];
+
+// Later files (NNN-name-more.js) add questions and hands-on diagrams to existing topics.
+// Each "try" entry is [widget name, heading]; the widget appears under "Try it" at the end of the notes.
+function extendTopic(sid, tid, more){
+  const s = SUBJECTS.find(x => x.id === sid), t = s && s.topics.find(x => x.id === tid);
+  if(!t) throw new Error("extendTopic: no topic " + sid + "/" + tid);
+  if(more.qs) t.qs.push(...more.qs);
+  if(more.try){
+    const old = t.learn;
+    t.learn = () => old() + more.try.map(([w, h]) => `<div class="tryit"><div class="tryhead">Try it · ${h}</div><div class="widget" data-w="${w}"></div></div>`).join("");
+  }
+}
+// Helpers for calculation questions with fresh numbers each time
+const rnd = (a, b, step) => { step = step || 1; return a + step * Math.floor(Math.random() * (Math.floor((b - a) / step) + 1)); };
+const pad3 = n => { n = ((Math.round(n) % 360) + 360) % 360; return String(n === 0 ? 360 : n).padStart(3, "0"); };
 
 
 const FIG={};
@@ -1577,6 +1659,61 @@ SUBJECTS.push({ id:"hp", code:"040", name:"Human Performance",
 })();
 
 
+// 040 Human Performance: extra questions and hands-on diagrams
+extendTopic("hp", "hypoxia", { qs:[
+{type:"match", q:"Match each condition to its typical cause and signs.", pairs:[["Hypoxia","Too little oxygen: impaired judgement, euphoria, blue lips"],["Hyperventilation","Too little carbon dioxide from over-breathing: tingling, dizziness"],["Carbon monoxide poisoning","Exhaust gas in the cabin: headache, drowsiness"],["Decompression sickness","Nitrogen bubbles after diving then flying: joint pain"]],
+  e:"Hypoxia, hyperventilation and carbon monoxide poisoning can feel very alike. If in doubt, treat for the worst: more oxygen or fresh air, heater off, descend and land."},
+{q:"Which of these lowers a pilot's tolerance to hypoxia?",o:["Smoking","Being well rested","Drinking water","Wearing sunglasses"],e:"Smokers already carry carbon monoxide in their blood, so they are effectively at a higher altitude. Alcohol, fatigue and illness also lower tolerance."},
+{q:"What is meant by the time of useful consciousness?",o:["The time a pilot can still perform useful flying duties after the oxygen supply is lost","The time before a pilot faints from fatigue","The time taken to recover after a stall","The maximum flight time allowed without a break"],e:"After oxygen is lost at altitude, a pilot can act sensibly only for a limited time, which shortens sharply the higher you are."},
+{q:"Which statement about carbon monoxide is correct?",o:["It is colourless and has no smell","It always smells strongly of exhaust","It only affects passengers in the rear seats","It is harmless below 5,000 ft"],e:"You cannot see or smell carbon monoxide itself; any exhaust smell comes from other gases. A detector is the reliable warning."},
+{q:"How does alcohol in the body affect susceptibility to hypoxia?",o:["It increases it","It reduces it","It has no effect","It only affects it at night"],e:"Alcohol interferes with the body's use of oxygen, so its effects add to those of altitude."}
+]});
+
+extendTopic("hp", "vision", { qs:[
+{q:"What causes the blind spot in each eye?",o:["The point where the optic nerve leaves the retina has no light-sensitive cells","The shadow of the eyelid","Cones failing in bright light","Damage from looking at the sun"],e:"There are no rods or cones where the optic nerve joins the retina. Using both eyes and moving the head covers it."},
+{q:"Which part of the eye gives the sharpest central vision in daylight?",o:["The fovea, packed with cones","The edge of the retina, rich in rods","The blind spot","The lens"],e:"The fovea contains only cones, giving fine detail and colour in good light."},
+{q:"Approaching a downsloping runway, what illusion is likely?",o:["Feeling too low, leading to a high approach","Feeling too high, leading to a low approach","Feeling too fast","Feeling too slow"],e:"A downslope makes the runway look shorter and flatter, as if you are low, so pilots tend to fly a high approach and land long."},
+{q:"Approaching a runway that is much wider than you are used to, what illusion is likely?",o:["Feeling too low, leading to a high approach","Feeling too high, leading to a low approach","No illusion","Feeling that the runway is sloping up"],e:"A wide runway fills more of the view, as if you are closer and lower, so pilots tend to stay high. A narrow runway does the opposite."},
+{q:"Why are polarised sunglasses often not recommended for flying?",o:["They can make some instrument displays and windscreen patterns hard to see","They block too much light","They increase the blind spot","They are not allowed by law"],e:"Polarising filters can hide or distort some displays and show stress patterns in the windscreen. Neutral grey, non-polarised lenses are usually advised."}
+]});
+
+extendTopic("hp", "balance", { qs:[
+{type:"match", q:"Match each illusion to its cause.", pairs:[["The leans","A slow roll into a turn that the balance organs don't detect"],["Somatogravic illusion","Linear acceleration felt as a nose-up pitch"],["Coriolis illusion","Moving the head during a turn"],["Empty field myopia","A featureless sky with nothing to focus on"]],
+  e:"The first three come from the balance organs; empty field myopia is a vision effect. All are worse without a visual horizon."},
+{q:"What do the otolith organs detect?",o:["Linear acceleration and gravity","Angular acceleration","Sound","Changes in air pressure"],e:"The otoliths sense straight-line acceleration and the pull of gravity, and can't tell one from the other."},
+{q:"A non-instrument-rated pilot is most at risk of disorientation when:",o:["Flying into cloud or poor visibility and losing the visual horizon","Flying in clear air on a sunny day","Taxiing at night","Flying straight and level over the sea in good visibility"],e:"Without a horizon the balance organs give false cues within seconds. The best defence is not to enter cloud; if you do, trust the instruments and turn back carefully."},
+{q:"What is the main cause of motion sickness?",o:["A conflict between what the eyes see and what the balance organs feel","Low blood sugar","Carbon monoxide","Hyperventilation"],e:"Mismatched signals from the eyes and inner ear are the root cause. Looking outside at the horizon helps."},
+{q:"Why does the middle ear usually equalise easily during a climb?",o:["Air escapes from the middle ear through the Eustachian tube without effort","The eardrum stretches","The sinuses absorb the extra pressure","Swallowing is impossible during the climb"],e:"The Eustachian tube opens readily to let air out as outside pressure falls. On the descent air must be pushed back in, which is harder."}
+]});
+
+extendTopic("hp", "health", { try:[["imsafe", "IMSAFE self-check"]], qs:[
+{type:"order", q:"Put the IMSAFE checks in order.", items:["Illness","Medication","Stress","Alcohol","Fatigue","Eating"],
+  e:"A quick personal check before every flight, alongside the aircraft checks."},
+{q:"Roughly how long does the body take to remove four units of alcohol?",o:["About four hours","About one hour","About half an hour","About twelve hours"],e:"The liver removes roughly one unit an hour. Four units take about four hours, and longer for some people."},
+{q:"A pilot's blood alcohol is now zero after a heavy night. Which statement is correct?",o:["Hangover effects can still impair performance","They are fully fit as soon as the alcohol has gone","A large breakfast removes any remaining effects","Coffee restores normal reaction times"],e:"Dehydration, poor sleep and the after-effects of alcohol can impair judgement and coordination after the alcohol has cleared."},
+{q:"Why might a pilot be advised not to fly soon after giving blood?",o:["The reduced blood volume can cause faintness","It raises the risk of carbon monoxide poisoning","It affects night vision only","It increases blood alcohol"],e:"Losing blood temporarily reduces circulating volume and can cause light-headedness. Check current guidance with your AME before flying."},
+{q:"Which is a typical effect of mild dehydration on a pilot?",o:["Fatigue, headache and reduced concentration","Better night vision","Improved tolerance to G","No effect at all"],e:"Even mild dehydration affects concentration and increases fatigue. Take water on longer flights, especially in a warm cockpit."}
+]});
+
+extendTopic("hp", "processing", { qs:[
+{type:"order", q:"Put the stages of a simple information-processing model in order.", items:["The senses detect a stimulus","Perception: the brain interprets what was sensed","Decision: choose what to do","Response: carry out the action"],
+  e:"Errors can creep in at every stage: missing a stimulus, misinterpreting it, choosing badly, or doing the wrong thing."},
+{type:"order", q:"When things get busy, put a pilot's priorities in order.", items:["Aviate: fly the aircraft","Navigate: know where you are going","Communicate: talk to ATC and others"],
+  e:"Control first. Radio calls never take priority over keeping the aircraft flying safely."},
+{q:"A pilot reaches for the flap lever when meaning to adjust the trim, because the levers are in different places in the club's other aircraft. This is best described as:",o:["A habit or environmental capture error, linked to motor programmes","Hypoxia","A violation","Confirmation bias"],e:"Well-practised actions can run automatically in the wrong context, especially when switching between aircraft types."},
+{q:"What is selective attention?",o:["Focusing on some information while filtering out the rest","Paying equal attention to everything","Only listening to ATC","Recalling information from long-term memory"],e:"Selective attention is necessary, but the filter can screen out something important, such as a radio call or a warning light."}
+]});
+
+extendTopic("hp", "decisions", { qs:[
+{type:"match", q:"Match each hazardous attitude to its antidote.", pairs:[["Anti-authority","Follow the rules; they are usually right"],["Impulsivity","Not so fast. Think first"],["Invulnerability","It could happen to me"],["Macho","Taking chances is foolish"],["Resignation","I'm not helpless. I can make a difference"]],
+  e:"Recognising the attitude in your own thinking is the first step; saying the antidote to yourself is the second."},
+{type:"order", q:"Put the steps of the DODAR decision model in order.", items:["Diagnose","Options","Decide","Assign tasks","Review"],
+  e:"Fly the aircraft first. Then use DODAR when there is time to think the problem through."},
+{q:"What is a violation?",o:["A deliberate departure from rules or procedures","An honest mistake in planning","A slip caused by distraction","A memory lapse"],e:"Slips, lapses and mistakes are unintentional. A violation is deliberate, even if the person believes it is harmless."},
+{q:"In threat and error management, which of these is an example of a threat?",o:["Deteriorating weather at the destination","Forgetting to set the QNH","Selecting the wrong frequency","Misreading the fuel gauge"],e:"Threats come from outside the pilot (weather, terrain, traffic, an unfamiliar airfield). The other three are errors the pilot makes."}
+]});
+
+
 // 050 Meteorology
 (() => {
 const fronts = `<figure class="fig wide"><svg viewBox="0 0 480 240" role="img" aria-label="Cross-section of a frontal system moving east: cold front behind, warm sector, warm front ahead with its clouds">
@@ -1813,6 +1950,71 @@ SUBJECTS.push({ id:"met", code:"050", name:"Meteorology",
 })();
 
 
+// 050 Meteorology: extra questions and hands-on diagrams
+extendTopic("met", "atmos", { try:[["altimeter", "Altimeter setting errors"]], qs:[
+{type:"calc", gen:() => { const set = rnd(1008, 1022), act = set - rnd(5, 18), ind = rnd(2000, 4000, 500), tru = ind + (act - set) * 30;
+  return { q:`Your altimeter has ${set} hPa set and reads ${ind.toLocaleString("en-GB")} ft. The actual QNH where you are is ${act} hPa. What is your true altitude?`, a:tru, tol:0, unit:" ft",
+    steps:[`Difference = ${act} − ${set} = ${act - set} hPa`, `× 30 ft per hPa = ${(act - set) * 30} ft`, `${ind} ${act - set < 0 ? "−" : "+"} ${Math.abs((act - set) * 30)} = ${tru} ft`] }; },
+  e:"Pressure lower than the setting means you are lower than indicated: high to low, look out below."},
+{type:"calc", gen:() => { const alt = rnd(2, 10) * 1000, t = 15 - 2 * alt / 1000;
+  return { q:`Using 2 °C per 1,000 ft, what is the ISA temperature at ${alt.toLocaleString("en-GB")} ft?`, a:t, tol:1, unit:" °C",
+    steps:[`ISA at sea level = +15 °C`, `Lapse = 2 × ${alt/1000} = ${2*alt/1000} °C`, `15 − ${2*alt/1000} = ${t} °C`] }; },
+  e:"The exact ISA lapse rate is 1.98 °C per 1,000 ft; 2 °C is close enough for working."},
+{type:"calc", gen:() => { const alt = rnd(2, 8) * 1000, isa = 15 - 2 * alt / 1000, oat = isa + rnd(-8, 12);
+  return { q:`At ${alt.toLocaleString("en-GB")} ft the outside air temperature is ${oat} °C. What is the ISA deviation? (use 2 °C per 1,000 ft; a minus sign for colder than ISA)`, a:oat - isa, tol:0, unit:" °C", neg:true,
+    steps:[`ISA at ${alt} ft = 15 − ${2*alt/1000} = ${isa} °C`, `Deviation = actual − ISA = ${oat} − (${isa}) = ${oat - isa} °C`] }; },
+  e:"Warmer than ISA (a positive deviation) means lower density and poorer performance; colder than ISA means the altimeter over-reads."},
+{q:"Which of these increases density altitude?",o:["A rise in temperature","A rise in pressure","A fall in humidity","A fall in temperature"],e:"Warmer air is less dense, so the aircraft performs as if it were higher. Lower pressure and higher humidity also raise density altitude."},
+{q:"What is pressure altitude?",o:["The altitude shown when 1013.25 hPa is set on the subscale","The height above the aerodrome","The altitude corrected for temperature","The altitude shown with the regional QNH set"],e:"Pressure altitude is height in the standard atmosphere above the 1013.25 hPa level. It is the starting point for performance charts and flight levels."}
+]});
+
+extendTopic("met", "stability", { try:[["cloudbase", "Estimating cloud base"]], qs:[
+{type:"calc", gen:() => { const t = rnd(10, 25), d = t - rnd(2, 8), base = (t - d) * 400;
+  return { q:`Temperature ${t} °C, dew point ${d} °C. Estimate the base of cumulus cloud above the surface.`, a:base, tol:0, unit:" ft",
+    steps:[`Spread = ${t} − ${d} = ${t - d} °C`, `× 400 = ${base.toLocaleString("en-GB")} ft`] }; },
+  e:"Rising air and its dew point converge at about 2.5 °C per 1,000 ft, which is where the 400 ft per degree comes from."},
+{q:"What is a temperature inversion?",o:["A layer where temperature increases with height","A layer where temperature falls faster than the DALR","The point where air reaches its dew point","A sudden fall in surface pressure"],e:"In an inversion the air gets warmer with height. It is very stable and traps haze, smoke and low cloud beneath it."},
+{q:"Moist air is forced over a mountain range, loses its moisture as rain on the windward side, and descends on the lee side. What is the air like on the lee side?",o:["Warmer and drier than on the windward side at the same level (the Föhn effect)","Colder and wetter","Exactly the same","Full of fog"],e:"On the way up the air cools at the slower saturated rate after condensation; descending it warms at the faster dry rate, so it arrives warmer and drier."},
+{q:"When the temperature equals the dew point, what is the relative humidity?",o:["100%","50%","0%","It cannot be worked out"],e:"Air at its dew point is saturated: 100% relative humidity. Expect cloud, mist or fog."},
+{type:"match", q:"Match each lapse rate to its value or meaning.", pairs:[["Dry adiabatic (DALR)","3 °C per 1,000 ft"],["Saturated adiabatic (SALR)","About 1.5 °C per 1,000 ft"],["ISA","About 2 °C per 1,000 ft"],["Environmental (ELR)","The actual rate in today's atmosphere"]],
+  e:"Comparing the ELR with the DALR and SALR tells you whether the air is stable or unstable."}
+]});
+
+extendTopic("met", "clouds", { qs:[
+{type:"match", q:"Match each cloud to its level.", pairs:[["Cirrus","High"],["Altostratus","Medium"],["Stratus","Low"],["Cumulonimbus","Vertical development"]],
+  e:"Ci, Cc and Cs are high; Ac and As medium; St, Sc and Ns low; Cu and Cb grow through several levels."},
+{q:"When does a sea breeze usually blow?",o:["During the day, from the sea towards the land","At night, from the land towards the sea","At night, from the sea towards the land","Only in winter"],e:"By day the land heats faster than the sea, air rises over the land and cooler sea air flows in. At night the reverse (a land breeze) can happen."},
+{q:"Which change would NOT help to clear radiation fog?",o:["The wind dropping to calm","The sun heating the ground","The wind strengthening","Cloud moving over the area and stopping further cooling"],e:"Calm air lets the fog sit and thicken. Heating, stronger wind or cloud cover all help to disperse it."},
+{q:"What is the difference between haze and mist?",o:["Haze is caused by dry particles; mist by water droplets","Haze is thicker than fog","Mist only forms over the sea","There is no difference"],e:"Haze (HZ) is dust, smoke or pollution in dry air. Mist (BR) is water droplets with visibility of 1,000 m or more."},
+{q:"Which cloud is most likely to produce drizzle?",o:["Stratus","Cirrus","Cumulonimbus","Altocumulus"],e:"Drizzle comes from thin, low layer cloud such as stratus, typically in moist, stable tropical maritime air."}
+]});
+
+extendTopic("met", "airmass", { qs:[
+{type:"order", q:"Put the clouds in the order an observer on the ground sees them as a warm front approaches.", items:["Cirrus","Cirrostratus","Altostratus","Nimbostratus"],
+  e:"The warm frontal surface slopes gently ahead of the surface front, so the highest cloud arrives first and the base gets steadily lower."},
+{q:"What is an occluded front?",o:["Where a cold front has caught up with a warm front and lifted the warm sector off the ground","A front that has stopped moving","A front between two warm air masses","The boundary of a sea breeze"],e:"Cold fronts move faster than warm fronts. When one catches up, the warm air is lifted aloft and the front is occluded."},
+{q:"A large anticyclone is over the UK in winter. Which weather is likely?",o:["Light winds, an inversion, and a risk of fog, haze or extensive low stratus","Strong winds and heavy showers","Thunderstorms","Rapidly changing frontal weather"],e:"Sinking air in a high warms and creates an inversion. In winter, moisture trapped below it gives fog, haze or a persistent layer of stratus ('anticyclonic gloom')."},
+{q:"In the northern hemisphere, in which direction does the wind blow around a depression?",o:["Anticlockwise","Clockwise","Directly into the centre","Directly out from the centre"],e:"Around a low the wind circulates anticlockwise in the northern hemisphere, and around a high clockwise."},
+{q:"From which direction does polar continental air usually reach the UK?",o:["From the east, in winter","From the south-west","From the north-west, over the Atlantic","From the south, in summer"],e:"Pc air comes from continental Europe and Scandinavia in winter: very cold, and dry until it crosses the North Sea."}
+]});
+
+extendTopic("met", "hazards", { qs:[
+{type:"order", q:"Put the stages of a thunderstorm in order.", items:["Cumulus stage: updraughts throughout","Mature stage: precipitation, up and downdraughts","Dissipating stage: mainly downdraughts"],
+  e:"The mature stage begins when precipitation falls from the base and is the most dangerous."},
+{q:"You suspect carburettor icing and apply full carburettor heat. If ice was present, what would you expect?",o:["RPM drops further and the engine may run roughly, then RPM rises as the ice melts","RPM rises immediately and stays high","No change at all","The engine stops"],e:"Hot air is less dense, so RPM falls at first. Melted ice passing through can make the engine rough. As the ice clears, RPM recovers above where it was."},
+{q:"Flying into a microburst on the approach, what is the likely sequence?",o:["An increasing headwind and climb, then a strong downdraught and tailwind with a loss of airspeed and height","A steady tailwind only","A gradual increase in airspeed","Smooth air with light rain"],e:"The outflow first gives a headwind gain, which can tempt the pilot to reduce power, then the downdraught and tailwind cause a sudden loss of performance."},
+{q:"How does freezing rain usually form?",o:["Rain falls from a warmer layer above into sub-zero air below and freezes on impact","Snow melts as it falls","Water vapour freezes directly on the airframe","Hail breaks up in the cloud"],e:"Supercooled raindrops freeze on contact with the aircraft, forming clear ice very quickly. Typically found ahead of a warm front in winter."}
+]});
+
+extendTopic("met", "reports", { try:[["metar", "Decode a METAR"]], qs:[
+{type:"match", q:"Match each METAR weather code to its meaning.", pairs:[["BR","Mist"],["FG","Fog"],["HZ","Haze"],["TS","Thunderstorm"],["DZ","Drizzle"]],
+  e:"BR is from the French 'brume'. FG is visibility below 1,000 m; BR is 1,000 m or more."},
+{q:"What does VRB03KT mean in a METAR?",o:["Wind variable in direction at 3 kt","Wind from 030° at 3 kt","Visibility reduced by 3 km","Variable wind gusting 30 kt"],e:"VRB means the direction is variable, which is usual when the wind is light."},
+{q:"What does 27018G30KT mean?",o:["Wind from 270° true at 18 kt, gusting 30 kt","Wind from 270° at 30 kt, gusting 18 kt","Wind from 018° at 27 kt","Runway 27, wind 18 kt"],e:"Direction (true), mean speed, then G and the gust speed, all in knots."},
+{q:"A METAR includes OVC004. What does this mean?",o:["Overcast, base 400 ft above aerodrome level","Overcast at 4,000 ft","4 oktas of cloud","Visibility 400 m"],e:"Heights are in hundreds of feet above aerodrome level. 400 ft overcast is well below VFR circuit height."}
+]});
+
+
 // 060 Navigation
 (() => {
 const tvmdc = `<div class="sq">
@@ -2037,6 +2239,97 @@ SUBJECTS.push({ id:"nav", code:"060", name:"Navigation",
   blurb:"Direction and the compass, charts and scale, time, speed, distance and fuel, the wind triangle, the 1 in 60 rule and radio navigation.",
   topics:T });
 })();
+
+
+// 060 Navigation: extra questions and hands-on diagrams
+const varText = v => Math.abs(v) + "°" + (v > 0 ? "W" : "E");   // positive = west
+extendTopic("nav", "earth", { try:[["tvmdc", "True, magnetic and compass"]], qs:[
+{type:"calc", gen:() => { const t = rnd(20, 330, 5), v = rnd(1, 8) * (rnd(0, 1) ? 1 : -1), m = t + v;
+  return { q:`True track ${pad3(t)}°, variation ${varText(v)}. What is the magnetic track? (degrees)`, a:m, tol:0, unit:"°",
+    steps:[`Variation ${v > 0 ? "west is best: add" : "east is least: subtract"}`, `${pad3(t)} ${v > 0 ? "+" : "−"} ${Math.abs(v)} = ${pad3(m)}°M`] }; }},
+{type:"calc", gen:() => { const m = rnd(20, 330, 5), d = rnd(1, 4) * (rnd(0, 1) ? 1 : -1), c = m + d;
+  return { q:`Magnetic heading ${pad3(m)}°, deviation ${varText(d)}. What is the compass heading? (degrees)`, a:c, tol:0, unit:"°",
+    steps:[`Deviation ${d > 0 ? "west: add" : "east: subtract"}`, `${pad3(m)} ${d > 0 ? "+" : "−"} ${Math.abs(d)} = ${pad3(c)}°C`] }; }},
+{type:"calc", gen:() => { const c = rnd(30, 320, 5), d = rnd(1, 3) * (rnd(0, 1) ? 1 : -1), v = rnd(1, 6) * (rnd(0, 1) ? 1 : -1), m = c - d, t = m - v;
+  return { q:`Working backwards: compass heading ${pad3(c)}°, deviation ${varText(d)}, variation ${varText(v)}. What is the true heading? (degrees)`, a:t, tol:0, unit:"°",
+    steps:[`Going from compass back towards true, reverse the signs: west is subtracted, east is added.`, `Magnetic = ${pad3(c)} ${d > 0 ? "−" : "+"} ${Math.abs(d)} = ${pad3(m)}°M`, `True = ${pad3(m)} ${v > 0 ? "−" : "+"} ${Math.abs(v)} = ${pad3(t)}°T`] }; },
+  e:"Reverse the rule when converting compass or magnetic back to true."},
+{q:"Where is magnetic dip greatest, making the compass least reliable?",o:["Near the magnetic poles","At the magnetic equator","At the Greenwich meridian","It is the same everywhere"],e:"Near the poles the earth's field points steeply into the ground, so the horizontal part the compass uses is weak, and turning and acceleration errors are large."},
+{q:"What is an agonic line?",o:["A line joining places of zero variation","A line of zero deviation","The magnetic equator","A line of equal dip"],e:"Agonic lines join places where true and magnetic north coincide."}
+]});
+
+extendTopic("nav", "charts", { qs:[
+{type:"calc", gen:() => { const cm = rnd(3, 20), km = cm * 5;
+  return { q:`On a 1:500,000 chart two places are ${cm} cm apart. How far apart are they on the ground, in kilometres?`, a:km, tol:0, unit:" km",
+    steps:[`1 cm = 500,000 cm = 5 km`, `${cm} × 5 = ${km} km`] }; }},
+{type:"calc", gen:() => { const km = rnd(20, 150, 5), nm = km / 1.852;
+  return { q:`Convert ${km} km to nautical miles (nearest whole number).`, a:Math.round(nm), tol:1, unit:" nm",
+    steps:[`1 nm = 1.852 km`, `${km} ÷ 1.852 = ${nm.toFixed(1)} nm`] }; }},
+{q:"On a UK VFR chart, an obstacle is marked with two figures, for example 1,250 and (420). What does the bracketed figure show?",o:["The height of the obstacle above ground level","Its elevation above mean sea level","The minimum safe altitude near it","Its distance from the nearest aerodrome in metres"],e:"The main figure is the top of the obstacle above mean sea level; the bracketed figure is its height above the ground."},
+{q:"Why is a road map not suitable for VFR navigation planning?",o:["It does not show airspace, aerodromes, obstacles or other aeronautical information","Its scale is too small","It uses a Mercator projection","It shows too many towns"],e:"Aeronautical charts add airspace, danger and restricted areas, aerodromes, obstacles, radio aids and elevation data you need for safe planning."}
+]});
+
+extendTopic("nav", "tsd", { try:[["tsd", "Time and fuel for a leg"]], qs:[
+{type:"calc", gen:() => { const d = rnd(20, 90), g = rnd(70, 130, 5), m = d * 60 / g;
+  return { q:`A leg of ${d} nm at a groundspeed of ${g} kt. How long will it take, to the nearest minute?`, a:Math.round(m), tol:1, unit:" min",
+    steps:[`Time = distance × 60 ÷ groundspeed`, `${d} × 60 ÷ ${g} = ${m.toFixed(1)} min`] }; }},
+{type:"calc", gen:() => { const g = rnd(70, 130, 5), m = rnd(10, 50), d = g * m / 60;
+  return { q:`Groundspeed ${g} kt for ${m} minutes. How far have you travelled, to the nearest nm?`, a:Math.round(d), tol:1, unit:" nm",
+    steps:[`Distance = groundspeed × time ÷ 60`, `${g} × ${m} ÷ 60 = ${d.toFixed(1)} nm`] }; }},
+{type:"calc", gen:() => { const r = rnd(18, 30), m = rnd(30, 150, 5), f = r * m / 60;
+  return { q:`Fuel flow is ${r} L/h. How much fuel is used in ${Math.floor(m/60) ? Math.floor(m/60) + " h " : ""}${m % 60} min? (nearest litre)`, a:Math.round(f), tol:1, unit:" L",
+    steps:[`Time in hours = ${m} ÷ 60 = ${(m/60).toFixed(2)} h`, `${r} × ${(m/60).toFixed(2)} = ${f.toFixed(1)} L`] }; }},
+{type:"calc", gen:() => { const m = rnd(15, 45), g = rnd(70, 130, 10), d = g * m / 60;
+  return { q:`You cover ${Number.isInteger(d) ? d : d.toFixed(1)} nm in ${m} minutes. What is your groundspeed?`, a:g, tol:1, unit:" kt",
+    steps:[`Groundspeed = distance × 60 ÷ time`, `${Number.isInteger(d) ? d : d.toFixed(1)} × 60 ÷ ${m} = ${g} kt`] }; }},
+{type:"calc", gen:() => { const g = rnd(10, 40), l = g * 3.785;
+  return { q:`Convert ${g} US gallons to litres (nearest litre).`, a:Math.round(l), tol:1, unit:" L",
+    steps:[`1 US gallon = 3.785 L`, `${g} × 3.785 = ${l.toFixed(1)} L`] }; },
+  e:"Many US-built light aircraft, including the Cessna 150, give fuel capacity in US gallons in the POH."}
+]});
+
+extendTopic("nav", "wind", { try:[["windtri", "The wind triangle"], ["crosswind", "Runway wind components"]], qs:[
+{type:"calc", gen:() => { const w = rnd(10, 30), v = rnd(80, 120, 5), md = w * 60 / v;
+  return { q:`Wind ${w} kt, TAS ${v} kt. What is the maximum possible drift? (nearest degree)`, a:Math.round(md), tol:1, unit:"°",
+    steps:[`Max drift ≈ wind speed × 60 ÷ TAS`, `${w} × 60 ÷ ${v} = ${md.toFixed(1)}°`] }; }},
+{type:"calc", gen:() => { const rw = rnd(1, 36), off = [30, 45, 60, 90][rnd(0, 3)] * (rnd(0, 1) ? 1 : -1), ws = rnd(10, 25), wd = pad3(rw * 10 + off), xw = ws * Math.sin(Math.abs(off) * Math.PI / 180);
+  return { q:`Runway ${String(rw).padStart(2, "0")}, surface wind ${wd}° at ${ws} kt. What is the crosswind component, to the nearest knot?`, a:Math.round(xw), tol:2, unit:" kt",
+    steps:[`Angle between wind and runway = ${Math.abs(off)}°`, `Crosswind = ${ws} × sin ${Math.abs(off)}° = ${ws} × ${Math.sin(Math.abs(off)*Math.PI/180).toFixed(2)} = ${xw.toFixed(1)} kt`] }; },
+  e:"Rule of thumb: 30° off, half the wind; 45°, 0.7; 60° or more, nearly all of it. Within 2 kt is accepted for the rule of thumb."},
+{type:"calc", gen:() => { const rw = rnd(1, 36), off = [0, 30, 45, 60][rnd(0, 3)] * (rnd(0, 1) ? 1 : -1), ws = rnd(10, 25), wd = pad3(rw * 10 + off), hw = ws * Math.cos(Math.abs(off) * Math.PI / 180);
+  return { q:`Runway ${String(rw).padStart(2, "0")}, surface wind ${wd}° at ${ws} kt. What is the headwind component, to the nearest knot?`, a:Math.round(hw), tol:2, unit:" kt",
+    steps:[`Angle between wind and runway = ${Math.abs(off)}°`, `Headwind = ${ws} × cos ${Math.abs(off)}° = ${ws} × ${Math.cos(Math.abs(off)*Math.PI/180).toFixed(2)} = ${hw.toFixed(1)} kt`] }; }},
+{q:"Your track is 360° and the wind is from 270°. Which statement is correct?",o:["You drift right, so the heading must be left of track","You drift left, so the heading must be right of track","There is no drift with a wind from the west","The heading must be 180°"],e:"A westerly wind blows you east, to the right of a northerly track. Head into wind, to the left."},
+{q:"The wind is blowing from directly behind the aircraft. What are the drift and groundspeed?",o:["No drift; groundspeed = TAS + wind speed","Maximum drift; groundspeed = TAS","No drift; groundspeed = TAS − wind speed","Maximum drift; groundspeed = TAS + wind speed"],e:"A wind along the track causes no drift; a direct tailwind adds fully to the groundspeed."}
+]});
+
+extendTopic("nav", "onein60", { try:[["onein60", "1 in 60 corrections"]], qs:[
+{type:"calc", gen:() => { const o = rnd(2, 6), g = [20, 30, 40, 60][rnd(0, 3)], te = o * 60 / g;
+  return { q:`After ${g} nm you find yourself ${o} nm off track. What is the track error? (nearest degree)`, a:Math.round(te), tol:1, unit:"°",
+    steps:[`TE = off track × 60 ÷ distance gone`, `${o} × 60 ÷ ${g} = ${te.toFixed(1)}°`] }; }},
+{type:"calc", gen:() => { const o = rnd(2, 6), t = [20, 30, 40, 60][rnd(0, 3)], ca = o * 60 / t;
+  return { q:`You are ${o} nm off track with ${t} nm to go. What closing angle will take you to the destination? (nearest degree)`, a:Math.round(ca), tol:1, unit:"°",
+    steps:[`CA = off track × 60 ÷ distance to go`, `${o} × 60 ÷ ${t} = ${ca.toFixed(1)}°`] }; }},
+{type:"calc", gen:() => { const o = rnd(2, 5), g = [20, 30, 40][rnd(0, 2)], t = [30, 40, 60][rnd(0, 2)], te = o * 60 / g, ca = o * 60 / t, side = rnd(0, 1) ? "left" : "right";
+  return { q:`After ${g} nm you are ${o} nm ${side} of track, with ${t} nm still to go. By how many degrees must you alter heading to reach the destination? (nearest degree)`, a:Math.round(te + ca), tol:1, unit:"°",
+    steps:[`TE = ${o} × 60 ÷ ${g} = ${te.toFixed(1)}°`, `CA = ${o} × 60 ÷ ${t} = ${ca.toFixed(1)}°`, `Total = ${(te + ca).toFixed(1)}°, turning ${side === "left" ? "right" : "left"}`] }; }},
+{q:"Up to roughly what angle does the 1 in 60 rule give useful accuracy?",o:["About 20°","About 5°","About 60°","Any angle"],e:"The rule relies on the small-angle approximation. It is close enough for navigation corrections up to about 20°."}
+]});
+
+extendTopic("nav", "radionav", { qs:[
+{type:"calc", gen:() => { const m = rnd(10, 350, 10), r = (m + 180) % 360 || 360;
+  return { q:`Your QDM to a station is ${pad3(m)}°. What is your QDR? (degrees)`, a:r, tol:0, unit:"°",
+    steps:[`QDR = QDM ± 180°`, `${pad3(m)} ${m < 180 ? "+" : "−"} 180 = ${pad3(r)}°`] }; }},
+{type:"calc", gen:() => { let h, rb, q; do { h = rnd(10, 350, 10); rb = rnd(10, 350, 10); q = (h + rb) % 360; } while(q === 0);
+  return { q:`Magnetic heading ${pad3(h)}°, ADF relative bearing ${pad3(rb)}°. What is the QDM to the NDB? (degrees)`, a:q, tol:0, unit:"°",
+    steps:[`QDM = magnetic heading + relative bearing`, `${pad3(h)} + ${pad3(rb)} = ${h + rb}${h + rb > 360 ? ` − 360 = ${pad3(q)}` : ""}°`] }; }},
+{type:"calc", gen:() => { const h = [1600, 2500, 3600, 4900, 6400][rnd(0, 4)], r = 1.23 * Math.sqrt(h);
+  return { q:`Roughly what VHF range would you expect at ${h.toLocaleString("en-GB")} ft over flat terrain? (nearest nm)`, a:Math.round(r), tol:2, unit:" nm",
+    steps:[`Range ≈ 1.23 × √height`, `√${h} = ${Math.sqrt(h)}`, `1.23 × ${Math.sqrt(h)} = ${r.toFixed(1)} nm`] }; }},
+{type:"match", q:"Match each Q-code to its meaning.", pairs:[["QDM","Magnetic bearing to the station"],["QDR","Magnetic bearing from the station"],["QTE","True bearing from the station"],["QNH","Altimeter setting to read altitude above mean sea level"],["QFE","Altimeter setting to read height above the aerodrome"]],
+  e:"QDM and QDR are magnetic, to and from. QTE and QUJ are true, from and to."},
+{q:"An aircraft is on the 090 radial of a VOR. Where is it?",o:["East of the station","West of the station","North of the station","Heading 090°, anywhere"],e:"A radial is a magnetic bearing from the station, so the 090 radial runs out to the east. It says nothing about the aircraft's heading."}
+]});
 
 
 // 080 Principles of Flight
@@ -2286,6 +2579,73 @@ SUBJECTS.push({ id:"pof", code:"080", name:"Principles of Flight",
 })();
 
 
+// 080 Principles of Flight: extra questions and hands-on diagrams
+extendTopic("pof", "lift", { try:[["liftspeed", "Lift and airspeed"]], qs:[
+{type:"calc", gen:() => { const v1 = rnd(60, 80, 5), v2 = v1 + rnd(15, 45, 5), r = Math.pow(v2/v1, 2);
+  return { q:`At a constant angle of attack, airspeed increases from ${v1} kt to ${v2} kt. By what factor does lift increase? (two decimal places)`, a:Math.round(r*100)/100, tol:0.05, unit:"×",
+    steps:[`Lift is proportional to V².`, `Factor = (${v2} ÷ ${v1})² = ${(v2/v1).toFixed(3)}² = ${r.toFixed(2)}`] }; },
+  e:"Because lift goes with the square of speed, a modest speed increase makes a large difference to lift."},
+{q:"According to Bernoulli's principle, as air speeds up through a venturi its static pressure:",o:["Decreases","Increases","Stays the same","First increases, then decreases"],e:"Total pressure stays constant, so when dynamic pressure rises (faster air), static pressure falls. That's the basis of lift over the upper wing surface and of the carburettor venturi."},
+{q:"At a constant airspeed, how can a pilot increase the lift from the wing?",o:["Increase the angle of attack, up to the critical angle","Reduce the angle of attack","Reduce power","Move the CG aft"],e:"With speed fixed, lift is controlled by the lift coefficient, which rises with angle of attack until the stall."},
+{q:"Two wings have the same shape, angle of attack and airspeed, but one has twice the area. How does its lift compare?",o:["Twice as much","The same","Four times as much","Half as much"],e:"Lift is directly proportional to wing area S in the lift formula."},
+{type:"match", q:"Match each term in the lift formula, L = CL × ½ρV² × S, to its meaning.", pairs:[["CL","Lift coefficient (set mainly by angle of attack)"],["ρ (rho)","Air density"],["V","True airspeed"],["S","Wing area"]],
+  e:"½ρV² together is dynamic pressure, which the airspeed indicator measures as IAS."}
+]});
+
+extendTopic("pof", "drag", { try:[["dragspeed", "Drag at different speeds"]], qs:[
+{type:"calc", gen:() => { const v1 = rnd(60, 80, 5), k = [1.5, 2][rnd(0, 1)], v2 = v1 * k, r = Math.pow(v1/v2, 2);
+  return { q:`In level flight, speed increases from ${v1} kt to ${v2} kt. By what factor does induced drag change? (two decimal places)`, a:Math.round(r*100)/100, tol:0.03, unit:"×",
+    steps:[`Induced drag is proportional to 1 ÷ V².`, `Factor = (${v1} ÷ ${v2})² = ${(v1/v2).toFixed(3)}² = ${r.toFixed(2)}`] }; },
+  e:"Induced drag falls as speed rises, the opposite of parasite drag."},
+{q:"Where does interference drag occur?",o:["Where airflows meet at junctions, such as wing to fuselage","Only at the wing tips","Only on the propeller","Inside the engine cowling"],e:"Interference drag comes from airflows around different parts mixing at junctions. Fairings reduce it."},
+{q:"Which reduces skin friction drag?",o:["A smooth, clean surface","Lowering the flaps","Flying at a higher angle of attack","Adding dihedral"],e:"Skin friction depends on the surface: dirt, insects, rough paint and ice all increase it."},
+{q:"An aircraft in level flight slows below its minimum drag speed. To maintain height, the pilot will need:",o:["More power","Less power","The same power","No power change, only more flap"],e:"Below Vmd total drag rises as speed falls (the 'back of the drag curve'), so more thrust is needed to fly slower."},
+{type:"match", q:"Match each kind of drag to its cause.", pairs:[["Form drag","The shape of the body disturbing the airflow"],["Skin friction","Air dragging along the surface"],["Interference drag","Airflows meeting at junctions"],["Induced drag","A by-product of making lift"]],
+  e:"Form, skin friction and interference drag together make up parasite drag, which rises with speed. Induced drag falls with speed."}
+]});
+
+extendTopic("pof", "stall", { try:[["loadfactor", "Bank angle, load factor and stall speed"]], qs:[
+{type:"calc", gen:() => { const b = [30, 45, 60, 70][rnd(0, 3)], n = 1 / Math.cos(b * Math.PI / 180);
+  return { q:`What is the load factor in a level turn at ${b}° of bank? (two decimal places)`, a:Math.round(n*100)/100, tol:0.05, unit:" g",
+    steps:[`n = 1 ÷ cos(bank)`, `cos ${b}° = ${Math.cos(b*Math.PI/180).toFixed(3)}`, `n = 1 ÷ ${Math.cos(b*Math.PI/180).toFixed(3)} = ${n.toFixed(2)} g`] }; },
+  e:"Load factor climbs steeply beyond 45°: 2 g at 60° and nearly 3 g at 70°."},
+{type:"calc", gen:() => { const vs = rnd(44, 56), b = [30, 45, 60][rnd(0, 2)], n = 1 / Math.cos(b * Math.PI / 180), v = vs * Math.sqrt(n);
+  return { q:`An aircraft stalls at ${vs} kt wings level. Roughly what is its stall speed in a level ${b}° banked turn? (nearest knot)`, a:Math.round(v), tol:1, unit:" kt",
+    steps:[`n = 1 ÷ cos ${b}° = ${n.toFixed(2)}`, `√n = ${Math.sqrt(n).toFixed(3)}`, `${vs} × ${Math.sqrt(n).toFixed(3)} = ${v.toFixed(1)} kt`] }; },
+  e:"Stall speed rises with the square root of the load factor."},
+{q:"How does frost or ice on the wing affect the stall?",o:["It raises the stall speed and can remove the normal warning","It lowers the stall speed","It has no effect if the layer is thin","It only affects the stall with flap down"],e:"Even a thin, rough layer disturbs the airflow, reducing the maximum lift coefficient. The wing can stall at a lower angle of attack and higher speed, with little warning."},
+{q:"Which of these is a typical sign of an approaching stall?",o:["Airframe buffet","An increase in control effectiveness","A rise in airspeed","A nose-down attitude"],e:"Buffet from turbulent airflow breaking away over the wing, the stall warner and sloppy controls are the usual signs."},
+{q:"At the stall, one wing drops. Why is it risky to use aileron to try to pick it up?",o:["The down-going aileron increases the angle of attack on that wing, which can deepen the stall and start a spin","Ailerons do not work at low speed","It increases the stall speed of the other wing only","It causes the nose to pitch down sharply"],e:"Lowering the aileron on the dropping wing increases its angle of attack. If it is already stalled, that can make it worse and lead to autorotation. Prevent further yaw and unstall the wing first."}
+]});
+
+extendTopic("pof", "stability", { qs:[
+{type:"match", q:"Match each axis to the movement about it and the control that produces it.", pairs:[["Longitudinal axis","Roll, using the ailerons"],["Lateral axis","Pitch, using the elevator"],["Normal axis","Yaw, using the rudder"],["Centre of gravity","The point all three axes pass through"]],
+  e:"The longitudinal axis runs nose to tail, the lateral axis wing tip to wing tip, and the normal axis vertically through the CG."},
+{q:"An aircraft has neutral stability. After a disturbance it will:",o:["Stay in its new condition, neither returning nor diverging","Return to its original condition","Diverge further from its original condition","Oscillate with increasing amplitude"],e:"Neutral stability means no tendency either way: it stays where the disturbance left it."},
+{q:"What is the danger of loading an aircraft with the CG behind the aft limit?",o:["It may be unstable in pitch and difficult or impossible to recover from a stall or spin","The stall speed becomes much higher","The elevator becomes too heavy to move","The aircraft becomes too stable to rotate"],e:"Behind the aft limit the tailplane may not have enough moment to restore pitch, and stall or spin recovery may not be possible."},
+{q:"With a forward CG, compared with an aft CG, how will the flare for landing feel?",o:["More elevator force is needed","Less elevator force is needed","No difference","The flare is impossible"],e:"A forward CG increases stability, so the elevator has to work harder to raise the nose. Near the forward limit you may run out of elevator in the flare."},
+{q:"Which feature makes a high-wing aircraft such as the Cessna 150 laterally stable, even with little dihedral?",o:["The high-wing position, which produces a rolling moment back towards level in a sideslip","The large fin","The tailplane","Washout at the wing tips"],e:"In a sideslip, the airflow around the fuselage raises the angle of attack of the leading wing on a high-wing aircraft, rolling it back towards level. Many textbooks describe this as the high-wing or keel effect."}
+]});
+
+extendTopic("pof", "controls", { qs:[
+{type:"match", q:"Match each device to its purpose.", pairs:[["Trim tab","Relieve the pilot of a steady control force"],["Mass balance","Prevent control surface flutter"],["Horn balance","Reduce the force needed to move a control"],["Differential ailerons","Reduce adverse yaw"]],
+  e:"Trim tabs and aerodynamic balances deal with stick forces; mass balance deals with flutter; differential and Frise ailerons deal with adverse yaw."},
+{q:"How do Frise ailerons reduce adverse yaw?",o:["The nose of the up-going aileron projects below the wing and adds drag on that side","Both ailerons go down together","The down-going aileron moves further","They automatically move the rudder"],e:"The extra drag on the descending wing's side balances the induced drag from the down-going aileron on the rising wing."},
+{q:"In level flight with the wings held level by the pilot, rudder is applied to the left and the ailerons are then released. What happens next?",o:["The aircraft rolls to the left","The aircraft rolls to the right","Nothing; rudder only causes yaw","The nose pitches up"],e:"Further effect of rudder: the yaw speeds up the right wing, which makes more lift, so the aircraft rolls left."},
+{q:"What does a Fowler flap do?",o:["It moves back as well as down, increasing both camber and wing area","It only increases camber","It only increases drag, with no extra lift","It reduces the stall speed by raising the leading edge"],e:"Fowler flaps slide aft on tracks, adding wing area as well as camber, for a large increase in lift."}
+]});
+
+extendTopic("pof", "turn", { qs:[
+{q:"In a balanced level turn, the pilot increases the bank without changing the back pressure or power. What happens?",o:["The aircraft starts to descend","The aircraft climbs","Nothing changes","The airspeed falls but height is held"],e:"More bank tilts the lift further, so its vertical component no longer balances the weight. Without more back pressure (and usually power) the aircraft descends."},
+{q:"At the same angle of bank, how does a higher airspeed affect a level turn?",o:["Larger radius and lower rate of turn","Smaller radius and higher rate of turn","No effect on radius or rate","Higher load factor"],e:"Load factor depends only on bank. At a higher speed the same turning force gives a wider, slower turn."},
+{q:"In a glide, what is the effect of lowering full flap?",o:["A steeper glide angle","A flatter glide angle","No change to the glide angle","A longer glide range"],e:"Flap adds drag, lowering the lift/drag ratio, so the aircraft descends more steeply over a shorter distance."},
+{type:"calc", gen:() => { const ld = rnd(8, 10), h = rnd(2000, 4000, 500), nm = h * ld / 6076;
+  return { q:`An aircraft with a best lift/drag ratio of ${ld}:1 glides from ${h.toLocaleString("en-GB")} ft above the ground in still air. Roughly how far can it glide, in nautical miles? (one decimal place)`, a:Math.round(nm*10)/10, tol:0.3, unit:" nm",
+    steps:[`Glide distance = height × L/D = ${h} × ${ld} = ${(h*ld).toLocaleString("en-GB")} ft`, `÷ 6,076 ft per nm = ${nm.toFixed(1)} nm`] }; },
+  e:"The glide ratio equals the lift/drag ratio, in still air. A headwind shortens the distance over the ground; a tailwind lengthens it."}
+]});
+
+
 // 090 Communications
 (() => {
 const ALPHA = ["Alfa","Bravo","Charlie","Delta","Echo","Foxtrot","Golf","Hotel","India","Juliett","Kilo","Lima","Mike","November","Oscar","Papa","Quebec","Romeo","Sierra","Tango","Uniform","Victor","Whiskey","X-ray","Yankee","Zulu"];
@@ -2509,6 +2869,66 @@ SUBJECTS.push({ id:"comms", code:"090", name:"Communications",
   blurb:"Phonetics and numbers, standard words, readbacks and clearances, UK air traffic services, emergencies and radio failure, and routine calls.",
   topics:T });
 })();
+
+
+// 090 Communications: extra questions and hands-on diagrams
+extendTopic("comms", "phonetics", { try:[["phonetic", "Spell a callsign"], ["numbers", "Say it on the radio"]], qs:[
+{type:"match", q:"Match each letter to its phonetic word.", pairs:[["J","Juliett"],["Y","Yankee"],["K","Kilo"],["F","Foxtrot"],["I","India"]],
+  e:"The ICAO alphabet uses these exact spellings, including Alfa and Juliett."},
+{q:"ATC passes \"QNH one zero zero tree\". What is the QNH?",o:["1003 hPa","1033 hPa","1030 hPa","1013 hPa"],e:"'Tree' is the radio pronunciation of 3: one zero zero three."},
+{q:"The time is 14:27 UTC and there is no risk of confusion about the hour. How is it normally spoken?",o:["Two seven","One four two seven","Twenty-seven past two","One four point two seven"],e:"Normally only the minutes are given. The hour is added when there could be confusion."},
+{q:"How is a heading of 005° transmitted?",o:["Heading zero zero fife","Heading fife","Heading five degrees","Heading zero fife"],e:"Headings are always three digits, spoken separately, with 'fife' for 5."},
+{q:"How is the letter W spelt phonetically?",o:["Whiskey","William","Wilco","Whisky"],e:"The ICAO spelling is 'Whiskey', with an e. Other words like 'William' come from older or non-aviation alphabets."}
+]});
+
+extendTopic("comms", "words", { qs:[
+{type:"match", q:"Match each standard word or phrase to its meaning.", pairs:[["AFFIRM","Yes"],["NEGATIVE","No, or permission not granted"],["WILCO","I understand and will comply"],["STANDBY","Wait and I will call you"],["SAY AGAIN","Repeat your last transmission"]],
+  e:"ROGER is not on this list because it only acknowledges receipt; it answers nothing."},
+{q:"You make an error during a transmission. What should you say?",o:["Correction, followed by the correct version","Say again","Disregard, then switch off","Negative, then start a new call later"],e:"'Correction' means an error has been made in this transmission and the correct version follows."},
+{q:"What does \"I say again\" mean?",o:["I am repeating for clarity or emphasis","Please repeat your message","I did not understand","I am cancelling my last message"],e:"'I say again' is used by the sender to repeat. 'Say again' asks the other station to repeat."},
+{q:"What is \"BREAK\" used for?",o:["To separate parts of a message, or messages to different stations","To end a radio exchange","To request radio silence","To declare an emergency"],e:"BREAK marks a separation within a transmission, for example between instructions to two different aircraft."},
+{q:"What does \"APPROVED\" mean?",o:["Permission for the proposed action is granted","I have received your message","Yes, that is correct","The clearance is cancelled"],e:"APPROVED grants a request, for example 'Golf-CD, orbit overhead approved'."}
+]});
+
+extendTopic("comms", "readback", { qs:[
+{type:"order", q:"ATC: \"Golf-CD, climb altitude three thousand feet, squawk four five two one, QNH one zero one two.\" Put your readback in the correct order.", items:["Climb altitude three thousand feet","Squawk four five two one","QNH one zero one two","Golf-CD"],
+  e:"Read back in the order given, and finish with your callsign."},
+{q:"ATC: \"Golf-CD, hold short runway 27.\" What is the correct reply?",o:["Hold short runway 27, Golf-CD","Roger, Golf-CD","Wilco, Golf-CD","Golf-CD"],e:"Instructions to hold short of an active runway must be read back in full."},
+{q:"ATC: \"Golf-CD, report final.\" Which reply is correct?",o:["Wilco, Golf-CD","Report final, Golf-CD, cleared to land","Roger, final","Affirm, Golf-CD"],e:"A request to report doesn't need a readback: WILCO confirms you'll do it."},
+{q:"With a landing clearance, ATC also gives the surface wind. What do you read back?",o:["The clearance and the runway; the wind need not be read back","Only the wind","Everything, including the wind","Only your callsign"],e:"Landing clearances are on the readback list; the surface wind is information and is not."},
+{q:"ATC: \"Golf-CD, line up and wait runway 25.\" What may you do?",o:["Enter the runway and line up, but not take off","Take off when ready","Hold at the holding point","Cross the runway"],e:"Line up and wait means enter and line up only. Take-off needs a separate clearance using the words 'cleared for take-off'."}
+]});
+
+extendTopic("comms", "services", { qs:[
+{type:"match", q:"Match each station suffix to the service it provides.", pairs:[["TOWER","Aerodrome control"],["GROUND","Ground movement control"],["APPROACH","Approach control"],["INFORMATION","Flight information service"],["RADIO","Air/ground communication service"]],
+  e:"The suffix tells you what to expect: control and clearances, information only, or an air/ground radio operator."},
+{q:"For which flights is the UK Deconfliction Service intended?",o:["IFR flights","VFR flights in the circuit","Flights inside controlled airspace only","Gliders"],e:"Deconfliction Service gives traffic information plus avoiding-action advice and is intended for IFR flight. VFR pilots usually take Basic or Traffic Service."},
+{q:"Under a Traffic Service, ATC reports traffic in your 12 o'clock, 3 miles, opposite direction. Who decides what to do about it?",o:["The pilot","The controller","The other aircraft's pilot","Whoever spots the other first"],e:"Under Traffic Service the controller gives information; avoiding action is the pilot's decision."},
+{q:"You are receiving a Traffic Service and want to change to a Basic Service. What should you do?",o:["Tell the controller and agree the change","Simply stop listening","Change squawk to 7000 without telling ATC","Switch frequency"],e:"The type of service is agreed between pilot and controller, and changes are agreed and read back too."},
+{q:"An aerodrome uses the callsign suffix INFORMATION. What does that tell you about landing?",o:["The FISO gives information; the decision to land is yours","You need a landing clearance from the FISO","The aerodrome is closed","Only ATC-cleared aircraft may land"],e:"An aerodrome FISO gives information to help you, but doesn't issue landing or take-off clearances."}
+]});
+
+extendTopic("comms", "emergency", { qs:[
+{type:"order", q:"Put the main parts of a MAYDAY message in order, after \"MAYDAY MAYDAY MAYDAY\" and the station addressed.", items:["Callsign","Aircraft type","Nature of the emergency","Intentions","Position, height and heading","Pilot qualification"],
+  e:"Then other useful information such as persons on board and endurance. If time is short, say what you can; the order helps the controller, but getting the call out matters most."},
+{q:"When should you select squawk 7700?",o:["In an emergency, unless ATC has already given you a code","Whenever you are uncertain of your position","On every flight outside controlled airspace","When your radio fails"],e:"7700 alerts every radar unit to an emergency. If you are already working ATC on a discrete code, keep it unless told otherwise."},
+{q:"ATC asks you to use the speechless procedure. What does that mean?",o:["Your transmitter carrier is heard but not your voice, so you answer by pressing the transmit button a set number of times","You must stop transmitting completely","You should squawk 7600 and land","You should switch to 121.5"],e:"If ATC can hear your carrier but no speech, they can ask yes/no questions and you reply with presses of the transmit button."},
+{q:"You are uncertain of your position but not in danger. What is the most suitable call?",o:["A PAN, or ask for a training fix, on 121.5 MHz or the frequency in use","A MAYDAY","No call; keep looking","Squawk 7500"],e:"PAN covers an urgent situation without immediate danger. 121.5 MHz is staffed to help, and asking early is the right thing to do."}
+]});
+
+extendTopic("comms", "vhf", { qs:[
+{type:"calc", gen:() => { const h = [900, 1600, 2500, 3600][rnd(0, 3)], r = 1.23 * Math.sqrt(h);
+  return { q:`At ${h.toLocaleString("en-GB")} ft over flat ground, roughly how far away can you expect to talk to a ground station? (nearest nm)`, a:Math.round(r), tol:2, unit:" nm",
+    steps:[`Range ≈ 1.23 × √height in feet`, `√${h} = ${Math.sqrt(h)}`, `1.23 × ${Math.sqrt(h)} = ${r.toFixed(1)} nm`] }; },
+  e:"Climbing improves VHF range. High ground between you and the station can block it whatever the range."},
+{type:"order", q:"Put the parts of a UK FIS freecall in order, after you've been asked to pass your message.", items:["Callsign","Aircraft type","Departure point","Destination","Position","Altitude and altimeter setting","Flight rules","Request or intentions"],
+  e:"Giving the details in the expected order lets the controller write them down quickly."},
+{q:"What does \"pass your message\" mean?",o:["Go ahead with the details of your flight or request","Change to another frequency","Repeat your callsign only","Stop transmitting"],e:"It invites you to give your full message now that the controller is ready."},
+{q:"What is the squelch control for?",o:["To silence background noise when no one is transmitting","To make your transmissions louder","To change frequency","To set the transponder"],e:"Squelch cuts the hiss on an idle frequency. Set too high it can also cut out weak transmissions."}
+]});
+
+// Air Law: hands-on cruising-level diagram
+extendTopic("airlaw", "altimetry", { try:[["semicircular", "Pick a cruising level"]] });
 
 
 // =====================================================================
@@ -2884,6 +3304,449 @@ document.addEventListener("click", function once(){ keepAwake(); document.remove
 
 
 // =====================================================================
+// Hands-on diagrams for the Training notes.
+// A topic's notes include <div class="widget" data-w="name"></div>; after the
+// notes are drawn, mountWidgets() builds each one from WIDGETS[name].
+// =====================================================================
+const WIDGETS = {};
+function mountWidgets(root){
+  root.querySelectorAll(".widget[data-w]").forEach(el => {
+    const f = WIDGETS[el.dataset.w];
+    if(f){ try{ f(el); }catch(e){ el.textContent = "This diagram could not be drawn."; } }
+  });
+}
+
+const W = (() => {
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[c]));
+  const rad = d => d * Math.PI / 180, deg = r => r * 180 / Math.PI;
+  const norm = d => ((Math.round(d) % 360) + 360) % 360;
+  const hdg = d => { const n = norm(d); return String(n === 0 ? 360 : n).padStart(3, "0"); };
+  const r1 = n => Math.round(n * 10) / 10;
+  let uid = 0;
+  function slider(label, min, max, step, value, show, onInput){
+    const id = "w" + (++uid);
+    const d = document.createElement("div"); d.className = "wctl";
+    d.innerHTML = `<label for="${id}"><span>${esc(label)}</span><b></b></label><input type="range" id="${id}" min="${min}" max="${max}" step="${step}" value="${value}">`;
+    const inp = d.querySelector("input"), out = d.querySelector("b");
+    const sync = () => { out.textContent = show(+inp.value); };
+    inp.addEventListener("input", () => { sync(); onInput(); });
+    sync();
+    return { el:d, get:() => +inp.value, set:v => { inp.value = v; sync(); } };
+  }
+  function seg(options, value, onChange){
+    const d = document.createElement("div"); d.className = "wseg";
+    let cur = value;
+    options.forEach(([v, lbl]) => {
+      const b = document.createElement("button"); b.type = "button"; b.textContent = lbl;
+      if(v === cur) b.classList.add("on");
+      b.addEventListener("click", () => { cur = v; d.querySelectorAll("button").forEach(x => x.classList.toggle("on", x === b)); onChange(v); });
+      d.appendChild(b);
+    });
+    return { el:d, get:() => cur };
+  }
+  function outs(list){ return `<div class="wout">${list.map(([k,v,hl]) => `<div class="o${hl ? " hl" : ""}"><span class="k">${esc(k)}</span><span class="v">${esc(v)}</span></div>`).join("")}</div>`; }
+  function box(cls, html){ const d = document.createElement("div"); if(cls) d.className = cls; if(html != null) d.innerHTML = html; return d; }
+  function arrow(x1,y1,x2,y2,cls,width){ return `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" class="ln ${cls||""}" style="stroke-width:${width||2.5}" marker-end="url(#arr)"/>`; }
+  return { esc, rad, deg, norm, hdg, r1, slider, seg, outs, box, arrow };
+})();
+
+// ---------- Principles of Flight ----------
+WIDGETS.loadfactor = root => {
+  const pic = W.box("wsvg"), out = W.box(), msg = W.box("wmsg");
+  const bank = W.slider("Angle of bank", 0, 75, 5, 30, v => v + "°", draw);
+  const vs = W.slider("Stall speed, wings level", 40, 70, 1, 48, v => v + " kt", draw);
+  const ctl = W.box("wgrid"); ctl.append(bank.el, vs.el);
+  root.append(ctl, pic, out, msg);
+  function draw(){
+    const b = bank.get(), n = 1 / Math.cos(W.rad(b)), vst = vs.get() * Math.sqrt(n);
+    const cx = 160, cy = 120, L = 34 * n, a = W.rad(b);
+    const wx = Math.cos(a) * 80, wy = Math.sin(a) * 80;
+    const lx = Math.sin(a) * L, ly = -Math.cos(a) * L;
+    pic.innerHTML = `<svg viewBox="0 0 320 220" role="img" aria-label="Rear view of an aircraft banked at ${b} degrees with its lift tilted">
+      <rect class="fb" x="1" y="1" width="318" height="218" rx="6"/>
+      <line x1="20" y1="200" x2="300" y2="200" class="ln dot2"/><text class="tm" x="22" y="194">horizon</text>
+      <line x1="${cx-wx}" y1="${cy-wy}" x2="${cx+wx}" y2="${cy+wy}" class="ln" style="stroke-width:5"/>
+      <circle cx="${cx}" cy="${cy}" r="10" class="f-card ln"/>
+      ${W.arrow(cx, cy, cx+lx, cy+ly, "pa", 3)}
+      <line x1="${cx}" y1="${cy}" x2="${cx}" y2="${cy-34}" class="ln dash"/>
+      ${W.arrow(cx, cy+12, cx, cy+46, "", 3)}
+      <text class="tb" x="16" y="24">LIFT = ${n.toFixed(2)} × WEIGHT</text><text class="tm" x="16" y="38">rear view, banked right</text>
+      <text class="tb" x="${cx-8}" y="${cy+52}" text-anchor="end">WEIGHT</text>
+    </svg>`;
+    out.innerHTML = W.outs([["Load factor", n.toFixed(2) + " g", true], ["Stall speed now", Math.round(vst) + " kt", true], ["Lift needed", "+" + Math.round((n - 1) * 100) + "%"]]);
+    msg.textContent = b === 0 ? "Wings level: lift equals weight, load factor 1." :
+      `At ${b}° of bank the wing must make ${n.toFixed(2)} times the aircraft's weight in lift to hold height, so it reaches the critical angle ${Math.round(vst - vs.get())} kt sooner.`;
+    msg.className = "wmsg" + (b >= 60 ? " warn" : "");
+  }
+  draw();
+};
+
+WIDGETS.liftspeed = root => {
+  const out = W.box(), msg = W.box("wmsg"), pic = W.box("wsvg");
+  const v = W.slider("Airspeed (same angle of attack)", 35, 140, 5, 70, x => x + " kt", draw);
+  root.append(v.el, pic, out, msg);
+  function draw(){
+    const r = Math.pow(v.get() / 70, 2), h = Math.min(r, 4) * 40;
+    pic.innerHTML = `<svg viewBox="0 0 320 190" role="img" aria-label="Bar showing lift compared with lift at 70 knots">
+      <rect class="fb" x="1" y="1" width="318" height="188" rx="6"/>
+      <line x1="40" y1="170" x2="300" y2="170" class="ln"/>
+      <rect x="70" y="${170-40}" width="60" height="40" class="f-tint ln"/><text class="tm" x="100" y="184" text-anchor="middle">70 kt</text>
+      <rect x="190" y="${170-h}" width="60" height="${h}" class="f-mag ln"/><text class="tm" x="220" y="184" text-anchor="middle">${v.get()} kt</text>
+      <text class="tb" x="220" y="${Math.max(16, 162-h)}" text-anchor="middle">${r.toFixed(2)}×</text>
+    </svg>`;
+    out.innerHTML = W.outs([["Speed ratio", (v.get()/70).toFixed(2) + "×"], ["Lift ratio (speed²)", r.toFixed(2) + "×", true]]);
+    msg.textContent = "Lift goes with the square of speed: double the speed and, at the same angle of attack, lift is four times as great. To hold height when faster, you lower the nose to reduce the angle of attack.";
+  }
+  draw();
+};
+
+WIDGETS.dragspeed = root => {
+  const out = W.box(), msg = W.box("wmsg"), pic = W.box("wsvg");
+  const v = W.slider("Airspeed, as a percentage of Vmd", 50, 200, 5, 100, x => x + "%", draw);
+  root.append(v.el, pic, out, msg);
+  function draw(){
+    const s = v.get() / 100, i = 1 / (s*s), p = s*s, t = i + p, sc = 26;
+    const bar = (x, val, cls, lab) => `<rect x="${x}" y="${170 - Math.min(val, 6.2)*sc}" width="56" height="${Math.min(val, 6.2)*sc}" class="${cls} ln"/><text class="tm" x="${x+28}" y="184" text-anchor="middle">${lab}</text><text class="tb" x="${x+28}" y="${Math.max(14, 162 - Math.min(val, 6.2)*sc)}" text-anchor="middle">${val.toFixed(2)}</text>`;
+    pic.innerHTML = `<svg viewBox="0 0 320 190" role="img" aria-label="Bars for induced, parasite and total drag at this speed">
+      <rect class="fb" x="1" y="1" width="318" height="188" rx="6"/><line x1="20" y1="170" x2="300" y2="170" class="ln"/>
+      <line x1="20" y1="${170-2*sc}" x2="300" y2="${170-2*sc}" class="ln dot2"/><text class="tm" x="300" y="${166-2*sc}" text-anchor="end">least total drag</text>
+      ${bar(40, i, "f-mag", "induced")}${bar(132, p, "f-tint", "parasite")}${bar(224, t, "f-card", "total")}
+    </svg>`;
+    out.innerHTML = W.outs([["Induced", i.toFixed(2)], ["Parasite", p.toFixed(2)], ["Total drag", t.toFixed(2), true]]);
+    msg.textContent = s < 0.98 ? "Below Vmd: induced drag dominates. Slowing down further increases total drag, so you need more power to fly slower." :
+      s > 1.02 ? "Above Vmd: parasite drag dominates and grows with the square of speed." :
+      "At Vmd induced and parasite drag are equal and total drag is at its minimum.";
+  }
+  draw();
+};
+
+// ---------- Meteorology ----------
+WIDGETS.altimeter = root => {
+  const out = W.box(), msg = W.box("wmsg"), pic = W.box("wsvg");
+  const ind = W.slider("Altimeter reads", 500, 5000, 100, 2000, v => v.toLocaleString("en-GB") + " ft", draw);
+  const set = W.slider("Subscale set to", 980, 1040, 1, 1013, v => v + " hPa", draw);
+  const act = W.slider("Actual QNH where you are", 980, 1040, 1, 1003, v => v + " hPa", draw);
+  const ctl = W.box("wgrid"); ctl.append(ind.el, set.el, act.el);
+  root.append(ctl, pic, out, msg);
+  function draw(){
+    const err = (act.get() - set.get()) * 30, tru = ind.get() + err, sc = 0.03;
+    pic.innerHTML = `<svg viewBox="0 0 320 200" role="img" aria-label="Indicated and true altitude compared">
+      <rect class="fb" x="1" y="1" width="318" height="198" rx="6"/>
+      <rect class="f-ground" x="10" y="180" width="300" height="10"/><text class="tm" x="14" y="176">mean sea level</text>
+      <line x1="20" y1="${180-ind.get()*sc}" x2="300" y2="${180-ind.get()*sc}" class="ln dash"/><text class="t" x="300" y="${176-ind.get()*sc}" text-anchor="end">what the altimeter says</text>
+      ${`<use href="#ac" class="ac-b" transform="translate(150 ${(180-tru*sc).toFixed(1)}) rotate(90) scale(1.3)"/>`}
+      <text class="tb" x="172" y="${(184-tru*sc).toFixed(1)}">you are here</text>
+    </svg>`;
+    out.innerHTML = W.outs([["Error", (err >= 0 ? "+" : "") + err + " ft"], ["True altitude", Math.round(tru).toLocaleString("en-GB") + " ft", true]]);
+    msg.className = "wmsg" + (err < 0 ? " warn" : "");
+    msg.textContent = err === 0 ? "Subscale matches the local QNH: the altimeter reads correctly." :
+      err < 0 ? `Pressure here is lower than the setting. You are ${-err} ft lower than the altimeter shows. High to low, look out below.` :
+      `Pressure here is higher than the setting. You are ${err} ft higher than the altimeter shows.`;
+  }
+  draw();
+};
+
+WIDGETS.cloudbase = root => {
+  const out = W.box(), msg = W.box("wmsg"), pic = W.box("wsvg");
+  const t = W.slider("Surface temperature", -5, 30, 1, 15, v => v + " °C", () => { if(d.get() > t.get()) d.set(t.get()); draw(); });
+  const d = W.slider("Dew point", -10, 30, 1, 9, v => v + " °C", () => { if(d.get() > t.get()) d.set(t.get()); draw(); });
+  const ctl = W.box("wgrid"); ctl.append(t.el, d.el);
+  root.append(ctl, pic, out, msg);
+  function draw(){
+    const spread = t.get() - d.get(), base = spread * 400, y = 180 - Math.min(base, 8000) / 8000 * 150;
+    pic.innerHTML = `<svg viewBox="0 0 320 200" role="img" aria-label="Estimated cumulus cloud base">
+      <rect class="fb" x="1" y="1" width="318" height="198" rx="6"/>
+      <rect class="f-ground" x="10" y="180" width="300" height="10"/>
+      ${[0,2000,4000,6000,8000].map(h => `<text class="tm" x="16" y="${184 - h/8000*150}">${h.toLocaleString("en-GB")}</text>`).join("")}
+      ${base > 0 ? `<g class="f-card"><ellipse cx="170" cy="${y-10}" rx="40" ry="16" class="f-card ln"/><ellipse cx="205" cy="${y-18}" rx="32" ry="20" class="f-card ln"/><ellipse cx="240" cy="${y-8}" rx="30" ry="14" class="f-card ln"/></g><line x1="130" y1="${y}" x2="275" y2="${y}" class="ln pa" style="stroke-width:2.5"/>` : `<rect x="70" y="150" width="240" height="30" class="f-tint"/><text class="tb" x="190" y="170" text-anchor="middle">FOG / CLOUD ON THE GROUND</text>`}
+    </svg>`;
+    out.innerHTML = W.outs([["Spread", spread + " °C"], ["Cloud base", base > 0 ? base.toLocaleString("en-GB") + " ft" : "Surface", true]]);
+    msg.textContent = `(temperature − dew point) × 400 = ${spread} × 400 = ${base.toLocaleString("en-GB")} ft above the surface. A small spread means high humidity, low cloud and a risk of fog and carburettor icing.`;
+  }
+  draw();
+};
+
+WIDGETS.metar = root => {
+  const SAMPLES = [
+    "METAR EGNT 171020Z 24012KT 9999 FEW030 SCT045 12/07 Q1009",
+    "METAR EGPH 171050Z 27018G30KT 240V310 9999 -SHRA BKN022 09/04 Q0998",
+    "METAR EGPD 170920Z VRB03KT 3000 BR OVC004 08/08 Q1011 TEMPO 1200 BR",
+    "METAR EGCC 171420Z 21008KT CAVOK 18/09 Q1016 NOSIG",
+    "METAR EGLL 170650Z 05004KT 0400 R27L/0600 FG VV001 06/06 Q1027"
+  ];
+  const WX = { MI:"shallow", BC:"patches of", PR:"partial", DR:"low drifting", BL:"blowing", SH:"showers of", TS:"thunderstorm with", FZ:"freezing",
+    DZ:"drizzle", RA:"rain", SN:"snow", SG:"snow grains", PL:"ice pellets", GR:"hail", GS:"small hail", UP:"unknown precipitation",
+    BR:"mist", FG:"fog", FU:"smoke", VA:"volcanic ash", DU:"dust", SA:"sand", HZ:"haze", PO:"dust whirls", SQ:"squalls", FC:"funnel cloud", SS:"sandstorm", DS:"duststorm" };
+  const AMT = { FEW:"Few (1–2 oktas)", SCT:"Scattered (3–4 oktas)", BKN:"Broken (5–7 oktas)", OVC:"Overcast (8 oktas)" };
+  const temp = s => (s[0] === "M" ? "−" + +s.slice(1) : +s) + " °C";
+  function decode(g, i){
+    let m;
+    if(g === "METAR") return "Report type: routine actual weather (METAR).";
+    if(g === "SPECI") return "Report type: special report, issued because conditions changed significantly.";
+    if(i <= 1 && /^[A-Z]{4}$/.test(g)) return `Aerodrome: ICAO location indicator ${g}.`;
+    if((m = g.match(/^(\d{2})(\d{2})(\d{2})Z$/))) return `Observed on day ${+m[1]} of the month at ${m[2]}:${m[3]} UTC.`;
+    if(g === "AUTO") return "Automatic observation, no human observer.";
+    if((m = g.match(/^(\d{3}|VRB)(\d{2,3})(?:G(\d{2,3}))?KT$/))) return (m[1] === "VRB" ? "Wind variable in direction" : `Wind from ${m[1]}° true`) + ` at ${+m[2]} kt` + (m[3] ? `, gusting ${+m[3]} kt` : "") + ".";
+    if((m = g.match(/^(\d{3})V(\d{3})$/))) return `Wind direction varying between ${m[1]}° and ${m[2]}° true.`;
+    if(g === "CAVOK") return "CAVOK: visibility 10 km or more, no cloud below 5,000 ft (or the highest MSA if higher), no CB or TCU, no significant weather.";
+    if(g === "9999") return "Visibility 10 km or more.";
+    if((m = g.match(/^(\d{4})$/))) return `Visibility ${(+m[1]).toLocaleString("en-GB")} m.` + (+m[1] < 1000 ? " Below 1,000 m: fog conditions." : "");
+    if((m = g.match(/^R(\d{2}[LCR]?)\/([PM])?(\d{4})[UDN]?$/))) return `Runway visual range on runway ${m[1]}: ${m[2] === "P" ? "more than " : m[2] === "M" ? "less than " : ""}${+m[3]} m.`;
+    if((m = g.match(/^(FEW|SCT|BKN|OVC)(\d{3})(CB|TCU)?$/))) return `${AMT[m[1]]} cloud, base ${(+m[2]*100).toLocaleString("en-GB")} ft above aerodrome level` + (m[3] === "CB" ? ", cumulonimbus." : m[3] === "TCU" ? ", towering cumulus." : ".");
+    if((m = g.match(/^VV(\d{3})$/))) return `Sky obscured; vertical visibility ${(+m[1]*100)} ft.`;
+    if(g === "NSC") return "No significant cloud.";
+    if(g === "NCD") return "No cloud detected (automatic station).";
+    if((m = g.match(/^(M?\d{2})\/(M?\d{2})$/))) return `Temperature ${temp(m[1])}, dew point ${temp(m[2])}.` + (m[1] === m[2] ? " Saturated: expect mist, fog or low cloud." : "");
+    if((m = g.match(/^Q(\d{4})$/))) return `QNH ${+m[1]} hPa.`;
+    if(g === "NOSIG") return "Trend: no significant change expected in the next 2 hours.";
+    if(g === "TEMPO") return "Trend: temporarily, the following conditions.";
+    if(g === "BECMG") return "Trend: becoming, a lasting change to the following.";
+    if((m = g.match(/^(\+|-|VC)?((?:MI|BC|PR|DR|BL|SH|TS|FZ)?)((?:DZ|RA|SN|SG|PL|GR|GS|UP|BR|FG|FU|VA|DU|SA|HZ|PO|SQ|FC|SS|DS)+)$/))){
+      const parts = [];
+      if(m[1] === "+") parts.push("heavy"); if(m[1] === "-") parts.push("light");
+      if(m[2]) parts.push(WX[m[2]]);
+      (m[3].match(/../g) || []).forEach(c => parts.push(WX[c]));
+      return "Weather: " + parts.join(" ") + (m[1] === "VC" ? " in the vicinity" : "") + ".";
+    }
+    return "Not decoded here. Check the group in the Met Office or CAA guidance.";
+  }
+  let text = SAMPLES[0], sel = -1, seen = new Set();
+  const pick = W.box("wseg");
+  SAMPLES.forEach((s, k) => { const b = document.createElement("button"); b.type = "button"; b.textContent = s.split(" ")[1]; if(k === 0) b.classList.add("on");
+    b.addEventListener("click", () => { pick.querySelectorAll("button").forEach(x => x.classList.toggle("on", x === b)); text = s; inp.value = s; sel = -1; seen = new Set(); draw(); }); pick.appendChild(b); });
+  const inp = document.createElement("input"); inp.className = "wtext"; inp.value = text; inp.setAttribute("aria-label", "METAR to decode");
+  inp.addEventListener("input", () => { text = inp.value.toUpperCase(); sel = -1; seen = new Set(); pick.querySelectorAll("button").forEach(x => x.classList.remove("on")); draw(); });
+  const groups = W.box("groups"), msg = W.box("say");
+  root.append(W.box("wmsg", "Pick a report, or paste one, then tap each group to decode it."), pick, inp, groups, msg);
+  function draw(){
+    const gs = text.trim().split(/\s+/).filter(Boolean);
+    groups.innerHTML = "";
+    gs.forEach((g, i) => { const b = document.createElement("button"); b.type = "button"; b.textContent = g;
+      if(i === sel) b.classList.add("on"); else if(seen.has(i)) b.classList.add("seen");
+      b.addEventListener("click", () => { sel = i; seen.add(i); draw(); }); groups.appendChild(b); });
+    msg.innerHTML = sel >= 0 && gs[sel] ? `<small>${W.esc(gs[sel])}</small>${W.esc(decode(gs[sel], sel))}` : `<small>Decoded</small>Tap a group above. ${seen.size} of ${gs.length} decoded.`;
+  }
+  draw();
+};
+
+// ---------- Navigation ----------
+WIDGETS.windtri = root => {
+  const pic = W.box("wsvg"), out = W.box(), msg = W.box("wmsg");
+  const tr = W.slider("Planned track", 0, 355, 5, 90, v => W.hdg(v) + "°", draw);
+  const tas = W.slider("True airspeed", 60, 140, 5, 100, v => v + " kt", draw);
+  const wd = W.slider("Wind from", 0, 350, 10, 30, v => W.hdg(v) + "°", draw);
+  const ws = W.slider("Wind speed", 0, 40, 1, 20, v => v + " kt", draw);
+  const ctl = W.box("wgrid"); ctl.append(tr.el, tas.el, wd.el, ws.el);
+  root.append(ctl, pic, out, msg);
+  function draw(){
+    const T = tr.get(), V = tas.get(), D = wd.get(), S = ws.get();
+    const wa = W.rad(D - T), xw = S * Math.sin(wa);
+    const drift = W.deg(Math.asin(Math.max(-1, Math.min(1, xw / V))));
+    const H = T + drift, gs = V * Math.cos(W.rad(drift)) - S * Math.cos(wa);
+    // vectors in screen coordinates (north up)
+    const vx = b => Math.sin(W.rad(b)), vy = b => -Math.cos(W.rad(b));
+    const pts = [[0,0], [V*vx(H), V*vy(H)], [V*vx(H) + S*vx(D+180), V*vy(H) + S*vy(D+180)]];
+    const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]);
+    const w = Math.max(...xs) - Math.min(...xs) || 1, h = Math.max(...ys) - Math.min(...ys) || 1;
+    const k = Math.min(260 / w, 170 / h, 1.6), ox = 170 - (Math.min(...xs) + w/2) * k, oy = 110 - (Math.min(...ys) + h/2) * k;
+    const P = p => [ox + p[0]*k, oy + p[1]*k];
+    const [a, b, c] = pts.map(P);
+    pic.innerHTML = `<svg viewBox="0 0 340 230" role="img" aria-label="Wind triangle for these values">
+      <rect class="fb" x="1" y="1" width="338" height="228" rx="6"/>
+      <line x1="320" y1="40" x2="320" y2="14" class="ln" marker-end="url(#arr)"/><text class="tb" x="320" y="52" text-anchor="middle">N</text>
+      ${W.arrow(a[0], a[1], b[0], b[1], "", 2.5)}
+      ${S ? W.arrow(b[0], b[1], c[0], c[1], "pb", 2.5) : ""}
+      ${W.arrow(a[0], a[1], c[0], c[1], "pa", 2.5)}
+      <circle cx="${a[0]}" cy="${a[1]}" r="4" class="f-ink"/>
+      <text class="t" x="${(a[0]+b[0])/2 + 6}" y="${(a[1]+b[1])/2 - 4}">heading ${W.hdg(H)}° / TAS</text>
+      <text class="t" x="${(a[0]+c[0])/2 + 6}" y="${(a[1]+c[1])/2 + 14}">track ${W.hdg(T)}° / GS</text>
+      ${S ? `<text class="t" x="${(b[0]+c[0])/2 + 6}" y="${(b[1]+c[1])/2}">wind</text>` : ""}
+    </svg>`;
+    out.innerHTML = W.outs([["Heading to fly", W.hdg(H) + "°", true], ["Drift", Math.abs(drift).toFixed(0) + "° " + (drift < -0.5 ? "right" : drift > 0.5 ? "left" : ""), false], ["Groundspeed", Math.round(gs) + " kt", true], ["Max drift (rule)", Math.round(S*60/V) + "°"]]);
+    msg.textContent = S === 0 ? "No wind: heading equals track and groundspeed equals TAS." :
+      `The wind is from the ${xw < 0 ? "left" : "right"} of track, so the aircraft drifts ${drift < 0 ? "right" : "left"} and you head ${Math.abs(drift).toFixed(0)}° into wind. ` +
+      (gs < V ? `A headwind component cuts your groundspeed by ${Math.round(V - gs)} kt.` : `A tailwind component adds ${Math.round(gs - V)} kt.`);
+  }
+  draw();
+};
+
+WIDGETS.crosswind = root => {
+  const pic = W.box("wsvg"), out = W.box(), msg = W.box("wmsg");
+  const rw = W.slider("Runway", 1, 36, 1, 27, v => String(v).padStart(2, "0"), draw);
+  const wd = W.slider("Wind from (magnetic)", 0, 350, 10, 300, v => W.hdg(v) + "°", draw);
+  const ws = W.slider("Wind speed", 0, 35, 1, 20, v => v + " kt", draw);
+  const ctl = W.box("wgrid"); ctl.append(rw.el, wd.el, ws.el);
+  root.append(ctl, pic, out, msg);
+  function draw(){
+    const R = rw.get() * 10, D = wd.get(), S = ws.get(), rel = ((D - R) % 360 + 540) % 360 - 180;
+    const head = S * Math.cos(W.rad(rel)), cross = S * Math.sin(W.rad(rel));
+    const cx = 170, cy = 115, r1 = 100, r2 = 34;
+    const sx = cx + Math.sin(W.rad(rel)) * r1, sy = cy - Math.cos(W.rad(rel)) * r1, ex = cx + Math.sin(W.rad(rel)) * r2, ey = cy - Math.cos(W.rad(rel)) * r2;
+    pic.innerHTML = `<svg viewBox="0 0 340 230" role="img" aria-label="Runway with the wind arrow">
+      <rect class="fb" x="1" y="1" width="338" height="228" rx="6"/>
+      <rect x="${cx-16}" y="20" width="32" height="190" rx="2" class="f-rw"/>
+      <line x1="${cx}" y1="50" x2="${cx}" y2="180" class="mkl" stroke-dasharray="10 9"/>
+      <text x="${cx}" y="200" text-anchor="middle" style="font:800 13px sans-serif;fill:var(--mk)">${String(rw.get()).padStart(2,"0")}</text>
+      <text class="tm" x="${cx}" y="16" text-anchor="middle">landing direction ↑</text>
+      ${S ? W.arrow(sx, sy, ex, ey, "pb", 3.5) : ""}
+    </svg>`;
+    out.innerHTML = W.outs([[head >= 0 ? "Headwind" : "Tailwind", Math.abs(head).toFixed(0) + " kt", head < 0], ["Crosswind", Math.abs(cross).toFixed(0) + " kt " + (Math.abs(cross) < 0.5 ? "" : cross > 0 ? "from right" : "from left"), true], ["Angle off runway", Math.abs(rel) + "°"]]);
+    msg.className = "wmsg" + (head < 0 ? " warn" : "");
+    msg.textContent = head < -0.5 ? "Tailwind: longer take-off and landing runs. Consider the other runway direction." :
+      `Rule of thumb: at ${Math.abs(rel)}° off, crosswind is about ${Math.abs(rel) >= 60 ? "all" : Math.abs(rel) >= 45 ? "0.7" : Math.abs(rel) >= 30 ? "half" : Math.abs(rel) >= 15 ? "a quarter" : "almost none"} of the wind. Compare with your aircraft's maximum demonstrated crosswind in the POH.`;
+  }
+  draw();
+};
+
+WIDGETS.onein60 = root => {
+  const out = W.box(), msg = W.box("wmsg");
+  const off = W.slider("Distance off track", 0.5, 10, 0.5, 4, v => v + " nm", draw);
+  const gone = W.slider("Distance gone", 10, 80, 5, 30, v => v + " nm", draw);
+  const togo = W.slider("Distance to go", 10, 80, 5, 40, v => v + " nm", draw);
+  const side = W.seg([["L", "Left of track"], ["R", "Right of track"]], "L", draw);
+  const ctl = W.box("wgrid"); ctl.append(off.el, gone.el, togo.el, side.el);
+  root.append(ctl, out, msg);
+  function draw(){
+    const te = off.get() * 60 / gone.get(), ca = off.get() * 60 / togo.get(), turn = side.get() === "L" ? "right" : "left";
+    out.innerHTML = W.outs([["Track error", te.toFixed(1) + "°"], ["Closing angle", ca.toFixed(1) + "°"], ["Alter heading", Math.round(te + ca) + "° " + turn, true]]);
+    msg.textContent = `TE = ${off.get()} × 60 ÷ ${gone.get()} = ${te.toFixed(1)}°. CA = ${off.get()} × 60 ÷ ${togo.get()} = ${ca.toFixed(1)}°. Turn ${turn} by ${Math.round(te + ca)}° to reach the destination, or ${Math.round(te)}° ${turn} to fly parallel to track.`;
+  }
+  draw();
+};
+
+WIDGETS.tvmdc = root => {
+  const out = W.box(), msg = W.box("wmsg");
+  const tru = W.slider("True track or heading", 0, 355, 5, 90, v => W.hdg(v) + "°", draw);
+  const vv = W.slider("Variation", 0, 15, 1, 3, v => v + "°", draw);
+  const vd = W.seg([["W", "West"], ["E", "East"]], "W", draw);
+  const dv = W.slider("Deviation", 0, 5, 1, 2, v => v + "°", draw);
+  const dd = W.seg([["W", "West"], ["E", "East"]], "E", draw);
+  const ctl = W.box("wgrid");
+  const g1 = W.box(), g2 = W.box(); g1.append(vv.el, vd.el); g2.append(dv.el, dd.el); g1.style.display = g2.style.display = "grid"; g1.style.gap = g2.style.gap = "6px";
+  ctl.append(tru.el, g1, g2);
+  root.append(ctl, out, msg);
+  function draw(){
+    const v = vv.get() * (vd.get() === "W" ? 1 : -1), d = dv.get() * (dd.get() === "W" ? 1 : -1);
+    const m = tru.get() + v, c = m + d;
+    out.innerHTML = W.outs([["True", W.hdg(tru.get()) + "°"], ["Magnetic", W.hdg(m) + "°", true], ["Compass", W.hdg(c) + "°", true]]);
+    msg.textContent = `${W.hdg(tru.get())}° ${v >= 0 ? "+" : "−"} ${Math.abs(v)}° (${vd.get() === "W" ? "west is best: add" : "east is least: subtract"}) = ${W.hdg(m)}° M. Then ${Math.abs(d)}° ${dd.get() === "W" ? "west: add" : "east: subtract"} = ${W.hdg(c)}° C.`;
+  }
+  draw();
+};
+
+WIDGETS.tsd = root => {
+  const out = W.box(), msg = W.box("wmsg");
+  const dist = W.slider("Leg distance", 5, 150, 1, 45, v => v + " nm", draw);
+  const gs = W.slider("Groundspeed", 50, 150, 1, 90, v => v + " kt", draw);
+  const ff = W.slider("Fuel flow", 15, 40, 1, 24, v => v + " L/h", draw);
+  const ctl = W.box("wgrid"); ctl.append(dist.el, gs.el, ff.el);
+  root.append(ctl, out, msg);
+  function draw(){
+    const mins = dist.get() * 60 / gs.get(), fuel = ff.get() * mins / 60;
+    out.innerHTML = W.outs([["nm per minute", (gs.get()/60).toFixed(2)], ["Leg time", Math.floor(mins/60) ? `${Math.floor(mins/60)} h ${Math.round(mins%60)} min` : Math.round(mins) + " min", true], ["Fuel used", fuel.toFixed(1) + " L", true]]);
+    msg.textContent = `Time = ${dist.get()} × 60 ÷ ${gs.get()} = ${mins.toFixed(1)} min. Fuel = ${ff.get()} L/h × ${(mins/60).toFixed(2)} h = ${fuel.toFixed(1)} L.`;
+  }
+  draw();
+};
+
+// ---------- Communications ----------
+const PHON = { A:"Alfa",B:"Bravo",C:"Charlie",D:"Delta",E:"Echo",F:"Foxtrot",G:"Golf",H:"Hotel",I:"India",J:"Juliett",K:"Kilo",L:"Lima",M:"Mike",N:"November",O:"Oscar",P:"Papa",Q:"Quebec",R:"Romeo",S:"Sierra",T:"Tango",U:"Uniform",V:"Victor",W:"Whiskey",X:"X-ray",Y:"Yankee",Z:"Zulu" };
+const DIG = ["zero","one","two","tree","four","fife","six","seven","eight","niner"];
+const sayDigits = s => String(s).split("").filter(c => /\d/.test(c)).map(c => DIG[+c]).join(" ");
+WIDGETS.phonetic = root => {
+  const inp = document.createElement("input"); inp.className = "wtext"; inp.value = "G-ABCD"; inp.setAttribute("aria-label", "Registration");
+  const full = W.box("say"), abbr = W.box("say");
+  root.append(W.box("wmsg", "Type a registration."), inp, full, abbr);
+  function draw(){
+    const r = inp.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
+    const word = c => PHON[c] || (/\d/.test(c) ? DIG[+c] : c);
+    full.innerHTML = `<small>In full (first call)</small>${W.esc(r.split("").map(word).join(" ") || "—")}`;
+    abbr.innerHTML = `<small>Abbreviated (only after ATC abbreviates first)</small>${W.esc(r.length >= 3 ? [r[0], r.slice(-2)[0], r.slice(-1)].map(word).join(" ") : "—")}`;
+  }
+  inp.addEventListener("input", draw); draw();
+};
+WIDGETS.numbers = root => {
+  const kinds = [["alt","Altitude"],["fl","Flight level"],["hdg","Heading"],["freq","Frequency"],["qnh","QNH"],["sq","Squawk"],["wind","Wind"]];
+  const defaults = { alt:"2500", fl:"55", hdg:"080", freq:"126.700", qnh:"998", sq:"4521", wind:"240/12" };
+  let kind = "alt";
+  const pick = W.seg(kinds, kind, v => { kind = v; inp.value = defaults[v]; draw(); });
+  const inp = document.createElement("input"); inp.className = "wtext"; inp.value = defaults[kind]; inp.setAttribute("aria-label", "Value");
+  const say = W.box("say");
+  root.append(pick.el, inp, say);
+  function altitude(n){
+    const th = Math.floor(n / 1000), hu = Math.floor((n % 1000) / 100), rest = n % 100;
+    if(rest) return sayDigits(String(n)) + " feet";
+    return [th ? sayDigits(String(th)) + " thousand" : "", hu ? DIG[hu] + " hundred" : ""].filter(Boolean).join(" ") + " feet";
+  }
+  function speak(){
+    const v = inp.value.trim();
+    if(kind === "alt"){ const n = parseInt(v.replace(/\D/g, ""), 10); return isNaN(n) ? "" : altitude(n); }
+    if(kind === "fl") return "flight level " + sayDigits(v);
+    if(kind === "hdg"){ const n = parseInt(v, 10); return isNaN(n) ? "" : "heading " + sayDigits(String(n % 360 || 360).padStart(3, "0")); }
+    if(kind === "freq"){
+      const f = parseFloat(v); if(isNaN(f)) return "";
+      let s = f.toFixed(3); if(s.endsWith("00")) s = s.slice(0, -2);
+      const [a, b] = s.split("."); return sayDigits(a) + " decimal " + sayDigits(b);
+    }
+    if(kind === "qnh"){ const n = parseInt(v, 10); return isNaN(n) ? "" : "QNH " + sayDigits(String(n)) + (n < 1000 ? " hectopascals" : ""); }
+    if(kind === "sq") return "squawk " + sayDigits(v);
+    if(kind === "wind"){ const m = v.match(/^(\d{1,3})\D+(\d{1,3})/); return m ? sayDigits(m[1].padStart(3, "0")) + " degrees, " + sayDigits(m[2]) + " knots" : ""; }
+    return "";
+  }
+  function draw(){ const s = speak(); say.innerHTML = `<small>Say</small>${W.esc(s ? "“" + s + "”" : "Type a value")}`; }
+  inp.addEventListener("input", draw); draw();
+};
+
+// ---------- Air Law ----------
+WIDGETS.semicircular = root => {
+  const pic = W.box("wsvg"), out = W.box(), msg = W.box("wmsg");
+  const tr = W.slider("Magnetic track", 0, 355, 5, 270, v => W.hdg(v) + "°", draw);
+  root.append(tr.el, pic, out, msg);
+  function draw(){
+    const t = tr.get(), east = t < 180, cx = 150, cy = 105, r = 80;
+    const nx = cx + Math.sin(W.rad(t)) * r, ny = cy - Math.cos(W.rad(t)) * r;
+    pic.innerHTML = `<svg viewBox="0 0 300 210" role="img" aria-label="Compass rose with this track">
+      <rect class="fb" x="1" y="1" width="298" height="208" rx="6"/>
+      <path d="M${cx},${cy-r} A${r},${r} 0 0 1 ${cx},${cy+r} Z" class="${east ? "f-tint" : "f-card"}" style="stroke:var(--edge)"/>
+      <path d="M${cx},${cy-r} A${r},${r} 0 0 0 ${cx},${cy+r} Z" class="${east ? "f-card" : "f-mag"}" style="stroke:var(--edge)"/>
+      <text class="tb" x="${cx}" y="${cy-r-6}" text-anchor="middle">000</text><text class="tb" x="${cx}" y="${cy+r+16}" text-anchor="middle">180</text>
+      <text class="tm" x="${cx+44}" y="${cy+4}" text-anchor="middle">odd</text><text class="tm" x="${cx-44}" y="${cy+4}" text-anchor="middle">even</text>
+      ${W.arrow(cx, cy, nx, ny, "pa", 3.5)}
+    </svg>`;
+    const base = east ? [50, 70, 90, 110] : [40, 60, 80, 100];
+    out.innerHTML = W.outs([["IFR levels", base.map(x => "FL" + x).join(" · "), true], ["VFR levels", base.map(x => "FL" + (x + 5)).join(" · "), true]]);
+    msg.textContent = `Track ${W.hdg(t)}° is in the ${east ? "000–179° half: odd thousands" : "180–359° half: even thousands"}. VFR adds 500 ft.`;
+  }
+  draw();
+};
+
+// ---------- Human Performance ----------
+WIDGETS.imsafe = root => {
+  const items = [["I","Illness","Am I free of any illness or symptoms, even a cold?"],["M","Medication","Am I free of any medication that could affect me, prescribed or over the counter?"],
+    ["S","Stress","Am I free of stress from work, money or home that will distract me?"],["A","Alcohol","Am I well clear of alcohol, legally and practically?"],
+    ["F","Fatigue","Have I slept enough, and am I flying at a time I'm normally alert?"],["E","Eating","Have I eaten and drunk enough water to stay sharp for the whole flight?"]];
+  const state = {};
+  const list = W.box("", ""), msg = W.box("wmsg");
+  list.style.display = "grid"; list.style.gap = "8px";
+  root.append(W.box("wmsg", "Answer honestly for today. Tap to mark each one OK."), list, msg);
+  function draw(){
+    list.innerHTML = "";
+    items.forEach(([k, name, q]) => {
+      const b = document.createElement("button"); b.type = "button";
+      b.className = "chip" + (state[k] ? " ok" : "");
+      b.innerHTML = `<span class="cn">${k}</span><span><b>${name}</b> · ${W.esc(q)}</span>`;
+      b.addEventListener("click", () => { state[k] = !state[k]; draw(); });
+      list.appendChild(b);
+    });
+    const missing = items.filter(([k]) => !state[k]).map(i => i[1]);
+    msg.className = "wmsg" + (missing.length ? " warn" : "");
+    msg.textContent = missing.length ? `Not yet OK: ${missing.join(", ")}. If any one of these is doubtful, the safe decision is not to fly, or to fly a simpler flight with an instructor.` : "All six OK. Fit to fly, as far as you can judge.";
+  }
+  draw();
+};
+
+
+// =====================================================================
 // Training and Exams sections
 // Two tabs over the same SUBJECTS data. Training is the notes; Exams is
 // practice by topic, a mock paper per subject and review of misses.
@@ -3012,7 +3875,9 @@ const Study = (() => {
     const st = stats(qsOfTopic(s,t));
     const w = el("div", "topic");
     w.appendChild(el("p", "lede", esc(t.blurb)));
-    w.appendChild(el("div", "card", `<div class="learn">${t.learn()}</div>`));
+    const notes = el("div", "card", `<div class="learn">${t.learn()}</div>`);
+    w.appendChild(notes);
+    mountWidgets(notes);
     w.appendChild(btn("bigbtn", `Practise this topic · ${st.n} questions${st.a ? " (" + st.ok + " right so far)" : ""}`,
       () => start("topic", shuffle(qsOfTopic(s,t).map(x => x.id)), { s:s.id, t:t.id, from:"tr" }, false)));
     const i = s.topics.indexOf(t), nt = s.topics[i+1];
@@ -3058,9 +3923,9 @@ const Study = (() => {
       ? `<b>${st.a}</b> of ${st.n} tried · <b>${Math.round(100*st.ok/st.a)}%</b> right on last attempt · pass mark ${PASS}%`
       : `${st.n} questions · pass mark ${PASS}%`));
     const row = el("div", "row2");
-    const n = Math.min(MOCK_N, qs.length);
-    row.appendChild(btn("cont", `<span class="ct"><span class="k">Mock paper</span><div class="n">${n} random ${esc(s.name)} questions</div><div class="x">Marked at the end against ${PASS}%</div></span><span class="arrow">›</span>`,
-      () => start("mock", shuffle(qs.map(x => x.id)).slice(0, n), { s:s.id, from:"ex" }, false)));
+    const n = Math.min(MOCK_N, qs.filter(x => typeOf(x.q) === "mc").length);
+    row.appendChild(btn("cont", `<span class="ct"><span class="k">Mock paper</span><div class="n">${n} random ${esc(s.name)} questions</div><div class="x">Multiple choice, like the real paper · marked at the end against ${PASS}%</div></span><span class="arrow">›</span>`,
+      () => start("mock", shuffle(qs.filter(x => typeOf(x.q) === "mc").map(x => x.id)).slice(0, n), { s:s.id, from:"ex" }, false)));
     const m = missedIn(qs).length;
     row.appendChild(btn("bigbtn ghost", `Review misses · ${m}`, () => start("review", shuffle(missedIn(qs)), { s:s.id, from:"ex" }, false), m ? null : { disabled:"" }));
     w.appendChild(row);
@@ -3078,17 +3943,26 @@ const Study = (() => {
   }
 
   // ---------- questions ----------
+  // Question types: multiple choice (default, o: answers with the correct one first),
+  // "calc" (typed number; fixed a/tol/unit/steps or gen() returning fresh numbers each time),
+  // "order" (items listed in the correct order) and "match" (pairs [left, right]).
+  const typeOf = q => q.type || "mc";
   function start(kind, ids, ctx, replaceEntry){
+    if(kind === "mock") ids = ids.filter(id => typeOf(byQ[id].q) === "mc");   // mocks mirror the real multiple-choice paper
     if(!ids.length) return;
-    sess = { kind, ids, i:0, log:[], cur:null, picked:null, ctx };
+    sess = { kind, ids, i:0, log:[], cur:null, ctx };
     nextQ();
     (replaceEntry ? replace : push)({ st:"q" });
     renderQ();
   }
   function nextQ(){
-    const id = sess.ids[sess.i], x = byQ[id];
-    sess.cur = { id, opts:shuffle(x.q.o.map((t,i) => ({ t, ok:i === 0 }))) };
-    sess.picked = null;
+    const id = sess.ids[sess.i], q = byQ[id].q, type = typeOf(q);
+    const cur = { id, type, done:false, ok:false };
+    if(type === "mc"){ cur.text = q.q; cur.opts = shuffle(q.o.map((t,i) => ({ t, ok:i === 0 }))); cur.picked = null; cur.e = q.e; }
+    if(type === "calc"){ const g = q.gen ? q.gen() : q; Object.assign(cur, { text:g.q, a:g.a, tol:g.tol || 0, unit:g.unit || "", steps:g.steps || [], e:g.e || q.e || "", neg:!!(g.neg || q.neg), val:"" }); }
+    if(type === "order"){ cur.text = q.q; cur.items = q.items; cur.pool = shuffle(q.items.map((t,i) => i)); while(cur.pool.length > 1 && cur.pool.every((v,i) => v === i)) cur.pool = shuffle(cur.pool); cur.seq = []; cur.e = q.e; }
+    if(type === "match"){ cur.text = q.q; cur.pairs = q.pairs; cur.right = shuffle(q.pairs.map((p,i) => i)); cur.sel = null; cur.map = {}; cur.e = q.e; }
+    sess.cur = cur;
   }
   function sessLabel(){
     const s = sess.ctx.s && subjectById(sess.ctx.s);
@@ -3096,25 +3970,25 @@ const Study = (() => {
     if(sess.kind === "review") return s ? `${s.name} misses` : "All misses";
     return topicOf(s, sess.ctx.t).title;
   }
+  const fmt = n => (Math.round(n * 100) / 100).toLocaleString("en-GB");
   function renderQ(){
     enter(sess.ctx.from, "quiz");
-    const x = byQ[sess.cur.id], mock = sess.kind === "mock", picked = sess.picked;
+    const cur = sess.cur, x = byQ[cur.id];
+    const tag = { mc:"", calc:"Work it out", order:"Put in order", match:"Match the pairs" }[cur.type];
     title(sessLabel(), `Question ${sess.i+1} of ${sess.ids.length}` + (sess.ctx.s ? "" : ` · ${x.s.name}`));
     hprogBar.style.width = (sess.i / sess.ids.length * 100) + "%";
     view.innerHTML = "";
     const w = el("div", "quiz");
-    const q = el("p", "qtext"); q.textContent = x.q.q; w.appendChild(q);
-    const opts = el("div", "opts");
-    const answered = !mock && picked !== null;
-    sess.cur.opts.forEach((o,k) => {
-      let cls = "opt";
-      if(answered){ if(o.ok) cls += " ok"; else if(k === picked) cls += " no"; }
-      opts.appendChild(btn(cls, `<span class="l">${"ABCD"[k]}</span><span class="ot">${esc(o.t)}</span>`, () => pick(k), answered ? { disabled:"" } : null));
-    });
-    w.appendChild(opts);
-    if(answered){
-      const ok = sess.cur.opts[picked].ok;
-      const e = el("div", "expl " + (ok ? "good" : "bad"), `<span class="v">${ok ? "Correct" : "Not quite"}</span>${esc(x.q.e)}`);
+    if(tag) w.appendChild(el("div", "qtag", tag));
+    const q = el("p", "qtext"); q.textContent = cur.text; w.appendChild(q);
+    ({ mc:drawMC, calc:drawCalc, order:drawOrder, match:drawMatch })[cur.type](w, cur);
+    if(cur.done && sess.kind !== "mock"){
+      const e = el("div", "expl " + (cur.ok ? "good" : "bad"), `<span class="v">${cur.ok ? "Correct" : "Not quite"}</span>`);
+      if(cur.type === "calc"){
+        e.innerHTML += `<div class="ans">Answer: <b>${fmt(cur.a)}${esc(cur.unit)}</b>${cur.tol ? ` <span class="tolnote">(within ${fmt(cur.tol)}${esc(cur.unit)} accepted)</span>` : ""}</div>`;
+        if(cur.steps.length) e.innerHTML += `<ol class="steps">${cur.steps.map(st => `<li>${esc(st)}</li>`).join("")}</ol>`;
+      }
+      if(cur.e) e.appendChild(el("div", "", esc(cur.e)));
       e.setAttribute("role", "status");
       w.appendChild(e);
       w.appendChild(btn("bigbtn", sess.i >= sess.ids.length - 1 ? "See results ›" : "Next question ›", advance));
@@ -3122,15 +3996,122 @@ const Study = (() => {
     }
     view.appendChild(w);
   }
-  function pick(k){
-    if(sess.picked !== null && sess.kind !== "mock") return;
-    const o = sess.cur.opts[k];
-    sess.picked = k;
-    sess.log.push({ id:sess.cur.id, k, ok:o.ok, opts:sess.cur.opts });
-    rec(sess.cur.id, o.ok);
+  function finish(ok, yours, correct){
+    const cur = sess.cur;
+    cur.done = true; cur.ok = ok;
+    sess.log.push({ id:cur.id, ok, text:cur.text, yours, correct, why:[cur.type === "calc" && cur.steps.length ? cur.steps.join(" ") : "", cur.e].filter(Boolean).join(" ") });
+    rec(cur.id, ok);
     buzz();
     if(sess.kind === "mock") advance(); else renderQ();
   }
+
+  // multiple choice
+  function drawMC(w, cur){
+    const opts = el("div", "opts");
+    const shown = cur.done && sess.kind !== "mock";
+    cur.opts.forEach((o,k) => {
+      let cls = "opt";
+      if(shown){ if(o.ok) cls += " ok"; else if(k === cur.picked) cls += " no"; }
+      opts.appendChild(btn(cls, `<span class="l">${"ABCD"[k]}</span><span class="ot">${esc(o.t)}</span>`, () => {
+        if(cur.done) return;
+        cur.picked = k;
+        finish(o.ok, o.t, cur.opts.find(z => z.ok).t);
+      }, shown ? { disabled:"" } : null));
+    });
+    w.appendChild(opts);
+  }
+
+  // typed calculation
+  function drawCalc(w, cur){
+    const row = el("div", "calcrow");
+    const inp = document.createElement("input");
+    inp.type = "text"; inp.inputMode = cur.neg ? "text" : "decimal"; inp.id = "calcIn"; inp.className = "calcin";
+    inp.setAttribute("aria-label", "Your answer"); inp.autocomplete = "off"; inp.value = cur.val;
+    if(cur.done){ inp.disabled = true; row.classList.add(cur.ok ? "ok" : "no"); }
+    row.appendChild(inp);
+    if(cur.unit) row.appendChild(el("span", "unit", esc(cur.unit.trim())));
+    w.appendChild(row);
+    if(cur.done) return;
+    const msg = el("div", "calcmsg");
+    const go = () => {
+      const v = parseFloat(String(inp.value).replace(/[\u2212\u2013]/g, "-").replace(/,/g, "").replace(/[^0-9.\-]/g, ""));
+      if(isNaN(v)){ msg.textContent = "Type a number first."; return; }
+      cur.val = inp.value;
+      finish(Math.abs(v - cur.a) <= cur.tol + 1e-9, fmt(v) + cur.unit, fmt(cur.a) + cur.unit);
+    };
+    inp.addEventListener("keydown", e => { if(e.key === "Enter") go(); });
+    w.appendChild(msg);
+    w.appendChild(btn("bigbtn", "Check answer", go));
+    setTimeout(() => { try{ inp.focus({ preventScroll:true }); }catch(e){} }, 50);
+  }
+
+  // put in order: tap items from the pool to build the sequence
+  function drawOrder(w, cur){
+    const ans = el("ol", "seq");
+    const shown = cur.done && sess.kind !== "mock";
+    cur.seq.forEach((idx, pos) => {
+      const li = el("li");
+      const b = btn("chip placed" + (shown ? (idx === pos ? " ok" : " no") : ""), `<span class="cn">${pos+1}</span><span>${esc(cur.items[idx])}</span>`,
+        () => { if(cur.done) return; cur.seq.splice(pos, 1); cur.pool.push(idx); renderQ(); }, shown ? { disabled:"" } : null);
+      li.appendChild(b); ans.appendChild(li);
+    });
+    for(let k = cur.seq.length; k < cur.items.length; k++) ans.appendChild(el("li", "slot", `<span class="cn">${k+1}</span>`));
+    w.appendChild(el("div", "zlabel", cur.done ? "Your order" : "Your order · tap an item to send it back"));
+    w.appendChild(ans);
+    if(shown && !cur.ok){
+      w.appendChild(el("div", "zlabel", "Correct order"));
+      w.appendChild(el("ol", "seq right", cur.items.map((t,i) => `<li><span class="chip ok"><span class="cn">${i+1}</span><span>${esc(t)}</span></span></li>`).join("")));
+    }
+    if(cur.done) return;
+    w.appendChild(el("div", "zlabel", "Tap in order"));
+    const pool = el("div", "pool");
+    cur.pool.forEach((idx, k) => pool.appendChild(btn("chip", esc(cur.items[idx]), () => { cur.pool.splice(k, 1); cur.seq.push(idx); renderQ(); })));
+    w.appendChild(pool);
+    const full = cur.seq.length === cur.items.length;
+    w.appendChild(btn("bigbtn", full ? "Check order" : `Place all ${cur.items.length} items`, () => {
+      const ok = cur.seq.every((v,i) => v === i);
+      finish(ok, cur.seq.map(i => cur.items[i]).join(" → "), cur.items.join(" → "));
+    }, full ? null : { disabled:"" }));
+  }
+
+  // match: tap a numbered item, then the answer that goes with it
+  function drawMatch(w, cur){
+    const shown = cur.done && sess.kind !== "mock";
+    if(!cur.done && cur.sel == null && Object.keys(cur.map).length < cur.pairs.length) cur.sel = cur.pairs.findIndex((p,i) => cur.map[i] == null);
+    const used = {}; Object.entries(cur.map).forEach(([l, r]) => used[r] = +l);
+    w.appendChild(el("div", "zlabel", cur.done ? "Your pairs" : "Tap a numbered item, then its match"));
+    const L = el("div", "mcol");
+    cur.pairs.forEach((p, i) => {
+      const paired = cur.map[i] != null;
+      let cls = "chip left" + (cur.sel === i ? " sel" : "") + (paired ? " paired" : "");
+      if(shown) cls += cur.map[i] === i ? " ok" : " no";
+      L.appendChild(btn(cls, `<span class="cn">${i+1}</span><span>${esc(p[0])}</span>` + (shown && cur.map[i] !== i ? `<span class="fix">→ ${esc(p[1])}</span>` : ""),
+        () => { if(cur.done) return; if(paired){ delete cur.map[i]; cur.sel = i; } else cur.sel = cur.sel === i ? null : i; renderQ(); }, shown ? { disabled:"" } : null));
+    });
+    w.appendChild(L);
+    const R = el("div", "mcol right");
+    cur.right.forEach(ri => {
+      const owner = used[ri];
+      let cls = "chip" + (owner != null ? " paired" : "");
+      R.appendChild(btn(cls, (owner != null ? `<span class="cn">${owner+1}</span>` : `<span class="cn empty"></span>`) + `<span>${esc(cur.pairs[ri][1])}</span>`, () => {
+        if(cur.done) return;
+        if(owner != null){ delete cur.map[owner]; renderQ(); return; }
+        if(cur.sel == null){ return; }
+        cur.map[cur.sel] = ri;
+        const next = cur.pairs.findIndex((p,i) => cur.map[i] == null);
+        cur.sel = next >= 0 ? next : null;
+        renderQ();
+      }, shown ? { disabled:"" } : null));
+    });
+    w.appendChild(R);
+    if(cur.done) return;
+    const full = Object.keys(cur.map).length === cur.pairs.length;
+    w.appendChild(btn("bigbtn", full ? "Check pairs" : `Pair all ${cur.pairs.length} items`, () => {
+      const ok = cur.pairs.every((p,i) => cur.map[i] === i);
+      finish(ok, cur.pairs.map((p,i) => `${p[0]} → ${cur.pairs[cur.map[i]][1]}`).join("; "), cur.pairs.map(p => `${p[0]} → ${p[1]}`).join("; "));
+    }, full ? null : { disabled:"" }));
+  }
+
   function advance(){
     sess.i++;
     if(sess.i >= sess.ids.length){ replace({ st:"res" }); renderResult(); }
@@ -3150,17 +4131,16 @@ const Study = (() => {
     const wrong = sess.log.filter(l => !l.ok);
     w.appendChild(label(wrong.length ? "Missed, with the reasoning" : "Every question right", !!wrong.length));
     wrong.forEach(l => {
-      const x = byQ[l.id];
       w.appendChild(el("div", "miss",
-        `<div class="mq">${esc(x.q.q)}</div>`+
-        `<div class="ma y"><b>You said</b>${esc(l.opts[l.k].t)}</div>`+
-        `<div class="ma c"><b>Correct</b>${esc(l.opts.find(o => o.ok).t)}</div>`+
-        `<div class="why">${esc(x.q.e)}</div>`));
+        `<div class="mq">${esc(l.text)}</div>`+
+        `<div class="ma y"><b>You said</b>${esc(l.yours)}</div>`+
+        `<div class="ma c"><b>Correct</b>${esc(l.correct)}</div>`+
+        (l.why ? `<div class="why">${esc(l.why)}</div>` : "")));
     });
     const ctx = sess.ctx;
     if(wrong.length) w.appendChild(btn("bigbtn", `Retry the ${wrong.length} missed`, () => start("review", shuffle(wrong.map(l => l.id)), { s:ctx.s, from:ctx.from }, true)));
     if(sess.kind === "mock"){
-      const s = subjectById(ctx.s), qs = qsOf(s);
+      const s = subjectById(ctx.s), qs = qsOf(s).filter(x => typeOf(x.q) === "mc");
       w.appendChild(btn("bigbtn" + (wrong.length ? " ghost" : ""), "Another mock paper",
         () => start("mock", shuffle(qs.map(x => x.id)).slice(0, Math.min(MOCK_N, qs.length)), ctx, true)));
     }
