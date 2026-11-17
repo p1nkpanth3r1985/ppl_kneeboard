@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="en" data-size="m">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#0e3a5c">
+<title>C150/152 Checklist</title>
+<style>
+  /* ===== Text size ===== */
+  html{font-size:16px;}
+  html[data-size="s"]{font-size:14px;}
+  html[data-size="l"]{font-size:18px;}
+  html[data-size="xl"]{font-size:20px;}
+
+  /* ===== Day (default) ===== */
+  body{
+    --ink:#12263a; --muted:#4a5d70; --faint:#9cc0da;
+    --paper:#d6e9f5; --card:#ffffff; --edge:#a8c8de; --track:#dcebf6;
+    --accent:#1670b8; --accent-dark:#0e5187; --accent-tint:#e3f0fa; --on-accent:#ffffff;
+    --tick:#1c8c3a; --tick-tint:#e6f6ea;
+    --emerg:#d21131; --emerg-dark:#a30c24; --emerg-tint:#fdeef0;
+    --bar:#0e3a5c; --bw:1px;
+    background:linear-gradient(180deg,#c3e0f2 0%,var(--paper) 240px) fixed;
+  }
+  /* ===== Sunlight (high contrast) ===== */
+  body[data-mode="sun"]{
+    --ink:#000; --muted:#000; --faint:#000;
+    --paper:#fff; --card:#fff; --edge:#000; --track:#fff;
+    --accent:#000; --accent-dark:#000; --accent-tint:#fff; --on-accent:#fff;
+    --tick:#006622; --tick-tint:#fff;
+    --emerg:#b00020; --emerg-dark:#7a0016; --emerg-tint:#fff;
+    --bar:#000; --bw:2px;
+    background:#fff;
+  }
+  /* ===== Night (dim) ===== */
+  body[data-mode="night"]{
+    --ink:#d4dde6; --muted:#97a6b4; --faint:#3c4f62;
+    --paper:#0b1118; --card:#151e28; --edge:#2a3a4b; --track:#223140;
+    --accent:#5aa7e6; --accent-dark:#7fb8e8; --accent-tint:#13202c; --on-accent:#06121d;
+    --tick:#3fb565; --tick-tint:#11261a;
+    --emerg:#e0413f; --emerg-dark:#8f1d1c; --emerg-tint:#2a1214;
+    --bar:#05090d; --bw:1px;
+    background:var(--paper);
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  body{
+    font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink);font-size:1rem;line-height:1.35;
+    padding-bottom:calc(100px + env(safe-area-inset-bottom));
+    min-height:100vh;
+  }
+  button{font-family:inherit;color:inherit;cursor:pointer;}
+  [hidden]{display:none !important;}
+
+  /* ===== Header ===== */
+  header{
+    position:sticky;top:0;z-index:20;
+    background:var(--bar);color:#fff;
+    padding:calc(10px + env(safe-area-inset-top)) 12px 10px;
+  }
+  .hrow{display:flex;align-items:center;gap:8px;min-height:44px;}
+  .hbtn{
+    background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3);color:#fff;
+    font-size:1.15rem;font-weight:800;border-radius:10px;
+    width:46px;height:46px;flex:0 0 46px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .hbtn:active{background:rgba(255,255,255,.3);}
+  #backBtn{display:none;}
+  header.inphase #backBtn{display:flex;}
+  .title{flex:1;min-width:0;font-weight:800;letter-spacing:.04em;font-size:.95rem;text-transform:uppercase;line-height:1.2;}
+  .title small{display:block;font-weight:500;letter-spacing:.1em;font-size:.68rem;opacity:.7;margin-top:2px;}
+  .hprog{height:5px;border-radius:3px;background:rgba(255,255,255,.18);margin-top:9px;overflow:hidden;display:none;}
+  header.inphase .hprog{display:block;}
+  .hprog i{display:block;height:100%;width:0;background:#6fd08c;border-radius:3px;transition:width .2s;}
+  body[data-mode="sun"] .hprog i{background:#fff;}
+
+  /* ===== Home ===== */
+  #home{padding:14px;}
+  .caveat{
+    margin:0 0 14px;padding:10px 14px;
+    background:var(--accent-tint);border:var(--bw) solid var(--edge);border-radius:12px;
+    font-size:.68rem;color:var(--accent-dark);letter-spacing:.03em;font-weight:700;
+    text-transform:uppercase;text-align:center;
+  }
+  .stale{
+    margin:0 0 14px;padding:12px 14px;border-radius:12px;
+    background:var(--card);border:var(--bw) solid var(--edge);
+    font-size:.85rem;color:var(--muted);
+  }
+  .cont{
+    width:100%;display:flex;align-items:center;gap:14px;text-align:left;
+    background:var(--accent);color:var(--on-accent);border:none;border-radius:16px;
+    box-shadow:0 3px 0 var(--accent-dark);padding:16px;margin-bottom:20px;
+  }
+  .cont:active{transform:translateY(3px);box-shadow:none;}
+  .cont .ct{flex:1;min-width:0;}
+  .cont .k{font-size:.7rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;opacity:.8;}
+  .cont .n{font-size:1.05rem;font-weight:800;margin-top:2px;}
+  .cont .x{font-size:.85rem;margin-top:3px;opacity:.9;}
+  .cont .arrow{font-size:1.6rem;font-weight:800;}
+
+  .grid-label{
+    font-size:.7rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--accent-dark);margin:4px 2px 10px;
+  }
+  .grid-label.red{color:var(--emerg);}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:22px;}
+  @media (max-width:340px){.grid{grid-template-columns:1fr;}}
+  .pbtn{
+    position:relative;
+    background:var(--card);border:var(--bw) solid var(--edge);border-radius:16px;
+    box-shadow:0 2px 0 var(--edge);
+    padding:15px 13px 13px;min-height:7rem;text-align:left;
+    display:flex;flex-direction:column;justify-content:space-between;gap:10px;
+  }
+  .pbtn:active{transform:translateY(2px);box-shadow:none;}
+  .pbtn .pnum{position:absolute;top:11px;right:12px;font-size:.7rem;font-weight:800;color:var(--faint);}
+  .pbtn .pname{font-weight:800;font-size:.95rem;line-height:1.25;padding-right:24px;}
+  .pbtn .pbar{height:8px;border-radius:4px;background:var(--track);overflow:hidden;}
+  body[data-mode="sun"] .pbtn .pbar{border:1px solid #000;}
+  .pbtn .pbar i{display:block;height:100%;width:0;background:var(--accent);border-radius:4px;}
+  .pbtn .pcount{font-size:.75rem;font-weight:700;color:var(--accent);}
+  .pbtn.done{border-color:var(--tick);background:var(--tick-tint);box-shadow:0 2px 0 var(--tick);}
+  .pbtn.done .pcount{color:var(--tick);}
+  .pbtn.done .pbar i{background:var(--tick);}
+  .pbtn.red{background:var(--emerg);border-color:var(--emerg-dark);color:#fff;box-shadow:0 2px 0 var(--emerg-dark);min-height:5.5rem;}
+  .pbtn.red .pnum{color:rgba(255,255,255,.55);}
+
+  /* ===== Phase view ===== */
+  #phaseView{padding:14px;}
+  .sub{
+    font-size:.7rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--accent-dark);margin:18px 4px 10px;
+  }
+  .sub:first-child{margin-top:2px;}
+  .sub.red{color:var(--emerg);}
+  .ibtn{
+    width:100%;display:flex;align-items:flex-start;gap:12px;text-align:left;
+    background:var(--card);border:var(--bw) solid var(--edge);border-radius:14px;
+    box-shadow:0 2px 0 var(--edge);
+    padding:14px;min-height:60px;margin-bottom:10px;
+  }
+  .ibtn:active{transform:translateY(2px);box-shadow:none;}
+  .ibtn.next{outline:3px solid var(--accent);outline-offset:2px;}
+  .ibtn.red.next{outline-color:var(--emerg);}
+  .ibtn .box{
+    flex:0 0 28px;height:28px;margin-top:1px;
+    border:2px solid var(--accent);border-radius:8px;background:var(--card);
+    display:flex;align-items:center;justify-content:center;
+    font-size:17px;color:#fff;
+  }
+  .ibtn.red .box{border-color:var(--emerg);}
+  .ibtn.checked{background:var(--tick-tint);border-color:var(--tick);box-shadow:0 2px 0 var(--tick);}
+  .ibtn.checked .box{background:var(--tick);border-color:var(--tick);}
+  .ibtn.checked .box::after{content:"\2713";font-weight:800;}
+  .ibtn .txt{flex:1;min-width:0;}
+  .ibtn .chal{display:block;font-weight:800;font-size:.95rem;}
+  .ibtn .mn{
+    display:inline-block;min-width:1.3em;text-align:center;
+    background:var(--accent);color:var(--on-accent);font-size:.7rem;font-weight:800;
+    border-radius:5px;padding:2px 4px;margin-right:7px;vertical-align:1px;
+  }
+  .ibtn.red .mn{background:var(--emerg);color:#fff;}
+  .ibtn .resp{display:block;font-size:.875rem;color:var(--muted);margin-top:2px;}
+  .ibtn.checked .chal,.ibtn.checked .resp{opacity:.5;}
+  body[data-mode="sun"] .ibtn.checked .chal,
+  body[data-mode="sun"] .ibtn.checked .resp{opacity:1;text-decoration:line-through;}
+
+  .pnote{
+    background:var(--card);border:var(--bw) solid var(--edge);border-radius:12px;
+    padding:13px 14px;font-size:.875rem;color:var(--muted);margin-bottom:12px;
+  }
+  .pnote.warn{
+    background:repeating-linear-gradient(45deg,var(--emerg-tint),var(--emerg-tint) 12px,var(--card) 12px,var(--card) 24px);
+    border-color:var(--emerg);color:var(--emerg);
+    font-weight:800;text-transform:uppercase;font-size:.8rem;text-align:center;letter-spacing:.03em;
+  }
+
+  .donecard{
+    background:var(--tick-tint);border:2px solid var(--tick);border-radius:16px;
+    padding:16px;margin:8px 0 12px;text-align:center;
+  }
+  .donecard .dt{font-weight:800;color:var(--tick);font-size:1rem;letter-spacing:.04em;text-transform:uppercase;}
+  .bigbtn{
+    width:100%;padding:16px;border-radius:14px;margin-top:12px;
+    background:var(--accent);color:var(--on-accent);border:none;
+    box-shadow:0 3px 0 var(--accent-dark);
+    font-size:1rem;font-weight:800;text-align:center;
+  }
+  .bigbtn:active{transform:translateY(3px);box-shadow:none;}
+  .bigbtn.ghost{background:var(--card);color:var(--ink);border:var(--bw) solid var(--edge);box-shadow:0 2px 0 var(--edge);}
+
+  .resetbtn{
+    width:100%;padding:15px;border-radius:14px;margin-top:8px;
+    background:var(--card);border:var(--bw) solid var(--edge);box-shadow:0 2px 0 var(--edge);
+    color:var(--muted);font-size:.8rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+  }
+  .resetbtn.armed{background:var(--emerg);border-color:var(--emerg-dark);color:#fff;box-shadow:0 2px 0 var(--emerg-dark);}
+
+  /* ===== Emergency FAB ===== */
+  #emergFab{
+    position:fixed;bottom:calc(16px + env(safe-area-inset-bottom));right:16px;z-index:30;
+    background:var(--emerg);color:#fff;border:none;border-radius:16px;
+    box-shadow:0 3px 0 var(--emerg-dark),0 6px 16px rgba(200,16,46,.35);
+    padding:16px 22px;font-size:.95rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
+  }
+  #emergFab:active{transform:translateY(3px);box-shadow:none;}
+
+  /* ===== Bottom sheet ===== */
+  .sheet{position:fixed;inset:0;z-index:50;}
+  .sheet .backdrop{position:absolute;inset:0;background:rgba(0,0,0,.5);}
+  .sheet .panel{
+    position:absolute;left:0;right:0;bottom:0;max-height:88vh;overflow:auto;
+    background:var(--paper);border-radius:20px 20px 0 0;
+    padding:0 14px calc(18px + env(safe-area-inset-bottom));
+    animation:up .16s ease-out;
+  }
+  body[data-mode="day"] .sheet .panel{background:#eaf4fb;}
+  @keyframes up{from{transform:translateY(40px)}to{transform:none}}
+  .sheet-head{
+    position:sticky;top:0;display:flex;align-items:center;justify-content:space-between;
+    padding:16px 2px 12px;background:inherit;
+    font-weight:800;font-size:.95rem;letter-spacing:.08em;text-transform:uppercase;
+  }
+  .sheet-head.red{color:var(--emerg);}
+  .xbtn{
+    width:44px;height:44px;border-radius:10px;font-size:1.1rem;font-weight:800;
+    background:var(--card);border:var(--bw) solid var(--edge);
+  }
+  .elist{display:grid;gap:10px;}
+  .ebtn{
+    width:100%;text-align:left;padding:17px 16px;border-radius:14px;border:none;
+    background:var(--emerg);color:#fff;font-size:1.05rem;font-weight:800;
+    box-shadow:0 3px 0 var(--emerg-dark);
+    display:flex;justify-content:space-between;align-items:center;
+  }
+  .ebtn:active{transform:translateY(3px);box-shadow:none;}
+
+  .setgroup{margin-bottom:18px;}
+  .setlabel{font-size:.7rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-dark);margin:0 2px 8px;}
+  .seg{display:flex;gap:8px;}
+  .seg button{
+    flex:1;padding:14px 6px;border-radius:12px;font-weight:800;font-size:.9rem;
+    background:var(--card);border:var(--bw) solid var(--edge);box-shadow:0 2px 0 var(--edge);
+  }
+  .seg button.on{background:var(--accent);color:var(--on-accent);border-color:var(--accent-dark);box-shadow:0 2px 0 var(--accent-dark);}
+  .setnote{font-size:.78rem;color:var(--muted);margin-top:8px;padding:0 2px;}
+
+  /* ===== Toast ===== */
+  #toast{
+    position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom));z-index:60;
+    transform:translateX(-50%);background:#111;color:#fff;
+    padding:10px 16px;border-radius:10px;font-size:.85rem;font-weight:700;
+    opacity:0;pointer-events:none;transition:opacity .2s;white-space:nowrap;
+  }
+  #toast.show{opacity:.92;}
+</style>
+</head>
+<body data-mode="day">
+
+<header id="hdr">
+  <div class="hrow">
+    <button class="hbtn" id="backBtn" aria-label="Back to phases">&#8592;</button>
+    <div class="title" id="hdrTitle"></div>
+    <button class="hbtn" id="modeBtn" aria-label="Display mode"></button>
+    <button class="hbtn" id="setBtn" aria-label="Settings">&#9881;</button>
+  </div>
+  <div class="hprog"><i id="hprogBar"></i></div>
+</header>
+
+<main>
+  <div id="home"></div>
+  <div id="phaseView" hidden></div>
+</main>
+
+<button id="emergFab">Emerg</button>
+
+<div class="sheet" id="sheet" hidden>
+  <div class="backdrop" id="sheetBackdrop"></div>
+  <div class="panel">
+    <div class="sheet-head" id="sheetHead"><span id="sheetTitle"></span><button class="xbtn" id="sheetClose" aria-label="Close">&#10005;</button></div>
+    <div id="sheetBody"></div>
+  </div>
+</div>
+
+<div id="toast" role="status"></div>
+
+<script>
+const NORMAL = [
+{
+  id:"prep", title:"Pilot's Preparation & Passenger Briefing",
+  subs:[
+    {name:"Pilot's Preparation and Passenger Briefing", items:[
+      ["Pilot","Fit for flight. Licence valid, current and applicable to type. Sufficient experience on type. Medical certificate current."],
+      ["Aircraft Documents","All aircraft documentation complete to date. Check current certificates of airworthiness and maintenance etc."],
+      ["Weather","Check departure aerodrome, local, en route and destination forecast and actuals."],
+      ["Flight Planning","Flight log completed and flight plan (if necessary). AIP, AIC, NOTAMS, Amendments and Bulletins checked. Prior permissions obtained."],
+      ["Pooleys Flight Guide","Check current, on board and correct coverage with all possible alternates. Readily accessible."],
+      ["Charts","Check current, amended with correct coverage. Readily accessible."],
+      ["Weight and Balance","Centre of gravity, weight and balance calculations completed and checked to be within limits (passengers, baggage and fuel)."],
+      ["Navigation Equipment Accessories","Computer, scale, protractor, plotter, pencil and pens etc. Readily accessible."],
+      ["Survival Equipment","Life jackets, life raft, ELT, transceiver, flares, rations etc. Readily accessible. Over water life jackets should be worn UNINFLATED."],
+      ["Departure","Register departure in writing and/or verbally with departure aerodrome. Complete aircraft Technical and Journey log book."],
+      ["Passenger Briefing","Passengers fully briefed on emergency, safety and comfort procedures."]
+    ]}
+  ]
+},
+{
+  id:"prelim", title:"Preliminary",
+  note:"Aircraft unobstructed for taxying. No fuel, oil or hydraulic spillages. All ice and frost removed from aircraft surfaces (external and internal). Tie downs, pitot cover, external control locks, covers and chocks removed and stowed.",
+  subs:[
+    {name:"In Cabin", items:[
+      ["Control Locks/Covers","Removed and stowed."],
+      ["Magneto Switches","Both OFF. Key Removed."],
+      ["Parking Brake","On."],
+      ["Master Switch","On."],
+      ["Rotating Beacon","On. Check operation. Then Off."],
+      ["Pitot Heat","On. Check operation. Then Off."],
+      ["Landing/Nav Lights","On. Check operation. Then Off."],
+      ["Flaps","On. Check operation & symmetry. Set full down."],
+      ["Radio Nav","Off."],
+      ["Fuel Cock","On. Check contents indications."],
+      ["Master Switch","Off."],
+      ["Trimmer","Operate fully forward, fully aft. Check correct sense. Set neutral."],
+      ["First Aid Kit","Check condition, in date, secure & accessible."],
+      ["Fire Extinguisher","Check condition, in date, secure & accessible."]
+    ]}
+  ]
+},
+{
+  id:"external", title:"External",
+  subs:[
+    {name:"Port Undercarriage", items:[
+      ["Leg & Fairing","Check undamaged & general condition."],
+      ["Tyre","Check undamaged, inflation & creep marks aligned."],
+      ["Hydraulic Line","Check general condition, joints and no leakages."],
+      ["Disc Brake","Check for pitting, wear and cracks."],
+      ["Wheel Nut","Check secure."]
+    ]},
+    {name:"Port Wing", items:[
+      ["Strut","General condition and security."],
+      ["Flap","Check undamaged, linkages and tracks."],
+      ["Aileron","Check undamaged, hinges, linkages secure, full free movement."],
+      ["Wing Tip","General condition, navigation light, security and colour."],
+      ["Wing Surfaces","General all over condition."],
+      ["Leading Edge","No indentations or fractures. Pitot head clear, undamaged with cover removed and stowed, stall warner working."],
+      ["Fuel Tank","Visually check contents. Fuel cap secured and drain checked."]
+    ]},
+    {name:"Propeller, Front Fuselage & Engine", items:[
+      ["Port Cowling","Properly secure, static vent clear & unobstructed."],
+      ["Windscreen","Clean all over, inside and out."],
+      ["Nose Leg","General condition, oleo extension approx 2\u2033\u20133\u2033, torque linkage, nuts and split pins."],
+      ["Nose Wheel","Undamaged, inflation, creep marks aligned."],
+      ["Front of Cowling","Check properly secure, intakes clear and landing light."],
+      ["Propeller & Spinner","General condition, security, in particular leading edge and tips."],
+      ["Starboard Cowling","Properly secure, oil contents, strain fuel if applicable."],
+      ["Fuel Drain","Check."]
+    ]},
+    {name:"Starboard Wing", items:[
+      ["Fuel Tank","Visually check contents. Fuel cap secured and drain checked."],
+      ["Leading Edge","No indentations or fractures."],
+      ["Wing Surface","General all over condition."],
+      ["Wing Tip","General condition, nav. light, security and colour."],
+      ["Aileron","Check undamaged, hinges, linkages secure, full free movement."],
+      ["Flap","Check undamaged, linkages and tracks."],
+      ["Strut","General condition and security."]
+    ]},
+    {name:"Starboard Undercarriage", items:[
+      ["Leg","Undamaged, and general condition."],
+      ["Tyre","Undamaged, inflation, creep marks aligned."],
+      ["Hydraulic Line","Check general condition, joints and no leakages."],
+      ["Disc Brake","Check for pitting, wear and cracks."],
+      ["Wheel Nut","Check secure."]
+    ]},
+    {name:"Starboard Fuselage", items:[
+      ["Surfaces","General all over condition. Drain holes clear."],
+      ["Aerials","Secure and undamaged."],
+      ["Door","Catch, hinges, window, secure and operational."],
+      ["Windows","Clean inside and out. Undamaged."]
+    ]},
+    {name:"Tail", items:[
+      ["Starboard Tailplane","Security and condition, no indentations or fractures."],
+      ["Starboard Elevator","Undamaged, linkages secure, full free movement."],
+      ["Trim Tab","Undamaged, linkages secure."],
+      ["Fin","Fairings, beacon, aerials secure and undamaged."],
+      ["Rudder","Hinges and linkages secure and undamaged. Full free movement, navigation light condition & colour."],
+      ["Port Elevator","Undamaged, linkages secure, full free movement."],
+      ["Port Tailplane","No indentations or fractures, security."]
+    ]},
+    {name:"Port Fuselage", items:[
+      ["Surfaces","General all over condition. Drain holes clear."],
+      ["Aerials","Secure and undamaged."],
+      ["Door","Catch, hinges, window, secure and operational."],
+      ["Windows","Clean inside and out. Undamaged."]
+    ]}
+  ]
+},
+{
+  id:"internal", title:"Internal & Starting",
+  subs:[
+    {name:"Internal", items:[
+      ["Seat","Adjusted and secured."],
+      ["Hatches & Harnesses","Adjusted and secured."],
+      ["Parking Brake","On."],
+      ["Radios/Avionics","Off."],
+      ["Instruments","Undamaged, legible and secure."],
+      ["Flying Controls","Full and free movement in the correct sense."],
+      ["Trim","Set neutral."],
+      ["Cabin Heat","Off. Set closed."],
+      ["Mixture","Full, free movement. Set Rich."],
+      ["Throttle Nut","Operating freely. Set loose."],
+      ["Throttle","Full and free movement. Set \u00bc\u2033 open."],
+      ["Carburettor Heat","Full and free movement. Set cold."],
+      ["Magnetos","Off."],
+      ["Master Switch","On."],
+      ["Circuit Breakers & Fuses","In position and secure."],
+      ["Fuel Cock","Check On."],
+      ["Beacon","On."],
+      ["Primer","Primer as required and lock."],
+      ["Lookout","Careful all round lookout. Open window and shout \u201cCLEAR PROP\u201d."],
+      ["Magnetos","Keys in and operate starter."]
+    ]}
+  ]
+},
+{
+  id:"afterstart", title:"After Start, Taxying & Power",
+  subs:[
+    {name:"After Start", items:[
+      ["RPM","Set to 1200."],
+      ["Oil Pressure","Rising to green arc within 30 secs. If not, immediately shut down."],
+      ["Starter Warning Light","Out. If not, close down engine."],
+      ["Ammeter","Charging (positive reading)."],
+      ["Suction","Registering correctly."],
+      ["Magnetos","Check for dead cut."],
+      ["Flaps","Up in stages \u2014 check symmetry & indicator."],
+      ["Instruments","Set as required."],
+      ["Radio","Set tuned and checked as required. Transponder stby."],
+      ["Lookout","Check aircraft unobstructed for taxying and surface satisfactory."],
+      ["RT","Call for taxy clearance."]
+    ]},
+    {name:"Taxying", items:[
+      ["Brakes","Check both sets."],
+      ["Rudder","Check correct movement and steering."],
+      ["Instruments","Check in turns D.I., Compass, Turn Co-ordinator, Attitude Indicator."],
+      ["Nav. Aids","VOR, ADF tracking."]
+    ]},
+    {name:"Power", items:[
+      ["Location","Aircraft positioned into wind, clear all round & taxying/runway surface checked."],
+      ["Parking Brake","On."],
+      ["Oil Temp. & Press","Within limits."],
+      ["Magnetos","Check on both."],
+      ["RPM","Set 1700 \u2014 brakes holding."],
+      ["Carburettor Heat","Set Hot, max. drop 75 RPM, set Cold."],
+      ["Magnetos","Check left & right, max. drop 125 RPM, max. diff. between mags 50 RPM."],
+      ["Suction","Between 3\u2033 \u2013 5\u2033."],
+      ["Ammeter","Charging."],
+      ["Oil Temp. & Press","Within limits."],
+      ["RPM","Set to idle, 500\u2013700 RPM, check. Then reset to 1200 RPM."]
+    ]}
+  ]
+},
+{
+  id:"vital", title:"Vital Actions, Take Off & After Take Off",
+  subs:[
+    {name:"Pre-Take Off Checks \u2014 Vital Actions", items:[
+      ["Trimmer","Set for take off.","T"],
+      ["Throttle Friction Nut","Finger tight.","T"],
+      ["Mixture","Rich.","M"],
+      ["Magnetos","On both. Check Master switch On.","M"],
+      ["Pitot Heater","As required.","P"],
+      ["Primer","In and locked.","P"],
+      ["Fuel","On, check quantities.","F"],
+      ["Flaps","As required.","F"],
+      ["Instruments/Gauges","Checked & set: D.I., Compass, Altimeter, Attitude Indicator, engine temperatures and pressures.","I"],
+      ["Harnesses","Fastened and secure.","H"],
+      ["Hatches","Doors and windows secure.","H"],
+      ["Carburettor Heat","Set cold.","C"],
+      ["Controls","Full and free movement.","C"],
+      ["Transponder","Alt, strobes on.","T"]
+    ]},
+    {name:"Take Off", items:[
+      ["Clearances","Received and understood."],
+      ["Runway","Approach and departure routes clear. Surface checked."],
+      ["Line Up","Re-check D.I. with runway heading & compass."],
+      ["RPM","Full power \u2014 over 2350."],
+      ["Engine","Temp. & press. steady within limits."],
+      ["Airspeed","Increasing."]
+    ]},
+    {name:"After Take Off", items:[
+      ["Flaps","Select up in stages at a safe height."],
+      ["Engine","Temp. & press. steady, within limits."],
+      ["Heading","Conforming to noise abatement, circuit or en route."],
+      ["Altimeter","QFE or QNH. Set as required."],
+      ["Fuel","On and contents sufficient."],
+      ["Radios/Nav. Aids","Tuned and identified."]
+    ]}
+  ]
+},
+{
+  id:"airwork", title:"HASELL, HELL, FREDA & Pre-Landing",
+  subs:[
+    {name:"Pre-Stall / Aerobatic Checks \u2014 HASELL", items:[
+      ["Height","Sufficient to recover by 3000\u2032 above ground level.","H"],
+      ["Airframe","Gyros caged, brakes off, flaps as required.","A"],
+      ["Security","Harness secure, doors and windows closed. No loose articles.","S"],
+      ["Engine","Temperatures and pressures within limits, mixture rich. Check for carburettor icing.","E"],
+      ["Location","Clear of cloud, controlled airspace, built up areas and active airfields.","L"],
+      ["Lookout","360\u00b0 turn to check for other aircraft, especially below.","L"]
+    ]},
+    {name:"Continued Stall / Aerobatics", items:[
+      ["HELL","Use HELL \u2026 as above."]
+    ]},
+    {name:"Cruise / Re-Join \u2014 FREDA", items:[
+      ["Fuel","On and sufficient including diversion and go-around.","F"],
+      ["Radio","Tuned, identified, obtain ATIS or joining instructions.","R"],
+      ["Engine","Temperatures and pressures and mixture, check for carburettor ice.","E"],
+      ["DI","Synchronised with compass & runway orientation.","D"],
+      ["Altimeter","QNH/QFE set as required.","A"]
+    ]},
+    {name:"Pre-Landing", items:[
+      ["Brakes","Off. Pressure checked.","B"],
+      ["Undercarriage","Fixed.","U"],
+      ["Mixture","Rich.","M"],
+      ["Fuel","On and sufficient for go-around.","F"],
+      ["Flaps","As required \u2014 check speed.","F"],
+      ["Instruments","Altimeter set, DI aligned. Engine temperatures and pressures within limits.","I"],
+      ["Carburettor Heat","Check for ice and set as required.","C"],
+      ["Harness","Fastened and secure.","H"],
+      ["Hatches","Doors and windows secure.","H"],
+      ["Landing Light","On.","L"],
+      ["Clearance","Obtained.","C"]
+    ]}
+  ]
+},
+{
+  id:"landing", title:"Go-Around, After Landing & Shut Down",
+  subs:[
+    {name:"Go-Around", items:[
+      ["Throttle","Full power."],
+      ["Carburettor Heat","Cold."],
+      ["Attitude","Correct for yaw."],
+      ["Flaps","Quickly retract to 20\u00b0 if necessary, thereafter in stages at safe height, return as required."],
+      ["Radio","Call \u201cGoing Around\u201d and obtain further ATC instructions."]
+    ]},
+    {name:"After Landing \u2014 move clear of active runway and stop", items:[
+      ["Carburettor Heat","Cold."],
+      ["Flaps","Up."],
+      ["Throttle Friction Nut","Loose."],
+      ["Radio/Nav. Aids/Electrics","Non-essentials off."],
+      ["Trimmer","Set neutral."]
+    ]},
+    {name:"Shut Down", items:[
+      ["Location","Not obstructing, into wind, nosewheel straight."],
+      ["Park Brake","On."],
+      ["Engine","1200 RPM for 30 secs."],
+      ["Magnetos","Check for dead cut."],
+      ["Radio/Nav. Aids","Off."],
+      ["Throttle","Close."],
+      ["Mixture","Idle cut off. Set fully lean."]
+    ]},
+    {name:"After Engine Stops", items:[
+      ["Magnetos","Off. Key removed."],
+      ["Electrics","Off."],
+      ["Master Switch","Off."],
+      ["Fuel Cock","Off."],
+      ["Control Lock","In."],
+      ["Harnesses","Left tidy."],
+      ["Hatches","Doors and windows closed."],
+      ["Security","Chocks, ties, park brake and pitot cover as required."]
+    ]}
+  ]
+}
+];
+
+const EMERG = [
+{
+  id:"e-firestart", title:"Engine Fire During Start", emerg:true,
+  subs:[{name:"Drill", items:[
+    ["Starter","Crank engine 3\u20134 seconds."],
+    ["Mixture","Idle cut off."],
+    ["Throttle","OPEN."],
+    ["Fuel Selector","OFF."]
+  ]}],
+  endnote:"If fire continues evacuate aircraft with fire extinguisher to a safe upwind distance."
+},
+{
+  id:"e-fireground", title:"Fire on the Ground", emerg:true,
+  subs:[{name:"Drill", items:[
+    ["Throttle","Closed."],
+    ["Mixture","Idle cut off. Set fully lean."],
+    ["Fuel","OFF."],
+    ["Magnetos","OFF."],
+    ["Radio","Call for assistance."],
+    ["Master Switch","OFF."],
+    ["Park Brake","OFF."]
+  ]}],
+  endnote:"If taxying, stop to allow prevailing wind to keep fire away from exits, clear of other aircraft and fuel areas. Evacuate aircraft with fire extinguisher to a safe upwind distance."
+},
+{
+  id:"e-fireair", title:"Engine Fire in the Air", emerg:true,
+  subs:[{name:"Drill", items:[
+    ["Throttle","Closed."],
+    ["Mixture","Idle cut off. Set fully lean."],
+    ["Fuel","OFF."],
+    ["Magnetos","OFF."],
+    ["Cabin Heater/Defrost","OFF."],
+    ["Radio","MAYDAY \u2026 call immediately. Initiate forced landing without power procedure."]
+  ]}]
+},
+{
+  id:"e-cabinfire", title:"Cabin Fire in the Air", emerg:true,
+  subs:[{name:"Drill", items:[
+    ["Master Switch","Off if electrical fire. Return to ON after 3 seconds."],
+    ["Electrics","Shed all non-essentials."],
+    ["Fire Extinguisher","Use as necessary and ventilate cabin."],
+    ["Radio","MAYDAY / Pan call with forced landing/diversion as applicable."]
+  ]}]
+},
+{
+  id:"e-efato", title:"Engine Failure After Take Off", emerg:true,
+  subs:[{name:"Drill", items:[
+    ["Attitude/Configuration","Lower nose to maintain best gliding speed. Select landing area ahead."],
+    ["Fuel","OFF."],
+    ["Mixture","ICO."],
+    ["Magnetos","OFF."],
+    ["Radio","MAYDAY \u2026 call. If time permits."],
+    ["Master Switch","After final flap selection. OFF."]
+  ]}],
+  endnote:"Brief passengers, tighten harnesses, open/jettison doors as time permits. NEVER ATTEMPT TO TURN BACK."
+},
+{
+  id:"e-altitude", title:"Engine Failure at Altitude", emerg:true,
+  subs:[{name:"Drill", items:[
+    ["Attitude/Configuration","Attain best gliding speed and trim."],
+    ["Plan","Forced landing site and check for possible cause of engine failure."],
+    ["Carburettor Heat","On (Hot)."],
+    ["Fuel","On. Check contents."],
+    ["Mixture","Rich."],
+    ["Primer","Locked."],
+    ["Magnetos","On both."],
+    ["Throttle","If engine fails to respond \u2014 exercise."],
+    ["Radio","MAYDAY \u2026 call."],
+    ["Transponder","Set 7700."],
+    ["Fuel","OFF."],
+    ["Mixture","ICO."],
+    ["Magnetos","OFF."],
+    ["Harnesses","Tighten."],
+    ["Doors","Unlatch/Jettison."],
+    ["Crew/Passengers","Briefed \u2014 as time permits."],
+    ["Master Switch","After final flap selection. OFF."]
+  ]}]
+},
+{
+  id:"e-ditching", title:"Ditching Procedure", emerg:true,
+  note:"As Engine Failure at Altitude. Head for coastline or shipping.",
+  subs:[{name:"Drill", items:[
+    ["Large Swell / Light Wind","Land along swell, tail down, stalled."],
+    ["Light Swell / Strong Wind","Land into wind, tail down, stalled."],
+    ["After Ditching","Use survival equipment. DO NOT INFLATE LIFE JACKETS IN CABIN."]
+  ]}]
+},
+{
+  id:"e-electrical", title:"Electrical Failure", emerg:true,
+  subs:[{name:"Drill", items:[
+    ["Electrical Load","Shed all non-essentials."],
+    ["Field/Output","Check, reset circuit breakers."],
+    ["Ammeter/Voltage","Check warning light."],
+    ["Master Switch","Off for 3 seconds, then select On."]
+  ]}],
+  endnote:"If output restored maintain essential services only and land/divert A.S.A.P."
+},
+{
+  id:"e-radiofail", title:"Radio Failure", emerg:true,
+  subs:[{name:"Drill", items:[
+    ["Radio","Check off/on, volume, squelch & selector switches."],
+    ["Ancillaries","Check/swap headsets, microphone, plugs secure."],
+    ["Electrics","Check ammeter, master switch, avionics master, circuit breakers. Reset only once."],
+    ["Transponder","Set 7600."],
+    ["Procedure","Carry out blind transit, speechless procedure."]
+  ]}]
+}
+];
+
+
+// =====================================================================
+// App logic
+// =====================================================================
+const KEY = "c150cl.v1";          // checklist progress
+const PKEY = "c150cl.prefs";      // display preferences
+const MAX_AGE = 6 * 3600 * 1000;  // progress older than 6 h is discarded
+
+let state = {};                   // itemKey -> true
+let last = null;                  // id of last phase opened
+let prefs = { mode:"day", size:"m", haptic:true };
+let staleCleared = false;
+let currentPhase = null;
+
+const $ = id => document.getElementById(id);
+const home = $("home"), phaseView = $("phaseView"), hdr = $("hdr"), hdrTitle = $("hdrTitle");
+const hprogBar = $("hprogBar"), modeBtn = $("modeBtn");
+const ALL = NORMAL.concat(EMERG);
+const byId = id => ALL.find(p => p.id === id);
+
+// ---------- storage (all wrapped: storage can be blocked) ----------
+function load(){
+  try{ const p = JSON.parse(localStorage.getItem(PKEY) || "null"); if(p) Object.assign(prefs, p); }catch(e){}
+  try{
+    const s = JSON.parse(localStorage.getItem(KEY) || "null");
+    if(s && s.t){
+      if(Date.now() - s.t < MAX_AGE){ state = s.state || {}; last = s.last || null; }
+      else { staleCleared = Object.keys(s.state || {}).length > 0; localStorage.removeItem(KEY); }
+    }
+  }catch(e){}
+}
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify({ t:Date.now(), state, last })); }catch(e){} }
+function savePrefs(){ try{ localStorage.setItem(PKEY, JSON.stringify(prefs)); }catch(e){} }
+
+// ---------- helpers ----------
+function itemsOf(phase){
+  const out = [];
+  phase.subs.forEach((sub,si) => sub.items.forEach((it,ii) => out.push({ key:`${phase.id}.${si}.${ii}`, si, ii, it })));
+  return out;
+}
+function progress(phase){
+  const items = itemsOf(phase);
+  const done = items.filter(x => state[x.key]).length;
+  return { done, total:items.length, next:items.find(x => !state[x.key]) };
+}
+function resetPhase(phase){ itemsOf(phase).forEach(x => delete state[x.key]); save(); }
+
+let toastT = null;
+function toast(msg){
+  const t = $("toast"); t.textContent = msg; t.classList.add("show");
+  clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("show"), 1600);
+}
+function buzz(){ if(prefs.haptic && navigator.vibrate){ try{ navigator.vibrate(12); }catch(e){} } }
+
+// Two-tap confirm: first tap arms (turns red), second within 3 s fires.
+function armedButton(cls, label, armedLabel, action){
+  const b = document.createElement("button");
+  b.className = cls; b.textContent = label;
+  let t = null;
+  b.addEventListener("click", () => {
+    if(b.classList.contains("armed")){
+      clearTimeout(t); b.classList.remove("armed"); b.textContent = label; action();
+    } else {
+      b.classList.add("armed"); b.textContent = armedLabel;
+      t = setTimeout(() => { b.classList.remove("armed"); b.textContent = label; }, 3000);
+    }
+  });
+  return b;
+}
+
+// ---------- display prefs ----------
+const MODES = { day:{ icon:"☁", name:"Day mode" }, sun:{ icon:"☀", name:"Sunlight mode" }, night:{ icon:"☾", name:"Night mode" } };
+const THEME = { day:"#0e3a5c", sun:"#000000", night:"#05090d" };
+function applyPrefs(){
+  document.body.dataset.mode = prefs.mode;
+  document.documentElement.dataset.size = prefs.size;
+  modeBtn.textContent = MODES[prefs.mode].icon;
+  const tc = document.querySelector('meta[name="theme-color"]'); if(tc) tc.content = THEME[prefs.mode];
+}
+modeBtn.addEventListener("click", () => {
+  const order = ["day","sun","night"];
+  prefs.mode = order[(order.indexOf(prefs.mode) + 1) % 3];
+  applyPrefs(); savePrefs(); toast(MODES[prefs.mode].name);
+});
+
+// ---------- home ----------
+function renderHome(){
+  currentPhase = null;
+  phaseView.hidden = true; home.hidden = false;
+  hdr.classList.remove("inphase");
+  hdrTitle.innerHTML = 'Cessna 150/152<small>Pooley’s Checklist · MOD05/18</small>';
+  home.innerHTML = "";
+
+  const cav = document.createElement("div");
+  cav.className = "caveat";
+  cav.textContent = "Not authoritative — supplement to the Pilot's Operating Handbook";
+  home.appendChild(cav);
+
+  if(staleCleared){
+    const s = document.createElement("div");
+    s.className = "stale";
+    s.textContent = "Ticks from your last session were over 6 hours old and have been cleared.";
+    home.appendChild(s);
+  }
+
+  // Continue card: last phase opened, if part-done
+  const lp = last && byId(last);
+  if(lp){
+    const p = progress(lp);
+    if(p.done > 0 && p.done < p.total){
+      const c = document.createElement("button");
+      c.className = "cont";
+      c.innerHTML = `<span class="ct"><span class="k">Continue</span><div class="n">${lp.title}</div>`+
+        `<div class="x">${p.done} / ${p.total} · Next: ${p.next.it[0]}</div></span><span class="arrow">›</span>`;
+      c.addEventListener("click", () => openPhase(lp));
+      home.appendChild(c);
+    }
+  }
+
+  home.appendChild(label("Normal Procedures", false));
+  home.appendChild(grid(NORMAL, false));
+  home.appendChild(label("Emergencies", true));
+  home.appendChild(grid(EMERG, true));
+}
+function label(text, red){
+  const l = document.createElement("div");
+  l.className = "grid-label" + (red ? " red" : "");
+  l.textContent = text;
+  return l;
+}
+function grid(list, red){
+  const g = document.createElement("div");
+  g.className = "grid";
+  list.forEach((phase, idx) => {
+    const b = document.createElement("button");
+    b.className = "pbtn" + (red ? " red" : "");
+    const p = progress(phase);
+    if(red){
+      b.innerHTML = `<span class="pnum">E${idx+1}</span><span class="pname">${phase.title}</span>`;
+    } else {
+      if(p.done === p.total) b.classList.add("done");
+      const pct = Math.round(p.done / p.total * 100);
+      b.innerHTML = `<span class="pnum">${String(idx+1).padStart(2,"0")}</span>`+
+        `<span class="pname">${phase.title}</span>`+
+        `<span class="pbar"><i style="width:${pct}%"></i></span>`+
+        `<span class="pcount">${p.done === p.total ? "✓ Complete" : p.done + " / " + p.total}</span>`;
+    }
+    b.addEventListener("click", () => openPhase(phase));
+    g.appendChild(b);
+  });
+  return g;
+}
+
+// ---------- phase view ----------
+let doneCard = null;
+function renderPhase(phase){
+  currentPhase = phase;
+  last = phase.id; save();
+  home.hidden = true; phaseView.hidden = false;
+  hdr.classList.add("inphase");
+  phaseView.innerHTML = "";
+
+  if(phase.note){
+    const n = document.createElement("div");
+    n.className = "pnote" + (phase.emerg ? " warn" : "");
+    n.textContent = phase.note;
+    phaseView.appendChild(n);
+  }
+
+  const singleDrill = phase.subs.length === 1 && phase.subs[0].name === "Drill";
+  let lastSi = -1;
+  itemsOf(phase).forEach(({ key, si, it }) => {
+    if(si !== lastSi && !singleDrill){
+      const s = document.createElement("div");
+      s.className = "sub" + (phase.emerg ? " red" : "");
+      s.textContent = phase.subs[si].name;
+      phaseView.appendChild(s);
+    }
+    lastSi = si;
+    const b = document.createElement("button");
+    b.className = "ibtn" + (phase.emerg ? " red" : "") + (state[key] ? " checked" : "");
+    b.setAttribute("aria-pressed", state[key] ? "true" : "false");
+    const mn = it[2] ? `<span class="mn">${it[2]}</span>` : "";
+    b.innerHTML = `<span class="box"></span><span class="txt"><span class="chal">${mn}${it[0]}</span><span class="resp">${it[1]}</span></span>`;
+    b.addEventListener("click", () => {
+      const on = !state[key];
+      if(on) state[key] = true; else delete state[key];
+      b.classList.toggle("checked", on);
+      b.setAttribute("aria-pressed", on ? "true" : "false");
+      save(); buzz();
+      refreshPhase(on);
+    });
+    phaseView.appendChild(b);
+  });
+
+  if(phase.endnote){
+    const n = document.createElement("div");
+    n.className = "pnote warn";
+    n.textContent = phase.endnote;
+    phaseView.appendChild(n);
+  }
+
+  // Completion card with "next phase" button
+  doneCard = document.createElement("div");
+  doneCard.className = "donecard";
+  const idx = NORMAL.indexOf(phase);
+  const nextPhase = idx >= 0 ? NORMAL[idx + 1] : null;
+  doneCard.innerHTML = `<div class="dt">✓ ${phase.emerg ? "Drill" : "Section"} complete</div>`;
+  const nb = document.createElement("button");
+  nb.className = "bigbtn" + (nextPhase ? "" : " ghost");
+  nb.textContent = nextPhase ? `Next: ${nextPhase.title} ›` : "Back to phases";
+  nb.addEventListener("click", () => nextPhase ? openPhase(nextPhase, true) : goHome());
+  doneCard.appendChild(nb);
+  phaseView.appendChild(doneCard);
+
+  phaseView.appendChild(armedButton("resetbtn", "Reset this section", "Tap again to reset", () => {
+    resetPhase(phase); renderPhase(phase); toast("Section reset");
+  }));
+
+  window.scrollTo(0, 0);
+  refreshPhase(false);
+  // Resuming part-way through: bring the next item into view
+  const p = progress(phase);
+  if(p.done > 0 && p.done < p.total){
+    const n = phaseView.querySelector(".ibtn.next");
+    if(n) setTimeout(() => n.scrollIntoView({ block:"center" }), 0);
+  }
+}
+
+// Updates header progress, "next" highlight and completion card.
+function refreshPhase(advance){
+  const phase = currentPhase; if(!phase) return;
+  const p = progress(phase);
+  hdrTitle.innerHTML = `${phase.title}<small>${phase.emerg ? "Emergency drill" : "Normal procedure"} · ${p.done} / ${p.total}</small>`;
+  hprogBar.style.width = (p.done / p.total * 100) + "%";
+
+  const btns = [...phaseView.querySelectorAll(".ibtn")];
+  btns.forEach(b => b.classList.remove("next"));
+  const nxt = btns.find(b => !b.classList.contains("checked"));
+  doneCard.hidden = !!nxt;
+  if(nxt){
+    nxt.classList.add("next");
+    if(advance) keepInView(nxt);
+  } else if(advance){
+    doneCard.scrollIntoView({ behavior:"smooth", block:"center" });
+  }
+}
+function keepInView(el){
+  const r = el.getBoundingClientRect();
+  if(r.top < hdr.offsetHeight + 8 || r.bottom > window.innerHeight - 110){
+    el.scrollIntoView({ behavior:"smooth", block:"center" });
+  }
+}
+
+// ---------- navigation (hardware back button aware) ----------
+function openPhase(phase, replace){
+  closeSheet();
+  renderPhase(phase);
+  try{ history[replace ? "replaceState" : "pushState"]({ ph:phase.id }, ""); }catch(e){}
+}
+function goHome(){
+  closeSheet();
+  if(history.state && history.state.ph){ try{ history.back(); return; }catch(e){} }
+  renderHome();
+}
+window.addEventListener("popstate", e => {
+  closeSheet();
+  const ph = e.state && e.state.ph && byId(e.state.ph);
+  ph ? renderPhase(ph) : renderHome();
+});
+$("backBtn").addEventListener("click", goHome);
+
+// ---------- bottom sheet ----------
+function openSheet(title, red, body){
+  $("sheetTitle").textContent = title;
+  $("sheetHead").classList.toggle("red", !!red);
+  const sb = $("sheetBody"); sb.innerHTML = ""; sb.appendChild(body);
+  $("sheet").hidden = false;
+}
+function closeSheet(){ $("sheet").hidden = true; }
+$("sheetClose").addEventListener("click", closeSheet);
+$("sheetBackdrop").addEventListener("click", closeSheet);
+
+// Emergency quick list: two taps from anywhere to any drill
+$("emergFab").addEventListener("click", () => {
+  const list = document.createElement("div");
+  list.className = "elist";
+  EMERG.forEach(ph => {
+    const b = document.createElement("button");
+    b.className = "ebtn";
+    b.innerHTML = `<span>${ph.title}</span><span>›</span>`;
+    b.addEventListener("click", () => openPhase(ph, !!(currentPhase && currentPhase.emerg)));
+    list.appendChild(b);
+  });
+  openSheet("Emergencies", true, list);
+});
+
+// Settings
+$("setBtn").addEventListener("click", () => {
+  const wrap = document.createElement("div");
+  const seg = (title, opts, key, note) => {
+    const g = document.createElement("div"); g.className = "setgroup";
+    g.innerHTML = `<div class="setlabel">${title}</div>`;
+    const s = document.createElement("div"); s.className = "seg";
+    opts.forEach(([v, lbl]) => {
+      const b = document.createElement("button");
+      b.textContent = lbl; if(prefs[key] === v) b.classList.add("on");
+      b.addEventListener("click", () => {
+        prefs[key] = v; applyPrefs(); savePrefs();
+        s.querySelectorAll("button").forEach(x => x.classList.toggle("on", x === b));
+      });
+      s.appendChild(b);
+    });
+    g.appendChild(s);
+    if(note){ const n = document.createElement("div"); n.className = "setnote"; n.textContent = note; g.appendChild(n); }
+    wrap.appendChild(g);
+  };
+  seg("Display", [["day","☁ Day"],["sun","☀ Sun"],["night","☾ Night"]], "mode",
+      "Sun = black on white for glare. Night = dim, for dusk and cockpit at night.");
+  seg("Text size", [["s","S"],["m","M"],["l","L"],["xl","XL"]], "size");
+  seg("Vibrate on tick", [[true,"On"],[false,"Off"]], "haptic");
+
+  const g = document.createElement("div"); g.className = "setgroup";
+  g.innerHTML = `<div class="setlabel">Progress</div>`;
+  g.appendChild(armedButton("resetbtn", "Reset all checks", "Tap again to reset everything", () => {
+    state = {}; last = null; staleCleared = false; save(); closeSheet(); goHome(); renderHome(); toast("All checks reset");
+  }));
+  const n = document.createElement("div"); n.className = "setnote";
+  n.textContent = "Ticks are saved on this device and cleared automatically after 6 hours of no use, so an old session never carries into a new flight.";
+  g.appendChild(n);
+  wrap.appendChild(g);
+
+  openSheet("Settings", false, wrap);
+});
+
+// ---------- keep the screen on (where supported) ----------
+let wakeLock = null;
+async function keepAwake(){
+  try{ if("wakeLock" in navigator && document.visibilityState === "visible") wakeLock = await navigator.wakeLock.request("screen"); }catch(e){}
+}
+document.addEventListener("visibilitychange", () => { if(document.visibilityState === "visible") keepAwake(); });
+document.addEventListener("click", function once(){ keepAwake(); document.removeEventListener("click", once); });
+
+// ---------- boot ----------
+load();
+applyPrefs();
+try{ history.replaceState({}, ""); }catch(e){}
+renderHome();
+</script>
+</body>
+</html>

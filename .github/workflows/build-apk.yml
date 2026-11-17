@@ -1,0 +1,29 @@
+name: Build APK
+on:
+  push: { branches: [main] }
+  workflow_dispatch: {}
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      BUILD_NUMBER: ${{ github.run_number }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: '17', cache: gradle }
+      # Rebuild the page from its sources so the APK always matches web/
+      - run: python3 web/merge.py
+      - run: chmod +x gradlew && ./gradlew --no-daemon assembleRelease
+      - run: cp app/build/outputs/apk/release/app-release.apk PPLKneeboard.apk
+      - uses: actions/upload-artifact@v4
+        with: { name: PPLKneeboard-apk, path: PPLKneeboard.apk }
+      - name: Publish as latest release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: build-${{ github.run_number }}
+          name: PPL Kneeboard 1.0.${{ github.run_number }}
+          body: Built from ${{ github.sha }}. Download PPLKneeboard.apk below and open it on the phone or tablet.
+          files: PPLKneeboard.apk
+          make_latest: true
