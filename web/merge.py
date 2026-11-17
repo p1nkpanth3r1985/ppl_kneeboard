@@ -12,7 +12,8 @@ here = pathlib.Path(__file__).parent
 src = (here / "c150-original.html").read_text(encoding="utf-8")
 css = (here / "study.css").read_text(encoding="utf-8")
 data = "\n\n".join(f.read_text(encoding="utf-8") for f in sorted((here / "subjects").glob("*.js")))
-app = (here / "widgets.js").read_text(encoding="utf-8") + "\n" + (here / "study-app.js").read_text(encoding="utf-8")
+data += "\n\n" + (here / "lessons.js").read_text(encoding="utf-8") + "\n" + (here / "flashcards.js").read_text(encoding="utf-8")
+app = "\n".join((here / f).read_text(encoding="utf-8") for f in ["widgets.js", "study-app.js", "logbook.js"])
 
 SVG_DEFS = """<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
   <g id="ac"><path d="M0,-12 C2,-10 2,-4 2,2 L1.5,12 L0,13 L-1.5,12 L-2,2 C-2,-4 -2,-10 0,-12Z M-12,-1 L-2,-3.2 L-2,2 L-12,2Z M12,-1 L2,-3.2 L2,2 L12,2Z M-5,10 L-1.5,8.8 L-1.5,12 L-5,12Z M5,10 L1.5,8.8 L1.5,12 L5,12Z" fill="currentColor"/></g>
@@ -24,19 +25,21 @@ SVG_DEFS = """<svg width="0" height="0" style="position:absolute" aria-hidden="t
 TABS = ('  <nav id="secTabs" aria-label="Sections">'
         '<button id="tabCl" type="button">Checklist</button>'
         '<button id="tabTr" type="button">Training</button>'
-        '<button id="tabEx" type="button">Exams</button></nav>\n')
+        '<button id="tabEx" type="button">Exams</button>'
+        '<button id="tabLg" type="button">Logbook</button></nav>\n')
 
-NAV_JS = r'''$("backBtn").addEventListener("click", () => section === "cl" ? goHome() : Study.back());
+NAV_JS = r'''$("backBtn").addEventListener("click", () => section === "cl" ? goHome() : section === "lg" ? Logbook.back() : Study.back());
 
 // ---------- section tabs (top-level screens only) ----------
 function markTabs(){
-  [["tabCl","cl"],["tabTr","tr"],["tabEx","ex"]].forEach(([id, s]) => {
+  [["tabCl","cl"],["tabTr","tr"],["tabEx","ex"],["tabLg","lg"]].forEach(([id, s]) => {
     const b = $(id); b.classList.toggle("on", section === s); b.setAttribute("aria-pressed", section === s ? "true" : "false");
   });
 }
 $("tabCl").addEventListener("click", () => { if(section === "cl") return; try{ history.replaceState({}, ""); }catch(e){} renderHome(); });
 $("tabTr").addEventListener("click", () => { if(section === "tr") return; Study.showTraining(); });
 $("tabEx").addEventListener("click", () => { if(section === "ex") return; Study.showExams(); });
+$("tabLg").addEventListener("click", () => { if(section === "lg") return; Logbook.show(); });
 '''
 
 SETTINGS_JS = r'''  const ga = document.createElement("div"); ga.className = "setgroup";
@@ -51,6 +54,16 @@ SETTINGS_JS = r'''  const ga = document.createElement("div"); ga.className = "se
   gn.textContent = "Exam answers for every subject are kept on this device until you clear them. They are separate from checklist ticks.";
   ga.appendChild(gn);
   wrap.appendChild(ga);
+
+  const gb = document.createElement("div"); gb.className = "setgroup";
+  gb.innerHTML = `<div class="setlabel">Backup</div>`;
+  const bb = document.createElement("button"); bb.className = "resetbtn"; bb.textContent = "Backup and restore";
+  bb.addEventListener("click", () => { closeSheet(); Logbook.renderBackupFromSettings(); });
+  gb.appendChild(bb);
+  const bn = document.createElement("div"); bn.className = "setnote";
+  bn.textContent = "Save your logbook, exam answers and settings to a file, or restore them on a new phone.";
+  gb.appendChild(bn);
+  wrap.appendChild(gb);
 
   openSheet("Settings", false, wrap);
 '''
@@ -77,7 +90,7 @@ edits = [
      '  section = "cl"; $("studyView").hidden = true; $("emergFab").hidden = false;\n'
      '  hdr.classList.remove("top", "insub");\n'),
     ("  closeSheet();\n  const ph = e.state && e.state.ph && byId(e.state.ph);\n",
-     "  closeSheet();\n  if(e.state && e.state.st){ Study.fromState(e.state); return; }\n"
+     "  closeSheet();\n  if(e.state && e.state.st){ Study.fromState(e.state); return; }\n  if(e.state && e.state.lg){ Logbook.fromState(e.state); return; }\n"
      "  const ph = e.state && e.state.ph && byId(e.state.ph);\n"),
     ('$("backBtn").addEventListener("click", goHome);\n', NAV_JS),
     ('  openSheet("Settings", false, wrap);\n', SETTINGS_JS),

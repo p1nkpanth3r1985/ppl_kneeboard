@@ -422,5 +422,10 @@ const Study = (() => {
   function showExams(){ replace({ st:"ex" }); renderExamHome(); }
 
   load();
-  return { showTraining, showExams, fromState, back, reset };
+  function openTopic(sid, tid){
+    const s = subjectById(sid), t = s && topicOf(s, tid);
+    if(!t) return;
+    push({ st:"trt", s:sid, t:tid }); renderTrainingTopic(s, t);
+  }
+  return { showTraining, showExams, fromState, back, reset, openTopic };
 })();
