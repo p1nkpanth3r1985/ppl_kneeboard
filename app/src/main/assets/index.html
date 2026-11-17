@@ -270,7 +270,7 @@
   body[data-mode="night"]{ --mag:#f26ba6; --magtint:#3a1830; --ground:#26394b; --rw:#4a5e73; --mk:#eaf1f8; }
 
   /* Section tabs: only on the two top-level screens */
-  #secTabs{display:none;gap:6px;margin-top:10px;max-width:560px;}
+  #secTabs{display:none;gap:6px;margin-top:10px;max-width:640px;}
   header.top #secTabs{display:flex;}
   header.insub #backBtn{display:flex;}
   #secTabs button{
@@ -395,6 +395,10 @@
   #studyView .miss .ma b{font-size:.65rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-right:6px;}
   #studyView .miss .y b{color:var(--emerg);} #studyView .miss .c b{color:var(--tick);}
   #studyView .miss .why{color:var(--muted);margin-top:6px;}
+  #studyView .pbtn.off{opacity:.5;box-shadow:none;cursor:default;}
+  #studyView .pbtn.off .pref{color:var(--muted);}
+  #studyView .grid + .bigbtn{margin-top:0;}
+  #studyView > .bigbtn{margin:0 0 18px;}
 </style>
 </head>
 <body data-mode="day">
@@ -412,7 +416,7 @@
     <button class="hbtn" id="setBtn" aria-label="Settings">&#9881;</button>
   </div>
   <div class="hprog"><i id="hprogBar"></i></div>
-  <nav id="secTabs" aria-label="Sections"><button id="tabCl" type="button">Checklist</button><button id="tabSt" type="button">Air Law</button></nav>
+  <nav id="secTabs" aria-label="Sections"><button id="tabCl" type="button">Checklist</button><button id="tabTr" type="button">Training</button><button id="tabEx" type="button">Exams</button></nav>
 </header>
 
 <main>
@@ -828,6 +832,11 @@ const EMERG = [
   ]}]
 }
 ];
+
+
+// Subjects register themselves here, one file each (subjects/NNN-name.js).
+// Each topic's questions list the correct answer first; the app shuffles them.
+const SUBJECTS = [];
 
 
 const FIG={};
@@ -1330,6 +1339,1177 @@ qs:[
 {q:'Which Annex covers security and acts of unlawful interference?',o:['Annex 17','Annex 13','Annex 11','Annex 14'],e:'Annex 17 is security. Annex 13 is accident investigation, Annex 11 is air traffic services and Annex 14 is aerodromes.'}
 ]});
 
+SUBJECTS.push({ id:"airlaw", code:"010", name:"Air Law",
+  blurb:"The rules: ICAO and the Chicago Convention, licensing, rules of the air, airspace and VMC, altimetry, aerodromes and signals.",
+  topics:TOPICS });
+
+
+// 040 Human Performance and Limitations
+(() => {
+const swiss = `<figure class="fig wide"><svg viewBox="0 0 440 200" role="img" aria-label="Swiss cheese model: an accident happens when holes in several layers of defence line up">
+<rect class="fb" x="1" y="1" width="438" height="198" rx="6"/>
+${[0,1,2,3].map(i=>{const x=90+i*80;return `<rect x="${x}" y="40" width="26" height="120" rx="4" class="f-tint ln"/>`+[[52+i*6,6],[100,9],[142-i*5,6]].map(([y,r])=>`<ellipse cx="${x+13}" cy="${y}" rx="7" ry="${r}" class="f-card ln"/>`).join('');}).join('')}
+<line x1="30" y1="100" x2="420" y2="100" class="ln pb" style="stroke-width:2.5" marker-end="url(#arr)"/>
+<text class="t" x="30" y="90">hazard</text><text class="t" x="420" y="90" text-anchor="end">accident</text>
+<text class="tm" x="103" y="180" text-anchor="middle">rules</text><text class="tm" x="183" y="180" text-anchor="middle">training</text>
+<text class="tm" x="263" y="180" text-anchor="middle">checklists</text><text class="tm" x="343" y="180" text-anchor="middle">the pilot</text>
+</svg><figcaption>Each layer of defence has weaknesses. An accident happens when the holes line up and a hazard passes through all of them (James Reason's "Swiss cheese" model).</figcaption></figure>`;
+
+const arousal = `<figure class="fig wide"><svg viewBox="0 0 420 220" role="img" aria-label="Performance is best at a moderate level of arousal and falls off when arousal is too low or too high">
+<rect class="fb" x="1" y="1" width="418" height="218" rx="6"/>
+<line x1="50" y1="180" x2="400" y2="180" class="ln"/><line x1="50" y1="180" x2="50" y2="20" class="ln"/>
+<text class="tm" x="225" y="206" text-anchor="middle">arousal / stress</text>
+<text class="tm" x="20" y="100" transform="rotate(-90 20 100)" text-anchor="middle">performance</text>
+<path d="M60,170 Q140,170 200,60 Q225,30 250,60 Q310,170 390,170" class="ln pa" style="stroke-width:3"/>
+<text class="t" x="70" y="155">bored, inattentive</text>
+<text class="tb" x="225" y="34" text-anchor="middle">best</text>
+<text class="t" x="300" y="135">overloaded</text>
+</svg><figcaption>Performance is best at a moderate level of arousal (the Yerkes–Dodson relationship). Too little and attention drifts; too much and the pilot becomes overloaded.</figcaption></figure>`;
+
+const T = [];
+T.push({ id:"hypoxia", ref:"040 · 1", title:"Breathing, hypoxia and carbon monoxide",
+blurb:"What happens to the body as air pressure falls, and two cabin hazards that feel the same.",
+learn:()=>`
+<h3>The atmosphere and oxygen</h3>
+<p>Air is about <b>21% oxygen</b> at every altitude a light aircraft reaches. What falls with height is the <b>pressure</b>, so each breath delivers less oxygen into the blood.</p>
+<h3>Hypoxia</h3>
+<p>Hypoxia is a shortage of oxygen in the body's tissues. It is dangerous because it is <b>insidious</b>: one of the first things it affects is judgement, so the pilot may feel fine, even euphoric.</p>
+<ul>
+<li>Symptoms include impaired judgement, euphoria, slowed thinking, headache, tingling, visual impairment and cyanosis (blue lips and fingernails).</li>
+<li><b>Night vision</b> is one of the first things affected, from as low as about 5,000 ft.</li>
+<li>Smoking, alcohol, fatigue and poor fitness all lower your tolerance.</li>
+<li>Treatment: descend, and use oxygen if available.</li>
+</ul>
+<h3>Hyperventilation</h3>
+<p>Over-breathing, often from anxiety, washes too much <b>carbon dioxide</b> out of the blood. Symptoms are dizziness, tingling in the hands and lips, and feeling light-headed, very similar to hypoxia. Treatment: consciously slow your breathing rate and depth, or talk out loud, which naturally slows it.</p>
+<h3>Carbon monoxide</h3>
+<p>Carbon monoxide is colourless and odourless. In a light aircraft it most often comes from an exhaust leak into the <b>cabin heater</b>. It binds to haemoglobin about 200 times more readily than oxygen, so even small amounts block oxygen transport. Symptoms: headache, drowsiness, nausea, impaired judgement.</p>
+<p>Action: heater off, fresh air vents open, land as soon as possible. A carbon monoxide detector in the cockpit is cheap protection.</p>
+<div class="box trap"><b>Common trap</b>The proportion of oxygen does not fall with height. The partial pressure of oxygen does.</div>`,
+qs:[
+{q:"How does the percentage of oxygen in the air change as you climb in a light aircraft?",o:["It stays at about 21%","It falls steadily","It rises","It halves every 5,000 ft"],e:"The proportion stays at about 21%. The total pressure, and so the partial pressure of oxygen, falls."},
+{q:"Why is hypoxia particularly dangerous for a pilot?",o:["Its early effects impair judgement, so the pilot may not recognise it","It always causes immediate unconsciousness","It only occurs above 25,000 ft","It is always accompanied by severe pain"],e:"Hypoxia is insidious: it degrades judgement early, and can bring euphoria, so the pilot may feel fine while performing badly."},
+{q:"Which faculty is often affected first by mild hypoxia at moderate altitudes?",o:["Night vision","Hearing","Sense of smell","Muscle strength"],e:"Night vision is sensitive to reduced oxygen and can be impaired from as low as about 5,000 ft."},
+{q:"What causes the symptoms of hyperventilation?",o:["Too much carbon dioxide being breathed out","Too little oxygen in the air","Carbon monoxide in the cabin","Nitrogen bubbles in the blood"],e:"Over-breathing lowers the carbon dioxide level in the blood, causing dizziness and tingling. The cure is to slow the breathing down."},
+{q:"In a single-engine light aircraft, what is the most likely source of carbon monoxide in the cabin?",o:["An exhaust leak into the cabin heating system","The fuel tanks","The battery","Passengers' breath"],e:"Cabin heat is usually taken from a muff around the exhaust. A crack lets exhaust gas, including carbon monoxide, into the cabin."},
+{q:"You suspect carbon monoxide poisoning in flight. What should you do?",o:["Turn the heater off, open the fresh air vents and land as soon as possible","Turn the heater up and climb","Breathe faster to clear it","Continue and see if the symptoms go"],e:"Stop the source, ventilate, and land. Carbon monoxide leaves the blood slowly, so symptoms can persist."},
+{q:"Why is carbon monoxide so harmful even in small amounts?",o:["It combines with haemoglobin far more readily than oxygen does","It displaces nitrogen in the lungs","It raises blood pressure","It irritates the eyes"],e:"Haemoglobin takes up carbon monoxide about 200 times more readily than oxygen, so it blocks the blood's oxygen-carrying capacity."}
+]});
+
+T.push({ id:"vision", ref:"040 · 2", title:"Vision and lookout",
+blurb:"How the eye works, night adaptation, scanning for traffic and approach illusions.",
+learn:()=>`
+<h3>The eye</h3>
+<div class="tbl"><table>
+<tr><th>Cells</th><th>Where</th><th>Good for</th></tr>
+<tr><td>Cones</td><td>Concentrated at the centre (the fovea)</td><td>Colour and fine detail, in good light</td></tr>
+<tr><td>Rods</td><td>Around the edge of the retina</td><td>Low light and movement; no colour</td></tr>
+</table></div>
+<ul>
+<li>The <b>blind spot</b> is where the optic nerve leaves the eye. Using both eyes and moving the head covers it.</li>
+<li>Full <b>dark adaptation</b> takes about 30 minutes. A bright light destroys it in seconds.</li>
+<li>At night, look slightly to one side of an object (<b>off-centre viewing</b>), because the centre of the eye has no rods.</li>
+</ul>
+<h3>Lookout</h3>
+<ul>
+<li>In a featureless sky the eye relaxes to focus a metre or two away (<b>empty field myopia</b>). Focus on something distant, such as a cloud or the horizon, then scan.</li>
+<li>The eye sees detail only when it stops. Scan in short, regular steps of about 10°, pausing at each.</li>
+<li>An aircraft on a collision course stays at a <b>constant relative bearing</b>. It does not appear to move, and grows very slowly until the last few seconds.</li>
+</ul>
+<h3>Approach illusions</h3>
+<div class="tbl"><table>
+<tr><th>Runway</th><th>Makes you feel</th><th>Risk</th></tr>
+<tr><td>Upsloping</td><td>Too high</td><td>Flying a low approach</td></tr>
+<tr><td>Downsloping</td><td>Too low</td><td>Flying a high approach</td></tr>
+<tr><td>Narrower than usual</td><td>Too high</td><td>Flying a low approach</td></tr>
+<tr><td>Wider than usual</td><td>Too low</td><td>Flying a high approach</td></tr>
+</table></div>`,
+qs:[
+{q:"Which cells in the eye are mainly used for vision at night?",o:["Rods","Cones","The fovea","The optic nerve"],e:"Rods are sensitive to low light and movement but not colour. Cones need good light."},
+{q:"About how long does it take for the eyes to fully adapt to darkness?",o:["30 minutes","2 minutes","5 minutes","2 hours"],e:"Full dark adaptation takes around 30 minutes, and bright light can undo it almost at once."},
+{q:"Another aircraft is on a collision course with you. How will it appear?",o:["Stationary in your field of view, at a constant relative bearing","Moving rapidly across the windscreen","Getting smaller","Moving up and down"],e:"An aircraft that is going to hit you holds the same relative position. Its lack of movement makes it hard to spot."},
+{q:"What is empty field myopia?",o:["The eye relaxing to focus close by when there is nothing to look at","Short-sightedness caused by bright sunlight","Loss of colour vision at altitude","The blind spot in each eye"],e:"With no features to focus on, the eye focuses a metre or two away, so distant aircraft are missed. Focus on something distant before scanning."},
+{q:"What is the best technique for scanning for other traffic?",o:["Short, regular movements of about 10°, pausing at each","One continuous sweep from side to side","Staring straight ahead","Looking only where traffic is reported"],e:"The eye only detects detail when it is still, so scan in short steps with a pause at each."},
+{q:"Approaching an upsloping runway, what illusion is likely?",o:["Feeling too high, leading to a low approach","Feeling too low, leading to a high approach","Feeling too fast","No illusion"],e:"An upslope makes the runway look longer and steeper, as if you are high. Pilots then tend to descend too low."},
+{q:"At night, how should you look at a dim object to see it best?",o:["Slightly to one side of it","Directly at it","With one eye closed","Through a red filter"],e:"The centre of the eye has only cones, which need good light. Looking slightly off-centre puts the image on the rods."}
+]});
+
+T.push({ id:"balance", ref:"040 · 3", title:"Balance, disorientation and pressure",
+blurb:"The balance organs, the illusions they produce, and what pressure changes do to ears, sinuses and divers.",
+learn:()=>`
+<h3>The balance organs</h3>
+<ul>
+<li>The <b>semicircular canals</b> detect <b>angular acceleration</b> (starting or stopping a rotation). A steady rate of turn soon stops being felt.</li>
+<li>The <b>otoliths</b> detect <b>linear acceleration</b> and gravity. They cannot tell the difference between tilting and accelerating.</li>
+</ul>
+<h3>Illusions</h3>
+<div class="tbl"><table>
+<tr><th>Illusion</th><th>Cause</th><th>Feels like</th></tr>
+<tr><td>The leans</td><td>A slow roll into a turn goes undetected; rolling level is felt</td><td>Banked the other way when actually level</td></tr>
+<tr><td>Somatogravic</td><td>Forward acceleration, e.g. take-off or go-around at night</td><td>Nose-up pitch, tempting the pilot to push the nose down</td></tr>
+<tr><td>Coriolis</td><td>Moving the head during a turn</td><td>Strong tumbling sensation</td></tr>
+</table></div>
+<p>Without visual references these feelings are unreliable. The answer is to believe the instruments, and to avoid flying into cloud or poor visibility without the training to do so.</p>
+<h3>Pressure changes</h3>
+<ul>
+<li>The <b>Eustachian tube</b> equalises pressure in the middle ear. Air escapes easily on the climb; on the <b>descent</b>, air has to get back in, and a cold or congestion can block it, causing severe ear pain. The <b>Valsalva</b> manoeuvre (pinch the nose, close the mouth, gently blow) helps. Don't fly with a heavy cold.</li>
+<li>Sinuses can be blocked the same way.</li>
+<li><b>Scuba diving</b>: the body absorbs extra nitrogen under water. Flying soon afterwards lowers the pressure further, and nitrogen can form bubbles in the blood (<b>decompression sickness</b>). Leave a suitable interval after diving; check current guidance with your instructor or AME.</li>
+</ul>`,
+qs:[
+{q:"What do the semicircular canals detect?",o:["Angular acceleration","Linear acceleration","Gravity alone","Sound"],e:"The canals respond to changes in rotation. Linear acceleration and gravity are sensed by the otoliths."},
+{q:"After a long, steady turn, a pilot rolls level but feels banked the other way. What is this illusion called?",o:["The leans","Somatogravic illusion","Coriolis illusion","Empty field myopia"],e:"The canals adapted to the steady turn, so rolling level is sensed as a roll in the opposite direction."},
+{q:"At night, a pilot accelerating on take-off feels the nose pitching up. What is this, and what is the danger?",o:["A somatogravic illusion; the pilot may push the nose down towards the ground","The leans; the pilot may roll the wrong way","Coriolis illusion; the pilot may spin","Hypoxia; the pilot may lose consciousness"],e:"The otoliths can't tell acceleration from a nose-up tilt. Without visual cues, the pilot may lower the nose into a descent."},
+{q:"Which head movement during a turn is most likely to cause a strong tumbling sensation?",o:["A sudden head movement, such as looking down to pick something up","Keeping the head still","Looking straight ahead","Closing one eye"],e:"Moving the head during a turn stimulates more than one canal at once, producing the Coriolis illusion."},
+{q:"With a heavy cold, when is ear pain most likely in flight?",o:["During the descent","During the climb","In level cruise","Only on the ground"],e:"On the descent air has to flow back into the middle ear through the Eustachian tube, which congestion blocks."},
+{q:"What is the Valsalva manoeuvre used for?",o:["To help equalise pressure in the middle ear","To cure hyperventilation","To recover from the leans","To improve night vision"],e:"Gently blowing against a closed mouth and pinched nose pushes air up the Eustachian tube into the middle ear."},
+{q:"Why should you avoid flying soon after scuba diving?",o:["Nitrogen absorbed while diving can form bubbles as pressure falls, causing decompression sickness","Diving raises blood alcohol","Diving damages night vision","Salt water affects the balance organs for a week"],e:"Under pressure the body absorbs extra nitrogen. Reducing pressure by flying can bring it out of solution as bubbles. Leave a suitable interval, as current guidance advises."}
+]});
+
+T.push({ id:"health", ref:"040 · 4", title:"Fitness to fly",
+blurb:"Alcohol and the law, medication, minor illness and the IMSAFE check.",
+learn:()=>`
+<h3>Alcohol</h3>
+<ul>
+<li>In the UK, the Railways and Transport Safety Act 2003 sets the limit for pilots at <b>20 mg of alcohol per 100 ml of blood</b> (9 µg per 100 ml of breath). That is a quarter of the drink-drive limit in England.</li>
+<li>The body removes alcohol at roughly <b>one unit an hour</b>. Coffee, food, sleep or exercise do not speed it up.</li>
+<li>A common guide is at least 8 hours from "bottle to throttle", and much longer after heavy drinking. The hangover itself impairs performance even when the alcohol has gone.</li>
+</ul>
+<h3>Medication and illness</h3>
+<ul>
+<li>Many over-the-counter medicines affect fitness to fly. Antihistamines (hay fever, cold remedies) commonly cause drowsiness.</li>
+<li>If in doubt, ask an aviation medical examiner (AME) before flying.</li>
+<li>A cold can block the ears and sinuses; an upset stomach causes dehydration and distraction.</li>
+<li>Your medical certificate does not cover a temporary illness: you must not fly if you know or suspect you are unfit.</li>
+</ul>
+<h3>The IMSAFE check</h3>
+<div class="sq">
+<div class="tile"><div class="big">I</div><div class="d">Illness</div></div>
+<div class="tile"><div class="big">M</div><div class="d">Medication</div></div>
+<div class="tile"><div class="big">S</div><div class="d">Stress</div></div>
+<div class="tile"><div class="big">A</div><div class="d">Alcohol</div></div>
+<div class="tile"><div class="big">F</div><div class="d">Fatigue</div></div>
+<div class="tile"><div class="big">E</div><div class="d">Eating</div></div>
+</div>
+<h3>Fatigue and the body clock</h3>
+<ul>
+<li>The <b>circadian rhythm</b> is a roughly 24-hour cycle. Alertness is lowest in the <b>early hours of the morning</b>, with a smaller dip in the early afternoon.</li>
+<li><b>Acute</b> fatigue follows a long or demanding day and is cured by rest. <b>Chronic</b> fatigue builds up over weeks of poor sleep or stress and needs longer recovery.</li>
+<li>Caffeine masks tiredness but does not remove it. Only sleep does.</li>
+</ul>`,
+qs:[
+{q:"What is the UK legal alcohol limit in the blood for a pilot?",o:["20 mg per 100 ml","80 mg per 100 ml","50 mg per 100 ml","There is no limit, only a guideline"],e:"The Railways and Transport Safety Act 2003 sets 20 mg per 100 ml of blood for pilots, a quarter of the England drink-drive limit."},
+{q:"Which of these speeds up the removal of alcohol from the body?",o:["None of them; only time does","Strong coffee","A big meal","Exercise"],e:"The liver removes alcohol at a roughly fixed rate, about one unit an hour. Nothing you eat or do changes that."},
+{q:"Many hay fever and cold remedies contain antihistamines. What is their most likely effect on a pilot?",o:["Drowsiness","Better night vision","Faster reactions","No effect"],e:"Antihistamines commonly cause drowsiness and slowed reactions. Check with an AME before flying on any new medicine."},
+{q:"What does the \"S\" in the IMSAFE check stand for?",o:["Stress","Sleep","Symptoms","Speed"],e:"IMSAFE: Illness, Medication, Stress, Alcohol, Fatigue, Eating."},
+{q:"When is a person's natural alertness typically at its lowest?",o:["In the early hours of the morning","Mid-morning","Early evening","Just after waking"],e:"The circadian low is in the early hours of the morning, with a smaller dip in the early afternoon."},
+{q:"What is the difference between acute and chronic fatigue?",o:["Acute follows a single demanding period and is cured by rest; chronic builds up over a long time","Acute is mild and chronic is severe","Acute is mental and chronic is physical","There is no difference"],e:"Acute fatigue is short-term and recovers with a good sleep. Chronic fatigue accumulates over weeks and needs longer to recover."},
+{q:"Your Class 2 medical is valid, but you have a heavy cold today. Which statement is correct?",o:["You must not fly if you know or suspect you are unfit, whatever the certificate says","The valid certificate means you are fit to fly","You can fly if you take a decongestant","Colds are not relevant to flying"],e:"A medical certificate shows you met the standard when examined. You are responsible for not flying while temporarily unfit."}
+]});
+
+T.push({ id:"processing", ref:"040 · 5", title:"Information processing and stress",
+blurb:"Memory, attention, expectation and how stress and workload affect performance.",
+learn:()=>`
+<h3>Memory</h3>
+<ul>
+<li><b>Short-term (working) memory</b> holds about <b>7 ± 2 items</b>, for only a short time unless rehearsed. That is why you write down clearances and use checklists.</li>
+<li><b>Long-term memory</b> stores knowledge and experience.</li>
+<li><b>Motor programmes</b> are well-practised skills that run without conscious thought, such as flaring for landing. Useful, but a programme can run in the wrong situation: selecting the wrong lever out of habit.</li>
+</ul>
+<h3>Attention and perception</h3>
+<ul>
+<li>Attention is limited. Focusing hard on one task (such as a radio problem) can push out others (such as flying the aircraft).</li>
+<li><b>Expectation</b> shapes what we perceive. A pilot expecting "cleared to land" may hear it when ATC said something else.</li>
+<li><b>Confirmation bias</b>: once we have made up our minds, we look for evidence that agrees and ignore what doesn't. A common route to getting lost.</li>
+<li><b>Situational awareness</b> is an accurate picture of what is happening around you, and what is likely to happen next.</li>
+</ul>
+<h3>Stress and arousal</h3>
+${arousal}
+<p>Under high stress, attention narrows (<b>tunnel vision</b>), thinking becomes rigid, and people fall back on old habits. Stress outside flying (work, money, relationships) adds to the load you bring into the cockpit.</p>`,
+qs:[
+{q:"Roughly how many items can short-term memory hold?",o:["7 ± 2","3 ± 1","20 ± 5","Unlimited, for a few seconds"],e:"Working memory holds about seven items, which is why long clearances should be written down."},
+{q:"What is a motor programme?",o:["A well-practised skill performed without conscious thought","A checklist","A long-term memory of a route","A computer program in the aircraft"],e:"Motor programmes free up attention, but can run automatically in the wrong context."},
+{q:"According to the Yerkes–Dodson relationship, performance is best at:",o:["A moderate level of arousal","Very low arousal","Very high arousal","Any level of arousal"],e:"Too little arousal brings boredom and inattention; too much brings overload. Moderate arousal gives the best performance."},
+{q:"A pilot hears \"cleared to land\" when ATC actually said \"continue approach\". What is the most likely cause?",o:["Expectation","Hypoxia","Empty field myopia","Hyperventilation"],e:"Expectation strongly shapes perception. Listening carefully and reading back properly guards against it."},
+{q:"Uncertain of position, a pilot convinces himself a town ahead is the one on the plan and ignores a river that doesn't fit. This is an example of:",o:["Confirmation bias","The leans","Motor programme error","Empty field myopia"],e:"Confirmation bias makes us accept evidence that fits our picture and discount what doesn't."},
+{q:"What is a typical effect of high stress on a pilot's attention?",o:["It narrows, causing tunnel vision","It widens to take in everything","It is unaffected","It becomes faster and more accurate"],e:"High stress narrows attention to a few items, so important information outside that focus is missed."},
+{q:"What is situational awareness?",o:["An accurate picture of what is happening and what is likely to happen next","Knowing the aircraft's registration","The ability to fly without instruments","A memory technique for checklists"],e:"Good situational awareness covers the aircraft, the environment, the weather and the plan, now and in the near future."}
+]});
+
+T.push({ id:"decisions", ref:"040 · 6", title:"Decision making and error",
+blurb:"How accidents happen, types of error, hazardous attitudes and a structured way to decide.",
+learn:()=>`
+${swiss}
+<h3>Types of error</h3>
+<div class="tbl"><table>
+<tr><th>Error</th><th>What happens</th><th>Example</th></tr>
+<tr><td>Slip</td><td>The right plan, carried out wrongly</td><td>Selecting the flap lever instead of the trim</td></tr>
+<tr><td>Lapse</td><td>A memory failure: something forgotten</td><td>Forgetting to switch fuel tanks</td></tr>
+<tr><td>Mistake</td><td>The wrong plan, carried out as intended</td><td>Choosing to continue into worsening weather</td></tr>
+</table></div>
+<p>Checklists catch slips and lapses. Mistakes need better decisions.</p>
+<h3>Hazardous attitudes</h3>
+<div class="tbl"><table>
+<tr><th>Attitude</th><th>Sounds like</th><th>Antidote</th></tr>
+<tr><td>Anti-authority</td><td>"Don't tell me what to do."</td><td>"Follow the rules; they are usually right."</td></tr>
+<tr><td>Impulsivity</td><td>"Do something, quickly!"</td><td>"Not so fast. Think first."</td></tr>
+<tr><td>Invulnerability</td><td>"It won't happen to me."</td><td>"It could happen to me."</td></tr>
+<tr><td>Macho</td><td>"I can do it."</td><td>"Taking chances is foolish."</td></tr>
+<tr><td>Resignation</td><td>"What's the use?"</td><td>"I'm not helpless. I can make a difference."</td></tr>
+</table></div>
+<h3>Deciding under pressure: DODAR</h3>
+<p><b>D</b>iagnose · <b>O</b>ptions · <b>D</b>ecide · <b>A</b>ssign tasks · <b>R</b>eview. Fly the aircraft first; then work through the problem.</p>
+<h3>Plan continuation</h3>
+<p>"Get-there-itis" is the pull to continue with a plan despite signs it should change. Set <b>personal minimums</b> on the ground (weather, wind, fuel reserve) so the decision is made before the pressure is on.</p>`,
+qs:[
+{q:"In the \"Swiss cheese\" model, when does an accident happen?",o:["When weaknesses in several layers of defence line up","When a single pilot error occurs","Only when equipment fails","When the weather is below minimums"],e:"Every defence has holes. An accident happens when the holes line up and a hazard gets through all the layers."},
+{q:"A pilot means to select carb heat but pulls the mixture by mistake. What type of error is this?",o:["A slip","A lapse","A mistake","A violation"],e:"The plan was right but the action went wrong: a slip."},
+{q:"A pilot forgets to change fuel tanks at the planned time. What type of error is this?",o:["A lapse","A slip","A mistake","A violation"],e:"Lapses are failures of memory. Timed checks and checklists help."},
+{q:"What is the antidote to the \"macho\" hazardous attitude?",o:["Taking chances is foolish","It could happen to me","Not so fast, think first","Follow the rules"],e:"Macho thinking ('I can do it') is countered by recognising that taking chances is foolish."},
+{q:"In the DODAR decision model, what does the first D stand for?",o:["Diagnose","Decide","Divert","Delegate"],e:"DODAR: Diagnose, Options, Decide, Assign, Review."},
+{q:"What is the main purpose of setting personal minimums before a flight?",o:["To make go/no-go decisions in advance, before pressure to continue builds","To meet legal requirements","To impress the instructor","To reduce fuel use"],e:"Deciding limits on the ground protects against plan continuation bias when you are in the air."},
+{q:"A pilot continues towards the destination despite deteriorating weather, because friends are waiting. What is this commonly called?",o:["Get-there-itis (plan continuation bias)","The leans","Empty field myopia","Confirmation of minimums"],e:"The pull to complete a plan despite warning signs is one of the commonest factors in weather-related accidents."}
+]});
+
+SUBJECTS.push({ id:"hp", code:"040", name:"Human Performance",
+  blurb:"Breathing and hypoxia, vision and lookout, balance and disorientation, fitness to fly, memory and stress, and decision making.",
+  topics:T });
+})();
+
+
+// 050 Meteorology
+(() => {
+const fronts = `<figure class="fig wide"><svg viewBox="0 0 480 240" role="img" aria-label="Cross-section of a frontal system moving east: cold front behind, warm sector, warm front ahead with its clouds">
+<rect class="fb" x="1" y="1" width="478" height="238" rx="6"/>
+<rect class="f-ground" x="10" y="196" width="460" height="10"/>
+<path d="M150,196 Q132,128 70,62" class="ln pa" style="stroke-width:2.5"/>
+<path d="M280,196 L470,66" class="ln" style="stroke-width:2.5"/>
+<ellipse cx="172" cy="104" rx="22" ry="50" class="f-card ln"/><text class="tb" x="172" y="108" text-anchor="middle">Cb</text>
+<path d="M160,160 l-5,16 M170,160 l-5,16 M180,160 l-5,16" class="ln pa" style="stroke-width:1.5"/>
+<text class="t" x="304" y="160">Ns</text><text class="t" x="352" y="126">As</text><text class="t" x="402" y="92">Cs</text><text class="t" x="446" y="60">Ci</text>
+<path d="M298,170 l-5,18 M310,170 l-5,18 M322,170 l-5,18 M334,170 l-5,18 M346,170 l-5,16 M358,170 l-5,12" class="ln pa" style="stroke-width:1"/>
+<text class="tm" x="40" y="110">cold air</text>
+<text class="tm" x="225" y="150" text-anchor="middle">warm sector</text>
+<text class="tm" x="430" y="180" text-anchor="middle">cold air</text>
+<text class="tb" x="150" y="226" text-anchor="middle">COLD FRONT</text>
+<text class="tb" x="290" y="226" text-anchor="middle">WARM FRONT</text>
+<text class="tm" x="196" y="186">heavy showers</text>
+<text class="tm" x="372" y="150">long spell of rain</text>
+<line x1="370" y1="22" x2="460" y2="22" class="ln" marker-end="url(#arr)"/><text class="tm" x="415" y="16" text-anchor="middle">system moves east</text>
+</svg><figcaption>The system moves left to right. The warm front slopes gently forward, so an observer ahead sees high cloud first (Ci, Cs), then lowering As and Ns with a long band of rain. The cold front behind it is steep: a narrow band of heavy showers, possibly Cb, then clearer, colder air.</figcaption></figure>`;
+
+const clouds = `<div class="tbl"><table>
+<tr><th>Level</th><th>Types</th><th>Notes</th></tr>
+<tr><td>High</td><td>Cirrus (Ci), cirrocumulus (Cc), cirrostratus (Cs)</td><td>Ice crystals. Cs can give a halo round the sun or moon.</td></tr>
+<tr><td>Medium</td><td>Altocumulus (Ac), altostratus (As)</td><td>"Alto" means medium level. As often comes ahead of a warm front.</td></tr>
+<tr><td>Low</td><td>Stratus (St), stratocumulus (Sc), nimbostratus (Ns)</td><td>Ns is the thick rain-bearing layer cloud; its base is often low.</td></tr>
+<tr><td>Vertical development</td><td>Cumulus (Cu), cumulonimbus (Cb)</td><td>Formed by convection in unstable air. Cb brings thunder, hail, icing and severe turbulence.</td></tr>
+</table></div>`;
+
+const T = [];
+T.push({ id:"atmos", ref:"050 · 1", title:"The atmosphere and altimetry",
+blurb:"The International Standard Atmosphere, pressure with height, and how pressure and temperature fool the altimeter.",
+learn:()=>`
+<h3>International Standard Atmosphere (ISA)</h3>
+<div class="tbl"><table>
+<tr><th>Value</th><th>ISA</th></tr>
+<tr><td>Mean sea level pressure</td><td>1013.25 hPa</td></tr>
+<tr><td>Mean sea level temperature</td><td>+15 °C</td></tr>
+<tr><td>Temperature lapse rate</td><td>1.98 °C per 1,000 ft (use 2 °C)</td></tr>
+<tr><td>Tropopause</td><td>About 36,000 ft, at −56.5 °C</td></tr>
+</table></div>
+<p>Near the surface, pressure falls by about <b>1 hPa for every 30 ft</b> of height. Use 30 ft per hPa for altimeter calculations.</p>
+<h3>Density</h3>
+<p>Air density falls with height, with higher temperature and with higher humidity. Low density means less engine power, less propeller thrust and longer take-off runs. <b>Density altitude</b> is the height in the ISA that has the same density as the air you are in: a hot day at a high airfield can perform like a much higher one.</p>
+<h3>Altimeter errors</h3>
+<ul>
+<li><b>Pressure:</b> flying from high to low pressure with the subscale unchanged, the altimeter over-reads, so you are <b>lower</b> than indicated. "High to low, look out below."</li>
+<li><b>Temperature:</b> in air colder than ISA the altimeter also over-reads, so you are lower than indicated.</li>
+</ul>
+<p>Example: QNH 1013 set, and the actual QNH is now 1003. That is 10 hPa × 30 ft = 300 ft. You are 300 ft lower than the altimeter shows.</p>
+<div class="box trap"><b>Common trap</b>Both errors point the same way when things get worse: lower pressure or colder air than the altimeter assumes puts you closer to the ground than it says.</div>`,
+qs:[
+{q:"What is the ISA temperature at mean sea level?",o:["+15 °C","0 °C","+20 °C","+10 °C"],e:"The International Standard Atmosphere assumes +15 °C and 1013.25 hPa at mean sea level."},
+{q:"What is the ISA temperature lapse rate in the lower atmosphere?",o:["About 2 °C per 1,000 ft","About 3 °C per 1,000 ft","About 1.5 °C per 1,000 ft","About 1 °C per 1,000 ft"],e:"ISA cools at 1.98 °C per 1,000 ft up to the tropopause. Don't confuse it with the dry adiabatic rate of 3 °C per 1,000 ft."},
+{q:"Near the surface, approximately how much height does 1 hPa represent?",o:["30 ft","10 ft","100 ft","300 ft"],e:"Use 30 ft per hPa for altimetry calculations at low level."},
+{q:"You fly from an area of high pressure to an area of low pressure without changing the altimeter subscale. What happens?",o:["You are lower than the altimeter indicates","You are higher than the altimeter indicates","The altimeter reads correctly","The altimeter reads zero"],e:"With the old, higher setting still set, the altimeter over-reads. High to low, look out below."},
+{q:"The altimeter is set to 1013 hPa but the actual QNH is 998 hPa. Roughly how far is the aircraft below its indicated altitude?",o:["450 ft","150 ft","45 ft","1,500 ft"],e:"The difference is 15 hPa × 30 ft = 450 ft, and because pressure has fallen, the aircraft is lower than indicated."},
+{q:"How does air colder than ISA affect a pressure altimeter?",o:["It over-reads, so the aircraft is lower than indicated","It under-reads, so the aircraft is higher than indicated","It reads correctly","It reads correctly only above 3,000 ft"],e:"Cold air is denser and the pressure levels sit closer together, so at an indicated altitude you are lower than the altimeter assumes."},
+{q:"Which combination gives the highest density altitude and the poorest take-off performance?",o:["High temperature, high aerodrome elevation, low pressure","Low temperature, low elevation, high pressure","Low temperature, high elevation, high pressure","High temperature, low elevation, high pressure"],e:"Heat, height and low pressure all reduce air density, which cuts engine power, propeller thrust and wing lift."}
+]});
+
+T.push({ id:"stability", ref:"050 · 2", title:"Moisture, cloud base and stability",
+blurb:"Dew point, the adiabatic lapse rates, estimating cloud base, and stable versus unstable air.",
+learn:()=>`
+<h3>Moisture</h3>
+<p>The <b>dew point</b> is the temperature to which air must be cooled, at constant pressure, to become saturated. When air cools to its dew point, water vapour condenses into cloud, fog or dew. The closer temperature and dew point are, the more humid the air.</p>
+<h3>Adiabatic lapse rates</h3>
+<p>Rising air expands and cools without exchanging heat with its surroundings (adiabatic cooling).</p>
+<div class="tbl"><table>
+<tr><th>Rate</th><th>Value</th><th>Applies to</th></tr>
+<tr><td>Dry adiabatic (DALR)</td><td>3 °C per 1,000 ft</td><td>Unsaturated rising air</td></tr>
+<tr><td>Saturated adiabatic (SALR)</td><td>About 1.5 °C per 1,000 ft (varies)</td><td>Saturated rising air: condensation releases latent heat, so it cools more slowly</td></tr>
+<tr><td>Environmental (ELR)</td><td>Whatever the actual atmosphere is doing</td><td>The air around the rising parcel</td></tr>
+</table></div>
+<h3>Estimating cloud base</h3>
+<p>A rising parcel's temperature and dew point close at about 2.5 °C per 1,000 ft, so <span class="mono">cloud base (ft) ≈ (temperature − dew point) × 400</span>. Example: 15 °C and 9 °C gives 6 × 400 = 2,400 ft.</p>
+<h3>Stability</h3>
+<ul>
+<li><b>Stable</b>: ELR less than SALR. Lifted air ends up colder than its surroundings and sinks back. Layer cloud (stratus), poor visibility in haze or drizzle, smooth air.</li>
+<li><b>Unstable</b>: ELR greater than DALR. Lifted air stays warmer than its surroundings and keeps rising. Heap cloud (cumulus, Cb), showers, good visibility outside showers, bumpy air.</li>
+<li><b>Conditionally unstable</b>: ELR between the two. Unstable only once the air is saturated.</li>
+</ul>
+<div class="box trap"><b>Common trap</b>Don't mix up the ISA lapse rate (about 2 °C per 1,000 ft) with the dry adiabatic rate (3 °C per 1,000 ft). ISA is a reference atmosphere; DALR describes a rising parcel of air.</div>`,
+qs:[
+{q:"What is the dew point?",o:["The temperature to which air must be cooled to become saturated","The temperature at which water freezes","The temperature at the cloud base","The difference between air temperature and humidity"],e:"Cool air to its dew point at constant pressure and it becomes saturated; any further cooling causes condensation."},
+{q:"What is the dry adiabatic lapse rate?",o:["3 °C per 1,000 ft","2 °C per 1,000 ft","1.5 °C per 1,000 ft","1 °C per 1,000 ft"],e:"Unsaturated air cools at 3 °C per 1,000 ft as it rises. About 2 °C is ISA; about 1.5 °C is the saturated rate."},
+{q:"Why is the saturated adiabatic lapse rate lower than the dry rate?",o:["Condensation releases latent heat into the rising air","Saturated air is denser","Saturated air rises more slowly","Water vapour absorbs radiation from the sun"],e:"As water vapour condenses it gives up latent heat, partly offsetting the cooling from expansion."},
+{q:"Surface temperature is 17 °C and dew point is 11 °C. Approximately where will the base of cumulus cloud be?",o:["2,400 ft","1,200 ft","4,800 ft","600 ft"],e:"(17 − 11) × 400 = 2,400 ft."},
+{q:"Air is described as stable when:",o:["The environmental lapse rate is less than the saturated adiabatic lapse rate","The environmental lapse rate is greater than the dry adiabatic lapse rate","The dew point is higher than the temperature","Surface heating is strong"],e:"If the environment cools more slowly than even saturated rising air, a lifted parcel becomes colder than its surroundings and sinks back. That is stable air."},
+{q:"Which weather is typical of unstable air?",o:["Cumulus cloud, showers and good visibility outside them","Layer cloud, drizzle and poor visibility","Clear skies and haze","Fog and smooth air"],e:"Unstable air keeps rising, building heap cloud and showers; it mixes well, so visibility away from the showers is usually good."},
+{q:"Which weather is typical of stable air?",o:["Stratiform cloud, poor visibility and smooth air","Cumulonimbus and thunderstorms","Heavy showers and gusty winds","Good visibility and bumpy air"],e:"Stable air resists vertical movement: layer cloud, trapped haze or drizzle, and little turbulence."}
+]});
+
+T.push({ id:"clouds", ref:"050 · 3", title:"Clouds, fog and visibility",
+blurb:"Cloud types by level, how radiation and advection fog form, and the visibility definitions.",
+learn:()=>`
+${clouds}
+<h3>Fog</h3>
+<p><b>Fog</b> is visibility below <b>1,000 m</b> due to water droplets. <b>Mist</b> is the same thing with visibility of 1,000 m or more. <b>Haze</b> is caused by dry particles such as dust and smoke.</p>
+<div class="tbl"><table>
+<tr><th>Type</th><th>How it forms</th><th>How it clears</th></tr>
+<tr><td>Radiation fog</td><td>Over land, on a clear night with moist air and light wind (about 2–8 kt). The ground cools by radiation and chills the air above it to the dew point.</td><td>Heating after sunrise, or the wind strengthening and lifting it into low stratus</td></tr>
+<tr><td>Advection fog</td><td>Warm, moist air moving over a colder surface, such as the sea in spring or cold ground in winter. Can form in stronger winds and at any time of day.</td><td>A change of air mass or wind direction; it can persist for days</td></tr>
+<tr><td>Hill fog</td><td>Moist air forced up a slope cools to its dew point; low cloud sits on the hills.</td><td>Change of air mass</td></tr>
+<tr><td>Frontal fog</td><td>Rain falling from warmer air into colder air below saturates it, near a front.</td><td>Passage of the front</td></tr>
+</table></div>
+<div class="box trap"><b>Common trap</b>Radiation fog needs <b>clear skies</b> (to let the ground cool) and <b>light</b> wind. Cloud cover or a strong wind prevents it. Advection fog does not need a clear night.</div>`,
+qs:[
+{q:"Which conditions favour radiation fog?",o:["A clear night, moist air and a light wind over land","An overcast night with strong winds","Warm, moist air moving over a cold sea","A sunny afternoon in summer"],e:"Clear skies let the ground lose heat; light wind mixes the cooling into a shallow layer; moist air reaches its dew point. Strong wind or cloud prevents it."},
+{q:"How does advection fog form?",o:["Warm, moist air moves over a colder surface","Cold air moves over a warm sea","The ground cools on a clear night","Rain falls into cold air"],e:"Advection means horizontal movement: warm, moist air is cooled from below as it passes over cold land or sea."},
+{q:"What visibility defines fog?",o:["Less than 1,000 m","Less than 5 km","Less than 1,500 m","Less than 500 m"],e:"Fog is visibility below 1,000 m due to water droplets. With visibility of 1,000 m or more it is reported as mist (BR)."},
+{q:"Which cloud is the thick, grey, rain-bearing layer cloud with a low base?",o:["Nimbostratus","Cirrostratus","Altocumulus","Cumulus"],e:"Nimbostratus is the dense layer cloud that gives continuous rain or snow, often ahead of and at a warm front."},
+{q:"Altostratus is classed as which level of cloud?",o:["Medium","Low","High","Vertical development"],e:"\"Alto\" means medium level. Altostratus and altocumulus are medium-level clouds."},
+{q:"Which hazards are associated with cumulonimbus?",o:["Severe turbulence, icing, hail, lightning and windshear","Only light rain","Poor visibility but smooth air","Only icing above 10,000 ft"],e:"Cb is the most hazardous cloud: strong up and down draughts, hail, lightning, severe icing and gusty, shearing winds below it. Keep well clear."},
+{q:"How does radiation fog usually clear?",o:["By surface heating after sunrise, or by the wind increasing","By the arrival of colder air","By darkness falling","It never clears without a front passing"],e:"Morning sun warms the ground and lifts the temperature above the dew point; an increasing wind can also lift it into a layer of low stratus."}
+]});
+
+T.push({ id:"airmass", ref:"050 · 4", title:"Air masses, fronts and wind",
+blurb:"The air masses that reach the UK, warm and cold fronts, and how wind behaves near the surface.",
+learn:()=>`
+<h3>Air masses affecting the UK</h3>
+<div class="tbl"><table>
+<tr><th>Air mass</th><th>From</th><th>Typical weather</th></tr>
+<tr><td>Polar maritime (Pm)</td><td>North-west, over the Atlantic</td><td>The commonest. Unstable: cumulus, showers, good visibility outside showers.</td></tr>
+<tr><td>Tropical maritime (Tm)</td><td>South-west</td><td>Warm and moist. Stable: low stratus, drizzle, poor visibility, hill and sea fog.</td></tr>
+<tr><td>Polar continental (Pc)</td><td>East, from Europe in winter</td><td>Very cold and dry; snow showers on the east coast after crossing the North Sea.</td></tr>
+<tr><td>Tropical continental (Tc)</td><td>South-east, in summer</td><td>Hot, dry, hazy, with thunderstorms possible.</td></tr>
+<tr><td>Arctic maritime (Am)</td><td>North</td><td>Very cold, unstable; snow showers in winter.</td></tr>
+</table></div>
+<h3>Fronts</h3>
+${fronts}
+<div class="tbl"><table>
+<tr><th></th><th>Warm front passes</th><th>Cold front passes</th></tr>
+<tr><td>Temperature</td><td>Rises</td><td>Falls</td></tr>
+<tr><td>Wind (northern hemisphere)</td><td>Veers</td><td>Veers, often sharply, with gusts</td></tr>
+<tr><td>Pressure</td><td>Falls ahead, then steadies</td><td>Rises after passage</td></tr>
+<tr><td>Visibility</td><td>Poor in rain and in the warm sector</td><td>Improves behind the front</td></tr>
+</table></div>
+<h3>Wind</h3>
+<ul>
+<li><b>Buys Ballot's law</b>: in the northern hemisphere, stand with your back to the wind and low pressure is on your <b>left</b>.</li>
+<li>Above the friction layer (about 2,000 ft) the wind blows roughly along the isobars, around lows anticlockwise and highs clockwise.</li>
+<li>Near the surface, friction slows the wind and turns it towards low pressure: the surface wind is <b>backed</b> and <b>lighter</b> than the wind at 2,000 ft. Climbing away from the surface, the wind <b>veers and increases</b>, more over land (about 30°) than over sea (about 10°).</li>
+<li><b>Veer</b> means the direction changes clockwise; <b>back</b> means anticlockwise.</li>
+</ul>`,
+qs:[
+{q:"In the northern hemisphere, if you stand with your back to the wind, where is the low pressure?",o:["On your left","On your right","In front of you","Behind you"],e:"Buys Ballot's law: back to the wind in the northern hemisphere, low pressure is on the left."},
+{q:"Which air mass most commonly affects the UK, bringing cumulus, showers and good visibility?",o:["Polar maritime","Tropical maritime","Polar continental","Tropical continental"],e:"Polar maritime air arrives from the north-west over the Atlantic, warms from below and becomes unstable: showers and good visibility."},
+{q:"A tropical maritime air mass over the UK in winter typically brings:",o:["Low stratus, drizzle and poor visibility","Clear skies and good visibility","Heavy showers and thunderstorms","Very cold, dry conditions"],e:"Tm air is warm and moist and cools from below over the UK in winter, making it stable: low cloud, drizzle, mist and fog."},
+{q:"What is the usual order of clouds as a warm front approaches?",o:["Cirrus, cirrostratus, altostratus, nimbostratus","Nimbostratus, altostratus, cirrostratus, cirrus","Cumulus, cumulonimbus, stratus","Stratus, cumulus, cirrus"],e:"The gentle frontal slope means the high cloud arrives first, then progressively lower and thicker cloud ending in nimbostratus and rain."},
+{q:"After a cold front has passed, what would you normally expect?",o:["Temperature falls and visibility improves","Temperature rises and visibility worsens","Wind backs and pressure falls","Continuous drizzle and low stratus"],e:"Behind a cold front comes colder, often unstable air: temperature drops, pressure rises, the wind veers and visibility usually improves."},
+{q:"Climbing from the surface to 2,000 ft over land, the wind normally:",o:["Veers and increases","Backs and decreases","Veers and decreases","Stays the same"],e:"Surface friction slows the wind and backs it. Above the friction layer it is stronger and veered, by about 30° over land."},
+{q:"What does it mean when the wind \"veers\"?",o:["It changes direction clockwise","It changes direction anticlockwise","It increases in speed","It becomes gusty"],e:"Veering is a clockwise change, for example from 240° to 280°. Backing is anticlockwise."}
+]});
+
+T.push({ id:"hazards", ref:"050 · 5", title:"Icing, thunderstorms and mountain waves",
+blurb:"Carburettor and airframe icing, the life of a thunderstorm, and turbulence near hills.",
+learn:()=>`
+<h3>Carburettor icing</h3>
+<p>Fuel evaporating in the carburettor, and the pressure drop in the venturi, can cool the air by 20 °C or more. Ice can form even on a <b>warm, humid day</b>. It is most likely with <b>high humidity</b> and at <b>reduced power</b> (descent, approach), when the throttle valve is partly closed. Signs: a drop in RPM (fixed-pitch propeller) and rough running. Use carburettor heat as your checklist and POH direct.</p>
+<h3>Airframe icing</h3>
+<p>Ice forms when <b>supercooled water droplets</b> (liquid below 0 °C) hit the airframe and freeze.</p>
+<div class="tbl"><table>
+<tr><th>Type</th><th>Forms from</th><th>Character</th></tr>
+<tr><td>Clear (glaze) ice</td><td>Large supercooled drops, typically 0 to −10 °C, in cumuliform cloud or freezing rain</td><td>Heavy, hard, spreads back over the wing before freezing. The most dangerous.</td></tr>
+<tr><td>Rime ice</td><td>Small supercooled drops, colder temperatures, layer cloud</td><td>White, brittle, rough; freezes on the leading edge.</td></tr>
+<tr><td>Hoar frost</td><td>Water vapour freezing directly on a surface below 0 °C, e.g. after a cold night or a descent into warm moist air</td><td>Feathery; must be removed before flight.</td></tr>
+</table></div>
+<h3>Thunderstorms</h3>
+<p>Need moist air, instability and a trigger to lift it (heating, a front or hills). Three stages:</p>
+<ol>
+<li><b>Cumulus</b>: updraughts throughout; the cloud grows.</li>
+<li><b>Mature</b>: begins when precipitation falls from the base; violent up and downdraughts side by side, hail, lightning, gust front and microbursts. The most dangerous stage.</li>
+<li><b>Dissipating</b>: mainly downdraughts; the storm rains itself out.</li>
+</ol>
+<h3>Mountain waves</h3>
+<p>Strong wind blowing across a ridge, with stable air above, can set up standing waves downwind. <b>Lenticular</b> (lens-shaped) clouds mark the crests, and <b>rotor</b> clouds below them mark severe turbulence. Expect strong downdraughts on the lee side of hills.</p>`,
+qs:[
+{q:"When is carburettor icing most likely?",o:["At reduced power settings in humid air","Only when the outside air temperature is below 0 °C","At full power in dry air","Only in cloud"],e:"Partly closed throttle and high humidity give the greatest risk. The cooling in the carburettor means ice can form on a warm day."},
+{q:"What first sign of carburettor icing would you expect in an aircraft with a fixed-pitch propeller?",o:["A drop in RPM","A rise in oil temperature","A rise in RPM","A rise in oil pressure"],e:"Ice restricts the airflow through the carburettor, reducing power, which shows as falling RPM with a fixed-pitch propeller, followed by rough running."},
+{q:"What are supercooled water droplets?",o:["Liquid water droplets at a temperature below 0 °C","Ice crystals in high cloud","Water droplets just above 0 °C","Hailstones that have partly melted"],e:"Small droplets can stay liquid well below freezing. They freeze on impact with an aircraft, causing airframe icing."},
+{q:"Which type of airframe ice is generally the most dangerous?",o:["Clear ice","Rime ice","Hoar frost","Ice crystals"],e:"Clear ice from large supercooled drops spreads back before freezing, is heavy and hard to see, and badly distorts the wing section."},
+{q:"Which stage of a thunderstorm is the most dangerous?",o:["Mature","Cumulus","Dissipating","All stages are equally dangerous"],e:"The mature stage has precipitation, violent up and downdraughts side by side, hail, lightning and microbursts."},
+{q:"What marks the start of the mature stage of a thunderstorm?",o:["Precipitation beginning to fall from the cloud base","The first updraught","The anvil top dissipating","The cloud base lifting"],e:"Falling precipitation drags air down with it, setting up the downdraughts that characterise the mature stage."},
+{q:"Lenticular clouds downwind of a ridge indicate:",o:["Mountain waves, with possible severe turbulence and downdraughts","Fair weather and calm conditions","An approaching warm front","Radiation fog forming"],e:"Lens-shaped clouds sit in the crests of standing waves. Rotor beneath them can be severely turbulent, and downdraughts on the lee side can exceed an aircraft's climb rate."}
+]});
+
+T.push({ id:"reports", ref:"050 · 6", title:"METARs and TAFs",
+blurb:"Reading the coded actual reports and forecasts, cloud amounts, CAVOK and change groups.",
+learn:()=>`
+<h3>A METAR, decoded</h3>
+<p class="mono">EGNT 171020Z 24012KT 9999 FEW030 SCT045 12/07 Q1009</p>
+<div class="tbl"><table>
+<tr><th>Group</th><th>Meaning</th></tr>
+<tr><td>EGNT</td><td>Aerodrome (Newcastle)</td></tr>
+<tr><td>171020Z</td><td>17th day of the month, 10:20 UTC</td></tr>
+<tr><td>24012KT</td><td>Wind from 240° <b>true</b> at 12 kt</td></tr>
+<tr><td>9999</td><td>Visibility 10 km or more</td></tr>
+<tr><td>FEW030 SCT045</td><td>Few cloud at 3,000 ft, scattered at 4,500 ft, <b>above aerodrome level</b></td></tr>
+<tr><td>12/07</td><td>Temperature 12 °C, dew point 7 °C</td></tr>
+<tr><td>Q1009</td><td>QNH 1009 hPa</td></tr>
+</table></div>
+<h3>Cloud amounts</h3>
+<div class="sq">
+<div class="tile"><div class="big">FEW</div><div class="d">1–2 oktas</div></div>
+<div class="tile"><div class="big">SCT</div><div class="d">3–4 oktas</div></div>
+<div class="tile"><div class="big">BKN</div><div class="d">5–7 oktas</div></div>
+<div class="tile"><div class="big">OVC</div><div class="d">8 oktas</div></div>
+</div>
+<h3>CAVOK</h3>
+<p>Ceiling and visibility OK: visibility 10 km or more, no cloud below 5,000 ft (or below the highest minimum sector altitude if higher), no cumulonimbus or towering cumulus, and no significant weather.</p>
+<h3>Weather codes</h3>
+<p><span class="mono">RA</span> rain, <span class="mono">DZ</span> drizzle, <span class="mono">SN</span> snow, <span class="mono">SH</span> showers, <span class="mono">TS</span> thunderstorm, <span class="mono">BR</span> mist, <span class="mono">FG</span> fog, <span class="mono">HZ</span> haze, <span class="mono">GR</span> hail. A <span class="mono">−</span> prefix means light, <span class="mono">+</span> heavy, and <span class="mono">VC</span> in the vicinity. So <span class="mono">−SHRA</span> is light rain showers.</p>
+<h3>TAF change groups</h3>
+<ul>
+<li><b>BECMG</b>: a lasting change happening during the stated period.</li>
+<li><b>TEMPO</b>: temporary fluctuations, each lasting less than an hour and in total less than half the period.</li>
+<li><b>PROB30 / PROB40</b>: 30% or 40% probability.</li>
+</ul>
+<div class="box trap"><b>Common trap</b>METAR and TAF winds are in degrees <b>true</b>. The wind a tower or ATIS gives you for take-off and landing is in degrees <b>magnetic</b>, to match the runway.</div>`,
+qs:[
+{q:"In a METAR, what does SCT mean?",o:["3 to 4 oktas of cloud","1 to 2 oktas","5 to 7 oktas","8 oktas"],e:"FEW 1–2, SCT 3–4, BKN 5–7, OVC 8 oktas."},
+{q:"In a METAR, what does BKN040 mean?",o:["5 to 7 oktas of cloud with a base of 4,000 ft above aerodrome level","Broken cloud at 400 ft","5 to 7 oktas at 4,000 ft above mean sea level","Cloud broken by thunderstorms at 4,000 ft"],e:"BKN is 5–7 oktas, and cloud heights in METARs are in hundreds of feet above aerodrome level."},
+{q:"What does 9999 mean in the visibility group of a METAR?",o:["10 km or more","9,999 m exactly","Visibility not reported","Less than 10 km"],e:"9999 is the code for 10 km or more."},
+{q:"Which of these is part of the definition of CAVOK?",o:["Visibility 10 km or more and no cloud below 5,000 ft (or the highest minimum sector altitude if higher)","No cloud at all","Visibility 5 km or more and no cloud below 1,500 ft","Wind calm and visibility unlimited"],e:"CAVOK needs 10 km or more visibility, no cloud below 5,000 ft or the highest MSA if higher, no CB or TCU and no significant weather. There may still be cloud higher up."},
+{q:"In a METAR, the wind direction is given relative to:",o:["True north","Magnetic north","The runway in use","Grid north"],e:"Met reports give wind in degrees true. ATC and ATIS give surface wind in degrees magnetic for take-off and landing."},
+{q:"What does −SHRA mean?",o:["Light rain showers","Heavy rain showers","Light snow showers","Shallow rain"],e:"− is light, SH is showers, RA is rain."},
+{q:"In a TAF, what does TEMPO indicate?",o:["Temporary fluctuations, each lasting less than an hour and in total less than half the period","A permanent change during the period","A 30% chance of the conditions","Conditions at the start of the forecast only"],e:"TEMPO means conditions that come and go: each spell under an hour, and together less than half the stated period. BECMG is a lasting change."}
+]});
+
+SUBJECTS.push({ id:"met", code:"050", name:"Meteorology",
+  blurb:"The standard atmosphere, cloud and stability, fog, air masses and fronts, icing and thunderstorms, and reading METARs and TAFs.",
+  topics:T });
+})();
+
+
+// 060 Navigation
+(() => {
+const tvmdc = `<div class="sq">
+<div class="tile"><div class="big">T</div><div class="d">True</div></div>
+<div class="tile"><div class="big">V</div><div class="d">± Variation</div></div>
+<div class="tile"><div class="big">M</div><div class="d">Magnetic</div></div>
+<div class="tile"><div class="big">D</div><div class="d">± Deviation</div></div>
+<div class="tile"><div class="big">C</div><div class="d">Compass</div></div>
+</div>`;
+
+const windTri = `<figure class="fig wide"><svg viewBox="0 0 420 250" role="img" aria-label="Wind triangle: heading and true airspeed, wind, and the resulting track and groundspeed">
+<rect class="fb" x="1" y="1" width="418" height="248" rx="6"/>
+<line x1="80" y1="215" x2="250" y2="40" class="ln" style="stroke-width:2.5" marker-end="url(#arr)"/>
+<line x1="250" y1="40" x2="320" y2="75" class="ln pb" style="stroke-width:2.5" marker-end="url(#arr)"/>
+<line x1="80" y1="215" x2="320" y2="75" class="ln pa" style="stroke-width:2.5" marker-end="url(#arr)"/>
+<path d="M118,176 A55,55 0 0 1 128,186" class="ln" style="stroke-width:1.5"/>
+<text class="tb" x="120" y="110">Heading / TAS</text>
+<text class="tb" x="288" y="44">Wind</text>
+<text class="tb" x="220" y="168">Track / groundspeed</text>
+<text class="t" x="132" y="174">drift</text>
+</svg><figcaption>The aircraft points along its heading at its TAS; the wind blows it sideways. The result is its track and groundspeed. Drift is the angle between heading and track.</figcaption></figure>`;
+
+const oneIn60 = `<figure class="fig wide"><svg viewBox="0 0 440 210" role="img" aria-label="One in sixty rule: track error and closing angle">
+<rect class="fb" x="1" y="1" width="438" height="208" rx="6"/>
+<circle cx="40" cy="150" r="5" class="f-ink"/><text class="tb" x="30" y="176">A</text>
+<circle cx="400" cy="150" r="5" class="f-ink"/><text class="tb" x="396" y="176">B</text>
+<line x1="40" y1="150" x2="400" y2="150" class="ln dash"/><text class="tm" x="220" y="168" text-anchor="middle">planned track</text>
+<line x1="40" y1="150" x2="190" y2="80" class="ln pa" style="stroke-width:2.5"/>
+<circle cx="190" cy="80" r="5" class="f-ink"/><text class="tb" x="182" y="66">fix</text>
+<line x1="190" y1="80" x2="400" y2="150" class="ln pb" style="stroke-width:2.5" marker-end="url(#arr)"/>
+<line x1="190" y1="80" x2="190" y2="150" class="ln dot2"/><text class="t" x="196" y="122">off track</text>
+<text class="t" x="80" y="126">TE</text><text class="t" x="230" y="102">CA</text>
+<text class="tm" x="110" y="196" text-anchor="middle">distance gone</text><text class="tm" x="300" y="196" text-anchor="middle">distance to go</text>
+</svg><figcaption>Track error (TE) = off track × 60 ÷ distance gone. Closing angle (CA) = off track × 60 ÷ distance to go. Alter heading by TE + CA to reach B.</figcaption></figure>`;
+
+const T = [];
+T.push({ id:"earth", ref:"060 · 1", title:"The earth, direction and the compass",
+blurb:"Latitude and longitude, the nautical mile, great circles, variation and deviation.",
+learn:()=>`
+<h3>Position and distance</h3>
+<ul>
+<li><b>Latitude</b> is measured north or south of the equator; <b>longitude</b> east or west of the Greenwich meridian.</li>
+<li>One minute of latitude = <b>1 nautical mile</b>. 1 nm = 1,852 m (about 6,076 ft, or 1.15 statute miles).</li>
+<li>A <b>great circle</b> is the shortest distance between two points on the earth. A <b>rhumb line</b> crosses every meridian at the same angle, so it holds a constant track, but is longer.</li>
+</ul>
+<h3>True, magnetic and compass</h3>
+<p><b>Variation</b> is the angle between true north and magnetic north at a place. Lines joining places of equal variation are <b>isogonals</b>. <b>Deviation</b> is the compass error caused by the aircraft's own magnetic fields (engine, radios, wiring), recorded on the deviation card.</p>
+${tvmdc}
+<p>Going from true to magnetic to compass: <b>"Variation west, magnetic best; variation east, magnetic least."</b> West is added, east is subtracted. The same rule applies to deviation.</p>
+<p>Example: true track 090°, variation 3°W: magnetic track 093°. Compass deviation 2°E: compass heading 091°.</p>
+<div class="box note"><b>Note</b>Variation across the UK is currently small. Exam questions often use larger values to test the method, so practise the rule rather than memorising today's figure.</div>`,
+qs:[
+{q:"What is one nautical mile in metres?",o:["1,852 m","1,609 m","1,000 m","6,080 m"],e:"1 nm = 1,852 m. 1,609 m is a statute mile; 6,080 is the old figure for a nautical mile in feet."},
+{q:"One minute of latitude is equal to:",o:["One nautical mile","One statute mile","One kilometre","Ten nautical miles"],e:"The nautical mile is defined from one minute of arc of latitude."},
+{q:"True track is 090° and variation is 3°W. What is the magnetic track?",o:["093°","087°","090°","096°"],e:"Variation west, magnetic best: add westerly variation. 090 + 3 = 093°."},
+{q:"Magnetic heading is 270° and compass deviation is 2°E. What is the compass heading?",o:["268°","272°","270°","266°"],e:"East is least: subtract easterly deviation. 270 − 2 = 268°."},
+{q:"What are isogonals?",o:["Lines joining places of equal magnetic variation","Lines joining places of equal pressure","Lines of equal latitude","Lines of zero deviation"],e:"Isogonals join points of equal variation and are shown on aeronautical charts."},
+{q:"What causes compass deviation?",o:["Magnetic fields within the aircraft","The difference between true and magnetic north","Turning errors","The earth's magnetic dip"],e:"Deviation is caused by the aircraft's own magnetism from the engine, radios and wiring. It differs with heading and is recorded on the deviation card."},
+{q:"Which is the shortest route between two places on the earth's surface?",o:["A great circle","A rhumb line","A line of constant magnetic heading","A line of latitude"],e:"A great circle is the shortest distance. A rhumb line holds a constant track but is longer, except along a meridian or the equator."}
+]});
+
+T.push({ id:"charts", ref:"060 · 2", title:"Charts and scale",
+blurb:"The 1:500,000 and 1:250,000 charts, the Lambert projection, scale and elevation information.",
+learn:()=>`
+<h3>UK VFR charts</h3>
+<p>UK VFR charts are published at 1:500,000 and 1:250,000 and use the <b>Lambert conformal conic</b> projection.</p>
+<ul>
+<li><b>Conformal</b>: angles are shown correctly, so bearings measured on the chart are accurate.</li>
+<li>Scale is nearly constant across the chart.</li>
+<li>A straight line drawn on the chart is very close to a great circle.</li>
+</ul>
+<h3>Scale</h3>
+<div class="tbl"><table>
+<tr><th>Scale</th><th>1 cm on the chart</th><th>Use</th></tr>
+<tr><td>1:500,000</td><td>5 km</td><td>The standard chart for cross-country planning</td></tr>
+<tr><td>1:250,000</td><td>2.5 km</td><td>More ground detail over a smaller area; check the chart's legend for which airspace it shows</td></tr>
+</table></div>
+<h3>Heights on the chart</h3>
+<ul>
+<li>Spot heights, obstacles and the <b>Maximum Elevation Figure (MEF)</b> are shown in feet <b>above mean sea level</b>.</li>
+<li>The MEF in each quadrangle shows the highest terrain or obstacle in it, with an allowance added, in thousands and hundreds of feet.</li>
+<li>Airspace bases and tops are shown as altitudes (AMSL) or flight levels.</li>
+</ul>
+<div class="box trap"><b>Common trap</b>Obstacles show two figures: the top in feet AMSL, and in brackets the height above ground level. Use the AMSL figure for terrain clearance.</div>`,
+qs:[
+{q:"Which projection do the UK 1:500,000 aeronautical charts use?",o:["Lambert conformal conic","Mercator","Transverse Mercator","Polar stereographic"],e:"UK VFR charts use the Lambert conformal conic projection, which is conformal and has nearly constant scale."},
+{q:"On a 1:500,000 chart, what does 1 cm represent?",o:["5 km","500 m","50 km","2.5 km"],e:"500,000 cm = 5,000 m = 5 km."},
+{q:"On a 1:250,000 chart, 4 cm represents:",o:["10 km","1 km","4 km","25 km"],e:"1 cm = 250,000 cm = 2.5 km, so 4 cm = 10 km."},
+{q:"What does \"conformal\" mean for a chart projection?",o:["Angles are correctly shown, so bearings can be measured directly","The scale is exactly the same everywhere","Great circles appear as curves","Areas are shown correctly"],e:"A conformal projection preserves angles locally, so directions measured on it are correct."},
+{q:"On a UK VFR chart, elevations and obstacle heights are shown as:",o:["Feet above mean sea level","Feet above ground level","Metres above mean sea level","Flight levels"],e:"Terrain, spot heights and obstacle tops are given in feet AMSL. Obstacles also show their height above ground in brackets."},
+{q:"What does the Maximum Elevation Figure (MEF) show?",o:["The highest terrain or obstacle in that quadrangle, with an allowance, in feet AMSL","The minimum safe altitude for the whole chart","The base of controlled airspace","The highest flight level available"],e:"Each quadrangle's MEF gives the highest point plus an allowance, in thousands and hundreds of feet AMSL, as a quick terrain-clearance reference."},
+{q:"On a Lambert conformal conic chart, a straight line between two places is approximately:",o:["A great circle","A rhumb line","A line of constant magnetic track","A line of latitude"],e:"Over the distances flown on a VFR chart, a straight line on a Lambert chart is very close to a great circle."}
+]});
+
+T.push({ id:"tsd", ref:"060 · 3", title:"Time, speed, distance and fuel",
+blurb:"The arithmetic behind the plog: times, groundspeeds, fuel and true airspeed.",
+learn:()=>`
+<h3>The basic relationship</h3>
+<p><span class="mono">distance = speed × time</span>. With speed in knots (nautical miles per hour): <span class="mono">time (minutes) = distance × 60 ÷ groundspeed</span>.</p>
+<ul>
+<li>45 nm at 90 kt: 45 × 60 ÷ 90 = <b>30 minutes</b>.</li>
+<li>A useful habit: work out <b>nautical miles per minute</b>. 90 kt is 1.5 nm/min; 120 kt is 2 nm/min.</li>
+</ul>
+<h3>Fuel</h3>
+<ul>
+<li><span class="mono">fuel used = consumption × time</span>. 24 L/h for 1 h 15 min (1.25 h) = 30 L.</li>
+<li>1 US gallon = 3.785 litres. 1 imperial gallon = 4.546 litres.</li>
+<li>Avgas has a specific gravity of about 0.72, so 1 litre weighs about 0.72 kg. Weight and balance needs the fuel in kg or lb.</li>
+</ul>
+<h3>True airspeed</h3>
+<p>The airspeed indicator shows IAS. As density falls with height, TAS becomes higher than IAS. A rule of thumb: <b>TAS ≈ IAS + 2% per 1,000 ft</b>. So 100 kt IAS at 5,000 ft is about 110 kt TAS. Use the flight computer for exact figures.</p>
+<div class="box trap"><b>Common trap</b>Use groundspeed, not TAS, for times and fuel along a leg. The wind changes the speed over the ground.</div>`,
+qs:[
+{q:"Groundspeed is 90 kt. How long will a 30 nm leg take?",o:["20 minutes","30 minutes","15 minutes","27 minutes"],e:"30 × 60 ÷ 90 = 20 minutes. At 90 kt you cover 1.5 nm per minute."},
+{q:"You fly at a groundspeed of 100 kt for 18 minutes. How far have you travelled?",o:["30 nm","18 nm","36 nm","25 nm"],e:"100 kt is 1.67 nm per minute: 1.67 × 18 = 30 nm."},
+{q:"You cover 60 nm in 40 minutes. What is your groundspeed?",o:["90 kt","60 kt","80 kt","120 kt"],e:"60 nm ÷ (40/60 h) = 90 kt."},
+{q:"Fuel consumption is 25 L/h. How much fuel is used in 1 hour 24 minutes?",o:["35 L","30 L","34 L","40 L"],e:"1 h 24 min = 1.4 h. 25 × 1.4 = 35 L."},
+{q:"How many litres are there in one US gallon?",o:["3.785","4.546","1.000","2.205"],e:"1 US gallon = 3.785 L. 4.546 L is an imperial gallon; 2.205 is pounds per kilogram."},
+{q:"Using the rule of thumb, what is the approximate TAS for 100 kt IAS at 5,000 ft?",o:["110 kt","100 kt","105 kt","120 kt"],e:"Add about 2% per 1,000 ft: 10% at 5,000 ft, so about 110 kt."},
+{q:"Which speed should you use to calculate the time for a leg?",o:["Groundspeed","True airspeed","Indicated airspeed","Calibrated airspeed"],e:"Time over the ground depends on the speed over the ground, which includes the effect of the wind."}
+]});
+
+T.push({ id:"wind", ref:"060 · 4", title:"Wind triangle, drift and crosswinds",
+blurb:"Heading versus track, working out drift, and headwind and crosswind components.",
+learn:()=>`
+${windTri}
+<h3>Heading and track</h3>
+<ul>
+<li><b>Heading</b> is where the nose points. <b>Track</b> is the path over the ground.</li>
+<li><b>Drift</b> is the angle between them. Wind from the left drifts the aircraft to the right, so you head into wind: heading left of track.</li>
+<li>Winds in forecasts are given as the direction they blow <b>from</b>.</li>
+</ul>
+<h3>Maximum drift</h3>
+<p><span class="mono">max drift (°) ≈ wind speed × 60 ÷ TAS</span>. This is the drift with the wind at 90° to track; at smaller angles it is less. Example: 20 kt of wind at 100 kt TAS gives up to 12°.</p>
+<h3>Wind components</h3>
+<div class="tbl"><table>
+<tr><th>Angle off the runway or track</th><th>Crosswind is about</th><th>Headwind is about</th></tr>
+<tr><td>30°</td><td>½ of the wind speed</td><td>0.9 of the wind speed</td></tr>
+<tr><td>45°</td><td>0.7</td><td>0.7</td></tr>
+<tr><td>60°</td><td>0.9</td><td>½</td></tr>
+<tr><td>90°</td><td>All of it</td><td>None</td></tr>
+</table></div>
+<p>Example: runway 27, wind 300° at 20 kt. That is 30° off, so crosswind about 10 kt and headwind about 17 kt. Check the result against the maximum demonstrated crosswind for your aircraft in the POH.</p>
+<div class="box trap"><b>Common trap</b>The wind for a runway is given in degrees magnetic by ATC, matching the runway number. Don't mix it with a forecast wind in degrees true.</div>`,
+qs:[
+{q:"What is drift?",o:["The angle between heading and track","The angle between track and the wind direction","The difference between TAS and groundspeed","The angle between true and magnetic north"],e:"Drift is the angle between where the aircraft points (heading) and where it goes over the ground (track)."},
+{q:"With 20 kt of wind and a TAS of 100 kt, what is the maximum possible drift?",o:["12°","20°","5°","8°"],e:"Max drift ≈ 20 × 60 ÷ 100 = 12°, with the wind at right angles to the track."},
+{q:"The wind is blowing from the left of your track. To maintain track, your heading will be:",o:["To the left of track, into wind","To the right of track","The same as the track","Opposite to the track"],e:"The wind pushes the aircraft to the right, so you point into wind, to the left of the track, to stay on it."},
+{q:"Runway 27 is in use and the surface wind is 300° at 20 kt. What is the approximate crosswind component?",o:["10 kt","20 kt","17 kt","5 kt"],e:"The wind is 30° off the runway. sin 30° = 0.5, so crosswind ≈ 10 kt."},
+{q:"Runway 27 is in use and the surface wind is 330° at 20 kt. What is the approximate headwind component?",o:["10 kt","17 kt","20 kt","0 kt"],e:"The wind is 60° off the runway. cos 60° = 0.5, so headwind ≈ 10 kt; crosswind ≈ 17 kt."},
+{q:"A forecast wind of 270/25 means the wind is:",o:["Blowing from 270° at 25 kt","Blowing towards 270° at 25 kt","Blowing from 270° at 25 mph","Blowing from 250° at 27 kt"],e:"Wind direction is always given as the direction it blows from, with speed in knots."},
+{q:"With a tailwind component, compared with still air your groundspeed will be:",o:["Higher than your TAS","Lower than your TAS","The same as your TAS","Equal to your IAS"],e:"A tailwind adds to the speed over the ground."}
+]});
+
+T.push({ id:"onein60", ref:"060 · 5", title:"The 1 in 60 rule and en-route corrections",
+blurb:"Using the 1 in 60 rule to find track error and get back to track.",
+learn:()=>`
+<p>At 60 nm, an angle of 1° covers a distance of about 1 nm. That gives quick mental arithmetic for small angles.</p>
+${oneIn60}
+<h3>Worked example</h3>
+<p>You are 4 nm left of track after 30 nm, with 40 nm still to go.</p>
+<ul>
+<li>Track error = 4 × 60 ÷ 30 = <b>8°</b>.</li>
+<li>Closing angle = 4 × 60 ÷ 40 = <b>6°</b>.</li>
+<li>To reach the destination, alter heading <b>14° right</b> (TE + CA).</li>
+<li>To fly parallel to the planned track instead, alter by the track error only (8° right).</li>
+</ul>
+<h3>Keeping track en route</h3>
+<ul>
+<li>Set heading over a known point and note the time.</li>
+<li>Work from the chart to the ground: predict what you should see next, then look for it. Large features (coast, motorways, lakes, towns) first, details to confirm.</li>
+<li>Check your fixes against the plog times, and revise the ETA.</li>
+<li>If uncertain of position, follow a set procedure rather than wandering. Ask for help early: a training fix or a PAN call on 121.5 MHz is what it is for.</li>
+</ul>`,
+qs:[
+{q:"Using the 1 in 60 rule, 1° of track error at 60 nm puts you how far off track?",o:["1 nm","6 nm","10 nm","0.6 nm"],e:"That is the rule itself: 1 in 60. At 30 nm the same 1° would be 0.5 nm off."},
+{q:"After 30 nm you are 3 nm off track. What is the track error?",o:["6°","3°","10°","1°"],e:"Track error = off track × 60 ÷ distance gone = 3 × 60 ÷ 30 = 6°."},
+{q:"You are 2 nm off track with 20 nm still to go. What is the closing angle?",o:["6°","10°","2°","4°"],e:"Closing angle = off track × 60 ÷ distance to go = 2 × 60 ÷ 20 = 6°."},
+{q:"After 30 nm you are 4 nm left of track, with 40 nm to go. What alteration will take you to the destination?",o:["14° right","8° right","6° right","14° left"],e:"TE = 4 × 60 ÷ 30 = 8°; CA = 4 × 60 ÷ 40 = 6°. Alter 14° right, towards the track."},
+{q:"You discover a track error and want to fly parallel to your planned track. By how much do you alter heading?",o:["By the track error only","By the closing angle only","By double the track error","By the track error plus the closing angle"],e:"Correcting by the track error cancels the drift you haven't allowed for, so you fly parallel. Adding the closing angle takes you back to destination."},
+{q:"Which is the best order for map reading en route?",o:["From the chart to the ground: predict the next feature, then look for it","From the ground to the chart: look out, then find it on the map","Follow the largest town in view","Use only the compass and the clock"],e:"Predicting from the chart prevents you from making the ground fit what you want to see. Ground to chart is mainly for when you are uncertain of position."},
+{q:"You are uncertain of your position. Which is the most sensible early action?",o:["Ask for help, for example a training fix or a PAN on 121.5 MHz","Fly in circles until you recognise something","Descend to read road signs","Keep going and hope to see the destination"],e:"Getting help early costs nothing. 121.5 MHz is staffed to give training fixes and help pilots who are uncertain of position."}
+]});
+
+T.push({ id:"radionav", ref:"060 · 6", title:"Radio navigation",
+blurb:"VOR radials, Q-codes, DME, the ADF and NDB, VHF range and using GNSS sensibly.",
+learn:()=>`
+<h3>VOR</h3>
+<ul>
+<li>A <b>radial</b> is a magnetic bearing <b>from</b> the station.</li>
+<li>The course deviation indicator (CDI) shows whether you are left or right of the selected course; the TO/FROM flag shows which side of the station you are on.</li>
+<li>VOR works on VHF, so it needs line of sight.</li>
+</ul>
+<h3>Q-codes</h3>
+<div class="tbl"><table>
+<tr><th>Code</th><th>Meaning</th></tr>
+<tr><td>QDM</td><td>Magnetic bearing <b>to</b> the station</td></tr>
+<tr><td>QDR</td><td>Magnetic bearing <b>from</b> the station (QDM ± 180°)</td></tr>
+<tr><td>QTE</td><td>True bearing from the station</td></tr>
+<tr><td>QUJ</td><td>True bearing to the station</td></tr>
+</table></div>
+<h3>DME, ADF and NDB</h3>
+<ul>
+<li>DME gives <b>slant range</b> in nm, the straight-line distance from the aircraft to the station, not the distance over the ground.</li>
+<li>The ADF needle points at the NDB. <span class="mono">magnetic heading + relative bearing = QDM</span>. Example: heading 300°, relative bearing 030° gives QDM 330°.</li>
+</ul>
+<h3>VHF range</h3>
+<p>VHF (radio and VOR) is line of sight. <span class="mono">range (nm) ≈ 1.23 × √(height in ft)</span>. At 2,500 ft: about 61 nm. At 4,900 ft: about 86 nm.</p>
+<h3>GNSS</h3>
+<p>Satellite navigation is accurate, but it can be wrong or lost: interference, out-of-date databases, wrong waypoints. Plan the flight on a chart, cross-check GNSS against what you see, and be ready to navigate without it. Jamming is common in some areas.</p>`,
+qs:[
+{q:"What is a VOR radial?",o:["A magnetic bearing from the station","A magnetic bearing to the station","A true bearing from the station","A distance from the station"],e:"Radials are magnetic bearings from the VOR, so the 090 radial runs due magnetic east from the station."},
+{q:"What does QDM mean?",o:["Magnetic bearing to the station","Magnetic bearing from the station","True bearing from the station","True bearing to the station"],e:"QDM is the magnetic heading to steer to the station in nil wind. QDR is the reciprocal."},
+{q:"QDM is 050°. What is the QDR?",o:["230°","050°","130°","310°"],e:"QDR = QDM ± 180°. 050 + 180 = 230°."},
+{q:"Magnetic heading is 300° and the ADF shows a relative bearing of 030°. What is the QDM?",o:["330°","270°","030°","150°"],e:"Magnetic heading + relative bearing = QDM: 300 + 30 = 330°."},
+{q:"What does DME measure?",o:["Slant range from the aircraft to the station","Distance over the ground to the station","Groundspeed only","Bearing to the station"],e:"DME measures straight-line (slant) distance. Overhead the station at 6,000 ft it would show about 1 nm."},
+{q:"Roughly what is the VHF radio range of an aircraft at 2,500 ft over flat terrain?",o:["61 nm","25 nm","150 nm","12 nm"],e:"1.23 × √2,500 = 1.23 × 50 ≈ 61 nm."},
+{q:"Which statement about GNSS for VFR navigation is correct?",o:["It should be cross-checked against the chart and what you can see","It removes the need to plan the route on a chart","It cannot be affected by interference","Its database never needs updating"],e:"GNSS can be jammed, mis-programmed or out of date. Plan on a chart, cross-check, and be able to continue without it."}
+]});
+
+SUBJECTS.push({ id:"nav", code:"060", name:"Navigation",
+  blurb:"Direction and the compass, charts and scale, time, speed, distance and fuel, the wind triangle, the 1 in 60 rule and radio navigation.",
+  topics:T });
+})();
+
+
+// 080 Principles of Flight
+(() => {
+const forces = `<figure class="fig wide"><svg viewBox="0 0 420 250" role="img" aria-label="Four forces: lift up, weight down, thrust forward, drag back">
+<rect class="fb" x="1" y="1" width="418" height="248" rx="6"/>
+${acu(210,125,90,'ac-a',3.2)}
+<line x1="210" y1="100" x2="210" y2="30" class="ln" style="stroke-width:3" marker-end="url(#arr)"/><text class="tb" x="222" y="40">LIFT</text>
+<line x1="210" y1="150" x2="210" y2="220" class="ln" style="stroke-width:3" marker-end="url(#arr)"/><text class="tb" x="222" y="214">WEIGHT</text>
+<line x1="260" y1="125" x2="340" y2="125" class="ln" style="stroke-width:3" marker-end="url(#arr)"/><text class="tb" x="300" y="112" text-anchor="middle">THRUST</text>
+<line x1="160" y1="125" x2="80" y2="125" class="ln" style="stroke-width:3" marker-end="url(#arr)"/><text class="tb" x="120" y="112" text-anchor="middle">DRAG</text>
+<line x1="380" y1="200" x2="300" y2="200" class="ln pb dash" marker-end="url(#arr)"/><text class="t" x="340" y="190" text-anchor="middle">relative airflow</text>
+</svg><figcaption>Straight and level, unaccelerated: lift equals weight and thrust equals drag. Lift acts at right angles to the relative airflow; drag acts parallel to it.</figcaption></figure>`;
+
+const liftCurve = `<figure class="fig wide"><svg viewBox="0 0 420 240" role="img" aria-label="Lift coefficient rises with angle of attack to a peak at the critical angle, then falls">
+<rect class="fb" x="1" y="1" width="418" height="238" rx="6"/>
+<line x1="50" y1="200" x2="400" y2="200" class="ln"/><line x1="50" y1="200" x2="50" y2="20" class="ln"/>
+<text class="tm" x="225" y="228" text-anchor="middle">angle of attack (degrees)</text>
+<text class="tm" x="20" y="110" transform="rotate(-90 20 110)" text-anchor="middle">lift coefficient CL</text>
+${[0,4,8,12,16,20].map((d,i)=>`<text class="tm" x="${70+i*60}" y="214" text-anchor="middle">${d}</text>`).join('')}
+<path d="M70,170 L290,55 Q310,42 322,52 Q340,80 380,110" class="ln pa" style="stroke-width:3"/>
+<line x1="310" y1="44" x2="310" y2="200" class="ln dot2"/>
+<text class="tb" x="300" y="34" text-anchor="end">critical angle ≈ 16°</text>
+<text class="t" x="345" y="135">stall</text>
+</svg><figcaption>Lift coefficient grows with angle of attack until the critical angle, about 15–16° for a typical light-aircraft wing. Beyond it the airflow separates and the wing stalls, at any airspeed.</figcaption></figure>`;
+
+// Plotted from the drag equations, not by hand: induced ∝ 1/V², parasite ∝ V².
+// Speeds are in units of Vmd, so both are 1 at Vmd and total drag is least there.
+const dragCurve = (() => {
+  const X = v => 60 + (v - 0.5) / 1.5 * 330, Y = d => 200 - d * 34;
+  const line = f => { const pts = []; for (let v = 0.5; v <= 2.0001; v += 0.05) pts.push(X(v).toFixed(1) + "," + Y(Math.min(f(v), 5.2)).toFixed(1)); return "M" + pts.join(" L"); };
+  return `<figure class="fig wide"><svg viewBox="0 0 420 240" role="img" aria-label="Induced drag falls with speed, parasite drag rises, total drag is lowest where they are equal">
+<rect class="fb" x="1" y="1" width="418" height="238" rx="6"/>
+<line x1="50" y1="200" x2="400" y2="200" class="ln"/><line x1="50" y1="200" x2="50" y2="14" class="ln"/>
+<text class="tm" x="225" y="226" text-anchor="middle">airspeed</text><text class="tm" x="20" y="110" transform="rotate(-90 20 110)" text-anchor="middle">drag</text>
+<path d="${line(v => 1/(v*v))}" class="ln pb dash" style="stroke-width:2"/>
+<path d="${line(v => v*v)}" class="ln pa dash" style="stroke-width:2"/>
+<path d="${line(v => 1/(v*v) + v*v)}" class="ln" style="stroke-width:3"/>
+<line x1="${X(1)}" y1="${Y(2)}" x2="${X(1)}" y2="200" class="ln dot2"/>
+<circle cx="${X(1)}" cy="${Y(2)}" r="4" class="f-ink"/>
+<text class="tb" x="${X(1)}" y="${Y(2) - 10}" text-anchor="middle">Vmd</text>
+<text class="t" x="${X(0.62)}" y="${Y(2.9)}">induced</text>
+<text class="t" x="${X(1.62)}" y="${Y(1.9)}">parasite</text>
+<text class="t" x="${X(1.5)}" y="${Y(3.6)}" text-anchor="end">total</text>
+</svg><figcaption>Induced drag is greatest at low speed; parasite drag grows with the square of speed. Total drag is least at the minimum drag speed (Vmd), where the two are equal.</figcaption></figure>`;
+})();
+
+const loadFactor = `<div class="tbl"><table>
+<tr><th>Bank angle</th><th>Load factor (1 ÷ cos bank)</th><th>Stall speed × √n</th></tr>
+<tr><td>0°</td><td>1.0 g</td><td>× 1.00</td></tr>
+<tr><td>30°</td><td>1.15 g</td><td>× 1.07</td></tr>
+<tr><td>45°</td><td>1.41 g</td><td>× 1.19</td></tr>
+<tr><td>60°</td><td>2.0 g</td><td>× 1.41</td></tr>
+</table></div>`;
+
+const T = [];
+T.push({ id:"lift", ref:"080 · 1", title:"Lift and the four forces",
+blurb:"What makes lift, the lift formula, and the angles you need to tell apart.",
+learn:()=>`
+${forces}
+<h3>The lift formula</h3>
+<p><span class="mono">Lift = CL × ½ρV² × S</span>, where CL is the lift coefficient (set mainly by angle of attack), ρ is air density, V is true airspeed and S is wing area. The <b>½ρV²</b> part is dynamic pressure, which is what the airspeed indicator measures as IAS.</p>
+<ul>
+<li>Double the speed and lift goes up four times, because V is squared.</li>
+<li>For the same IAS the dynamic pressure is the same at any altitude, so the aircraft stalls at about the same <b>indicated</b> airspeed high or low.</li>
+</ul>
+<h3>Angles that get confused</h3>
+<div class="tbl"><table>
+<tr><th>Angle</th><th>Between</th></tr>
+<tr><td>Angle of attack</td><td>The chord line and the relative airflow. You change it with the elevator.</td></tr>
+<tr><td>Angle of incidence</td><td>The chord line and the aircraft's longitudinal axis. Fixed when the aircraft is built.</td></tr>
+<tr><td>Pitch attitude</td><td>The longitudinal axis and the horizon. Not the same as angle of attack.</td></tr>
+</table></div>
+<h3>How a wing makes lift</h3>
+<p>The cambered wing at a positive angle of attack speeds up the air over its upper surface. Faster air has lower static pressure (Bernoulli), so pressure above the wing is lower than below. The wing also turns the airflow downwards (downwash), and the reaction pushes the wing up. The total aerodynamic force acts through the <b>centre of pressure</b>, which moves forward as angle of attack increases, up to the stall.</p>
+<div class="box trap"><b>Common trap</b>Angle of attack is measured to the relative airflow, not to the horizon. An aircraft in a steep descent can have a nose-down attitude and still be at a high angle of attack.</div>`,
+qs:[
+{q:"What is the angle of attack?",o:["The angle between the chord line and the relative airflow","The angle between the chord line and the longitudinal axis","The angle between the longitudinal axis and the horizon","The angle between the wing and the fuselage when viewed from the front"],e:"Angle of attack is between the chord line and the relative airflow. Chord to longitudinal axis is the angle of incidence; axis to horizon is pitch attitude; the front-view angle is dihedral."},
+{q:"If true airspeed doubles and everything else stays the same, lift becomes:",o:["Four times as great","Twice as great","Half as great","Unchanged"],e:"Lift is proportional to V², so doubling the speed multiplies lift by four."},
+{q:"In which direction does lift act?",o:["At right angles to the relative airflow","Vertically upwards, whatever the attitude","Along the chord line","At right angles to the longitudinal axis"],e:"Lift is defined as the component of the aerodynamic force at right angles to the relative airflow. Drag is the component parallel to it."},
+{q:"In steady, straight and level flight, which statement is correct?",o:["Lift equals weight and thrust equals drag","Lift is greater than weight","Thrust is greater than drag","Lift equals thrust"],e:"Unaccelerated straight and level flight means the forces balance: lift = weight and thrust = drag."},
+{q:"Why does an aircraft stall at about the same indicated airspeed at 1,000 ft and at 8,000 ft?",o:["IAS measures dynamic pressure, which is what produces lift","The air is the same density at both levels","True airspeed does not change with altitude","The stall warner adjusts for altitude"],e:"IAS is a measure of dynamic pressure (½ρV²). The same IAS gives the same dynamic pressure, so the same lift at the same angle of attack, whatever the density."},
+{q:"What is the angle of incidence?",o:["The fixed angle between the wing chord line and the aircraft's longitudinal axis","The angle between the chord line and the relative airflow","The angle the nose makes with the horizon","The angle between the wing and the horizontal seen from the front"],e:"Incidence is set when the aircraft is built: chord line to longitudinal axis. It does not change in flight."},
+{q:"As the angle of attack increases towards the stall, the centre of pressure normally:",o:["Moves forward","Moves aft","Stays fixed at the centre of gravity","Moves to the wing tip"],e:"On a conventional cambered wing the centre of pressure moves forward as angle of attack increases, then moves rapidly aft at the stall."}
+]});
+
+T.push({ id:"drag", ref:"080 · 2", title:"Drag and wake turbulence",
+blurb:"Parasite and induced drag, minimum drag speed, ground effect and wingtip vortices.",
+learn:()=>`
+<h3>Two kinds of drag</h3>
+<div class="tbl"><table>
+<tr><th>Type</th><th>Made up of</th><th>Changes with speed</th></tr>
+<tr><td>Parasite</td><td>Form (pressure) drag, skin friction, interference drag where parts meet</td><td>Increases with the square of speed</td></tr>
+<tr><td>Induced</td><td>A by-product of making lift: wingtip vortices and downwash tilt the lift backwards</td><td>Decreases as speed increases (greatest at low speed and high angle of attack)</td></tr>
+</table></div>
+${dragCurve}
+<h3>Reducing induced drag</h3>
+<ul>
+<li><b>High aspect ratio</b> (long, slender wings) weakens the tip vortices.</li>
+<li><b>Ground effect</b>: within about one wingspan of the ground, the ground limits the downwash and tip vortices, so induced drag falls. The aircraft floats on landing, and can lift off before it is able to climb out of ground effect.</li>
+</ul>
+<h3>Wake turbulence</h3>
+<p>Wingtip vortices trail behind every aircraft. They are strongest from aircraft that are <b>heavy, clean and slow</b> (high angle of attack). They sink below the generating aircraft's path and drift with the wind. Keep above a larger aircraft's flight path and allow time for vortices to drift or decay.</p>
+<div class="box trap"><b>Common trap</b>Flying slower does not always mean less drag. Below Vmd, total drag rises again as induced drag takes over.</div>`,
+qs:[
+{q:"How does induced drag change as airspeed increases in level flight?",o:["It decreases","It increases with the square of speed","It stays constant","It increases in direct proportion to speed"],e:"Induced drag is greatest at low speed and high angle of attack. As speed rises the angle of attack needed falls, and induced drag decreases."},
+{q:"How does parasite drag change if airspeed doubles?",o:["It increases about four times","It doubles","It halves","It stays the same"],e:"Parasite drag is proportional to the square of speed, so doubling speed roughly quadruples it."},
+{q:"At the minimum drag speed (Vmd):",o:["Induced drag equals parasite drag","Induced drag is zero","Parasite drag is zero","Lift is at its maximum"],e:"Total drag is lowest where the falling induced drag curve and the rising parasite drag curve cross, so they are equal at Vmd."},
+{q:"An aircraft floats along the runway further than expected just before touchdown. The main reason is:",o:["Ground effect reducing induced drag","Increased parasite drag near the ground","Higher air density at ground level","The flaps losing effectiveness"],e:"Within about a wingspan of the ground, downwash and tip vortices are reduced, so induced drag falls and the aircraft floats."},
+{q:"Which wing reduces induced drag the most, other things being equal?",o:["A long, narrow wing (high aspect ratio)","A short, wide wing (low aspect ratio)","A wing with more camber","A wing with a thicker leading edge"],e:"High aspect ratio wings have weaker tip vortices relative to their lift, so less induced drag."},
+{q:"Wake turbulence is greatest behind an aircraft that is:",o:["Heavy, clean and slow","Light, with flap down and fast","Light, clean and fast","Heavy and fast with flap down"],e:"Vortex strength depends on the lift being produced and the angle of attack: heavy, clean (no flap) and slow gives the strongest vortices."},
+{q:"After they leave the wing tips, wake vortices tend to:",o:["Sink below the generating aircraft's flight path and drift with the wind","Rise above the flight path","Stay at the same height and remain stationary","Dissipate immediately in calm air"],e:"Vortices descend below the flight path and move with the wind. In calm conditions they can persist over the runway, which is when they are most dangerous."}
+]});
+
+T.push({ id:"stall", ref:"080 · 3", title:"Stalling, load factor and spins",
+blurb:"Why a wing stalls, what changes the stall speed, and what a turn does to it.",
+learn:()=>`
+${liftCurve}
+<h3>What changes the stall speed</h3>
+<p>The wing always stalls at the same <b>angle of attack</b>. The <b>speed</b> at which you reach it changes:</p>
+<ul>
+<li><b>Weight</b>: heavier means higher stall speed (in proportion to the square root of weight).</li>
+<li><b>Load factor</b>: a turn or a pull-up raises the stall speed.</li>
+<li><b>Flap</b>: lowers the stall speed by increasing the maximum lift coefficient.</li>
+<li><b>Power</b>: with power on, slipstream and the thrust line lower the indicated stall speed a little.</li>
+<li>Ice, frost or damage on the wing raise the stall speed and can remove the warning.</li>
+</ul>
+<h3>Turns and load factor</h3>
+<p>In a level turn the wing has to carry more than the aircraft's weight. Load factor <span class="mono">n = 1 ÷ cos(bank)</span>, and stall speed rises by <span class="mono">√n</span>.</p>
+${loadFactor}
+<p>Example: stalls at 50 kt straight and level, so in a 60° level turn it stalls at about 50 × 1.41 = <b>71 kt</b>.</p>
+<h3>Stall warnings and wing design</h3>
+<p>Signs of the approaching stall: the stall warner, buffet, controls becoming sloppy, high nose attitude and decreasing airspeed. Wings are designed to stall at the <b>root first</b>, so the ailerons near the tips keep working: <b>washout</b> (less incidence at the tip) and stall strips do this.</p>
+<h3>Spins</h3>
+<p>A spin needs two things: the wing <b>stalled</b> and <b>yaw</b>. One wing is more deeply stalled than the other and the aircraft autorotates. Recovery follows the POH for your type; in general it begins with power off, ailerons neutral and full opposite rudder, then moving the control column forward until the rotation stops.</p>
+<div class="box trap"><b>Common trap</b>A stall is about angle of attack, not speed. A wing can stall at high speed in a steep turn or a sharp pull-up.</div>`,
+qs:[
+{q:"A wing stalls when:",o:["It exceeds the critical angle of attack","Airspeed falls below a fixed value","The nose is raised above the horizon","Engine power is reduced"],e:"The stall happens at the critical angle of attack, whatever the speed or attitude."},
+{q:"What is the load factor in a level turn at 60° of bank?",o:["2 g","1.41 g","1.15 g","3 g"],e:"Load factor = 1 ÷ cos 60° = 1 ÷ 0.5 = 2."},
+{q:"An aircraft stalls at 48 kt in straight and level flight. Roughly what is its stall speed in a level 60° banked turn?",o:["68 kt","52 kt","96 kt","60 kt"],e:"Stall speed rises by √n. At 60° bank n = 2 and √2 ≈ 1.41, so 48 × 1.41 ≈ 68 kt."},
+{q:"What effect does increased weight have on stall speed?",o:["It increases it","It decreases it","It has no effect","It only affects the stall speed with flap down"],e:"More weight needs more lift. At the critical angle of attack that needs more speed, so stall speed rises."},
+{q:"What is the main purpose of washout on a wing?",o:["To make the wing root stall before the tip, so the ailerons stay effective","To reduce parasite drag at cruise speed","To increase the stall speed","To reduce the effect of the propeller slipstream"],e:"Washout reduces the angle of incidence towards the tip, so the root reaches the critical angle first and the tips (with the ailerons) keep flying."},
+{q:"Which two conditions must exist for a spin to develop?",o:["The wing must be stalled, and there must be yaw","High airspeed and full power","Flap down and a nose-down attitude","A steep turn and full aileron"],e:"A spin is an autorotation that needs the wing stalled and the aircraft yawing. Remove either and it cannot develop."},
+{q:"How does lowering flap affect the stall speed?",o:["It reduces it","It increases it","It has no effect","It only changes the stall speed in a turn"],e:"Flap increases the maximum lift coefficient, so the wing produces the required lift at a lower speed and the stall speed falls."}
+]});
+
+T.push({ id:"stability", ref:"080 · 4", title:"Axes, controls and stability",
+blurb:"The three axes, which control works about which, and what makes an aircraft stable.",
+learn:()=>`
+<h3>Axes and controls</h3>
+<div class="tbl"><table>
+<tr><th>Axis</th><th>Movement</th><th>Control</th><th>Stability</th></tr>
+<tr><td>Longitudinal (nose to tail)</td><td>Roll</td><td>Ailerons</td><td>Lateral stability: dihedral, high wing</td></tr>
+<tr><td>Lateral (wing tip to wing tip)</td><td>Pitch</td><td>Elevator</td><td>Longitudinal stability: tailplane, CG position</td></tr>
+<tr><td>Normal (vertical)</td><td>Yaw</td><td>Rudder</td><td>Directional stability: fin and keel area</td></tr>
+</table></div>
+<p>All three axes pass through the centre of gravity.</p>
+<h3>Stability</h3>
+<p>A <b>stable</b> aircraft tends to return to its original condition after a disturbance, without the pilot doing anything.</p>
+<ul>
+<li><b>Longitudinal</b> stability comes from the tailplane acting like the feathers on a dart. The further forward the CG, the more stable the aircraft, and the heavier the elevator feels.</li>
+<li>With the CG <b>aft</b>, the aircraft is less stable and the elevator feels light. Beyond the aft limit it can become unstable in pitch and hard to recover from a stall or spin.</li>
+<li><b>Lateral</b> stability comes mainly from dihedral and a high wing: in a sideslip the lower wing meets the air at a greater angle and rolls the aircraft back towards level.</li>
+<li><b>Directional</b> stability comes from the fin: a yaw puts the fin at an angle to the airflow and it pushes the tail back into line.</li>
+</ul>
+<div class="box trap"><b>Common trap</b>The lateral axis is the one through the wing tips, but it is the axis of <b>pitch</b>. Longitudinal stability (stability in pitch) is about the lateral axis.</div>`,
+qs:[
+{q:"The elevator controls movement about which axis?",o:["The lateral axis","The longitudinal axis","The normal axis","The vertical axis through the fin"],e:"The elevator pitches the aircraft about the lateral axis, which runs from wing tip to wing tip."},
+{q:"The ailerons control movement about which axis?",o:["The longitudinal axis","The lateral axis","The normal axis","The propeller axis"],e:"Ailerons roll the aircraft about the longitudinal axis, which runs from nose to tail."},
+{q:"Which feature mainly gives an aircraft directional stability?",o:["The fin","Dihedral","The tailplane","Washout"],e:"The fin (and side area behind the CG) returns the aircraft to straight after a yaw. Dihedral gives lateral stability; the tailplane gives longitudinal stability."},
+{q:"What does dihedral provide?",o:["Lateral stability","Directional stability","Longitudinal stability","Reduced induced drag"],e:"In a sideslip the lower wing of a dihedral wing meets the air at a greater angle of attack, making more lift and rolling the aircraft back towards level."},
+{q:"With the centre of gravity near the aft limit, an aircraft will be:",o:["Less stable in pitch, with lighter elevator forces","More stable in pitch, with heavier elevator forces","Unaffected in pitch","More stable laterally"],e:"An aft CG shortens the tailplane's moment arm, reducing longitudinal stability and making the elevator feel light."},
+{q:"A forward centre of gravity tends to make an aircraft:",o:["More stable in pitch, with heavier elevator forces","Less stable in pitch","Easier to rotate at a lower speed","More prone to spinning"],e:"A forward CG increases longitudinal stability; the pilot needs more elevator force to change pitch."},
+{q:"An aircraft is said to be stable if, after a disturbance, it:",o:["Tends to return to its original condition without pilot input","Stays exactly where the disturbance left it","Moves further away from its original condition","Needs constant pilot input to stay level"],e:"Positive stability is a tendency to return. Staying put is neutral stability; diverging is instability."}
+]});
+
+T.push({ id:"controls", ref:"080 · 5", title:"Control effects, trim and flaps",
+blurb:"Adverse yaw and how designers reduce it, further effects, trim tabs, balancing and flaps.",
+learn:()=>`
+<h3>Adverse aileron yaw</h3>
+<p>When you roll, the down-going aileron raises the lift on that wing, and with it the induced drag. The aircraft yaws <b>away</b> from the direction of the turn. Designers reduce this with:</p>
+<ul>
+<li><b>Differential ailerons</b>: the up-going aileron moves through a larger angle than the down-going one.</li>
+<li><b>Frise ailerons</b>: the nose of the up-going aileron projects below the wing and adds drag on that side.</li>
+<li>The pilot uses <b>rudder</b> in the direction of the turn to keep the balance ball centred.</li>
+</ul>
+<h3>Further effects</h3>
+<ul>
+<li><b>Further effect of rudder: roll.</b> Yaw speeds up the outer wing, which makes more lift, so the aircraft rolls the same way.</li>
+<li><b>Further effect of aileron: yaw.</b> Bank leads to a sideslip, and the fin yaws the nose into the turn.</li>
+</ul>
+<h3>Trim and balance</h3>
+<ul>
+<li>A <b>trim tab</b> moves the opposite way to the control surface. To hold the elevator up (nose-up trim), the tab moves down.</li>
+<li><b>Aerodynamic balance</b> (horn balance, inset hinge) reduces the force needed to move a control.</li>
+<li><b>Mass balance</b> (weight ahead of the hinge line) prevents control surface <b>flutter</b>.</li>
+</ul>
+<h3>Flaps</h3>
+<p>Flaps increase camber, which increases both lift and drag. They lower the stall speed, so the aircraft can approach slower, and allow a steeper approach at the same speed. Small settings add more lift than drag (sometimes used for take-off); large settings add mostly drag (for landing).</p>
+<div class="box trap"><b>Common trap</b>Adverse yaw is caused by the <b>down-going</b> aileron, the one on the rising wing, not the up-going one.</div>`,
+qs:[
+{q:"What causes adverse aileron yaw?",o:["Extra induced drag from the down-going aileron","Extra parasite drag from the up-going aileron","The propeller slipstream","The fin stalling in the turn"],e:"The down-going aileron increases lift on the rising wing, and with it induced drag, which yaws the nose away from the turn."},
+{q:"How do differential ailerons reduce adverse yaw?",o:["The up-going aileron moves through a larger angle than the down-going one","Both ailerons move down together","The down-going aileron moves further than the up-going one","They link the ailerons to the rudder"],e:"Moving the up-going aileron further increases drag on the descending wing, balancing the extra induced drag on the rising wing."},
+{q:"What is the further effect of the rudder?",o:["Roll","Pitch","Yaw","A change in airspeed only"],e:"Yaw speeds up the outer wing, which makes more lift, so the aircraft rolls in the direction of the yaw."},
+{q:"To trim the aircraft nose up, which way does the elevator trim tab move?",o:["Down","Up","It does not move; the elevator moves instead","To the side"],e:"The tab moves the opposite way to the surface it trims. A downward tab pushes the elevator trailing edge up, holding the nose up."},
+{q:"What is the purpose of mass balancing a control surface?",o:["To prevent flutter","To reduce the stick force needed","To trim the aircraft","To increase control authority at low speed"],e:"Mass balance moves the surface's centre of gravity towards or ahead of the hinge line, preventing flutter. Aerodynamic balance reduces stick forces."},
+{q:"What is the main effect of lowering a large flap setting on the approach?",o:["Lower stall speed and more drag, allowing a slower, steeper approach","Higher stall speed and less drag","Less lift and less drag","No change to the stall speed"],e:"Flap increases the maximum lift coefficient, lowering the stall speed, and large settings add a lot of drag, allowing a steeper approach without gaining speed."},
+{q:"What is the further effect of the ailerons?",o:["Yaw","Pitch","Roll","Increase in airspeed"],e:"The bank causes a sideslip into the turn, and the fin then yaws the nose in the direction of the bank."}
+]});
+
+T.push({ id:"turn", ref:"080 · 6", title:"Turning, climbing and gliding",
+blurb:"What turns an aircraft, the forces in a climb and glide, and what changes glide range.",
+learn:()=>`
+<h3>Turning</h3>
+<p>To turn, the aircraft is banked so that the lift tilts. The <b>horizontal component of lift</b> provides the force towards the centre of the turn. To stop it descending, total lift must increase so that its vertical component still equals the weight. That is why you add back pressure, and often power, in a level turn.</p>
+<ul>
+<li>At the same airspeed, more bank gives a <b>higher rate</b> and a <b>smaller radius</b> of turn, and a higher load factor.</li>
+<li>At the same bank, a higher speed gives a larger radius and a lower rate of turn.</li>
+</ul>
+<h3>Climbing</h3>
+<p>In a steady climb part of the weight acts backwards along the flight path, so thrust must exceed drag. Lift is slightly <b>less</b> than weight, because lift only has to balance the part of the weight at right angles to the flight path.</p>
+<ul>
+<li><b>Vx</b>, best angle of climb: most height for distance travelled (obstacle clearance).</li>
+<li><b>Vy</b>, best rate of climb: most height for time.</li>
+</ul>
+<h3>Gliding</h3>
+<p>With no thrust, a component of weight along the flight path pulls the aircraft forward. The best glide distance comes from flying at the speed for the best <b>lift/drag ratio</b>.</p>
+<ul>
+<li>In still air, <b>weight does not change the best glide range</b>, only the speed you need to fly to get it (heavier means faster).</li>
+<li>A <b>headwind</b> reduces the distance over the ground; a tailwind increases it.</li>
+<li>Flap, an open door or a windmilling propeller adds drag and steepens the glide.</li>
+</ul>
+<div class="box trap"><b>Common trap</b>Flying slower than the best glide speed does not stretch the glide. It increases the rate of descent per mile and brings you closer to the stall.</div>`,
+qs:[
+{q:"What provides the force that turns an aircraft in a banked turn?",o:["The horizontal component of lift","The rudder","The vertical component of lift","The thrust of the propeller"],e:"Banking tilts the lift; its horizontal component provides the centripetal force. The rudder is used only to balance the turn."},
+{q:"At a constant airspeed, increasing the angle of bank in a level turn will:",o:["Increase the rate of turn and decrease the radius","Decrease the rate of turn","Increase the radius of turn","Have no effect on the load factor"],e:"More bank gives a bigger horizontal lift component, so a tighter, quicker turn, and a higher load factor."},
+{q:"In a steady climb, how does lift compare with weight?",o:["Lift is slightly less than weight","Lift is greater than weight","Lift is equal to weight","Lift is zero"],e:"In a steady climb, lift only has to balance the part of the weight at right angles to the flight path, so it is slightly less than the weight. Thrust makes up the difference."},
+{q:"Which speed gives the most height gain in the shortest horizontal distance?",o:["Vx, best angle of climb","Vy, best rate of climb","Vmd","Cruise speed"],e:"Vx gives the steepest climb gradient and is used to clear obstacles. Vy gives the most height per minute."},
+{q:"How does an increase in weight affect the maximum glide range in still air?",o:["It has no effect on range, but the best glide speed is higher","It increases the range","It decreases the range","It has no effect on range or speed"],e:"The best lift/drag ratio, and so the glide angle, does not depend on weight. A heavier aircraft must fly faster to achieve it, and covers the same distance in less time."},
+{q:"To achieve maximum glide range, you should fly at the speed for:",o:["The best lift/drag ratio","The minimum sink rate","The stall speed plus 5 kt","The normal cruise speed"],e:"Best range comes from the best lift/drag ratio, the speed recommended in the POH as best glide."},
+{q:"Gliding into a headwind compared with still air, the distance covered over the ground will be:",o:["Shorter","Longer","The same","Longer only with flap down"],e:"The headwind reduces groundspeed while the rate of descent stays the same, so less ground is covered before reaching the surface."}
+]});
+
+SUBJECTS.push({ id:"pof", code:"080", name:"Principles of Flight",
+  blurb:"How a wing makes lift, drag, the stall and turning, stability, the controls, and the forces in a climb and glide.",
+  topics:T });
+})();
+
+
+// 090 Communications
+(() => {
+const ALPHA = ["Alfa","Bravo","Charlie","Delta","Echo","Foxtrot","Golf","Hotel","India","Juliett","Kilo","Lima","Mike","November","Oscar","Papa","Quebec","Romeo","Sierra","Tango","Uniform","Victor","Whiskey","X-ray","Yankee","Zulu"];
+const alpha = `<div class="tiles">${ALPHA.map(w=>`<div class="tile"><div class="n">${w[0]}</div><div class="t">${w}</div></div>`).join('')}</div>`;
+
+const T = [];
+T.push({ id:"phonetics", ref:"090 · 1", title:"Phonetics, numbers and callsigns",
+blurb:"The phonetic alphabet, how numbers are spoken, and when you can shorten a callsign.",
+learn:()=>`
+<h3>The phonetic alphabet</h3>
+${alpha}
+<h3>Numbers</h3>
+<p>Each digit is spoken separately, except whole hundreds and thousands. Three is <b>"tree"</b>, five is <b>"fife"</b>, nine is <b>"niner"</b>.</p>
+<div class="tbl"><table>
+<tr><th>Item</th><th>Written</th><th>Spoken</th></tr>
+<tr><td>Altitude</td><td>2,500 ft</td><td>"Two thousand five hundred feet"</td></tr>
+<tr><td>Flight level</td><td>FL55</td><td>"Flight level five five"</td></tr>
+<tr><td>Heading</td><td>080°</td><td>"Heading zero eight zero"</td></tr>
+<tr><td>Frequency</td><td>126.700</td><td>"One two six decimal seven"</td></tr>
+<tr><td>QNH</td><td>1008 hPa</td><td>"QNH one zero zero eight"</td></tr>
+<tr><td>QNH below 1000</td><td>998 hPa</td><td>"QNH niner niner eight hectopascals"</td></tr>
+<tr><td>Squawk</td><td>4521</td><td>"Squawk four five two one"</td></tr>
+<tr><td>Wind</td><td>240/12</td><td>"Two four zero degrees, one two knots"</td></tr>
+</table></div>
+<p>Times are in UTC. Usually only the minutes are given ("two eight"); the hour is added if there is any chance of confusion.</p>
+<h3>Callsigns</h3>
+<p>A UK registration such as G-ABCD is spoken in full ("Golf Alfa Bravo Charlie Delta") on first contact. It may be shortened to the first letter and the last two ("Golf Charlie Delta") only <b>after the ground station has shortened it first</b>.</p>
+<div class="box trap"><b>Common trap</b>Below 1000 hPa the word "hectopascals" is added, so that 998 can't be mistaken for 29.98 inches or 1998.</div>`,
+qs:[
+{q:"How is the digit 9 spoken in aviation radiotelephony?",o:["Niner","Nine","Nein","Nyne"],e:"Niner, so that it can't be confused with the German 'nein'. Three is 'tree' and five is 'fife'."},
+{q:"How is flight level 55 transmitted?",o:["Flight level five five","Flight level fifty-five","Five thousand five hundred feet","Flight level five hundred and fifty"],e:"Flight levels are spoken as separate digits: 'flight level five five'."},
+{q:"How is an altitude of 2,500 ft transmitted?",o:["Two thousand five hundred feet","Two five zero zero feet","Twenty-five hundred feet","Flight level two five"],e:"Whole thousands and hundreds are spoken as such: 'two thousand five hundred feet'."},
+{q:"How is a QNH of 998 hPa transmitted?",o:["QNH niner niner eight hectopascals","QNH niner niner eight","QNH nine hundred and ninety-eight","QNH zero niner niner eight"],e:"Below 1000 hPa the unit is added, to avoid confusion with other figures."},
+{q:"Your callsign is G-BNXE. When may you abbreviate it to \"Golf X-ray Echo\"?",o:["Only after the ground station has abbreviated it","Whenever the frequency is busy","After your first transmission","Never"],e:"Abbreviation is only allowed once the ground station has used the abbreviated form, which shows there is no risk of confusion."},
+{q:"What is the phonetic word for the letter Q?",o:["Quebec","Queen","Quintet","Quaker"],e:"Q is Quebec. The alphabet is the ICAO standard alphabet."},
+{q:"How is a frequency of 126.700 MHz normally transmitted?",o:["One two six decimal seven","One two six point seven zero zero","One hundred and twenty-six decimal seven","One two six seven"],e:"Digits are spoken separately with 'decimal'. When the last two digits are zero, only the first four digits are normally spoken."}
+]});
+
+T.push({ id:"words", ref:"090 · 2", title:"Standard words and phrases",
+blurb:"What ROGER, WILCO, AFFIRM and the rest mean, and the readability scale.",
+learn:()=>`
+<div class="tbl"><table>
+<tr><th>Word</th><th>Meaning</th></tr>
+<tr><td>AFFIRM</td><td>Yes</td></tr>
+<tr><td>NEGATIVE</td><td>No, or permission not granted, or that is not correct</td></tr>
+<tr><td>ROGER</td><td>I have received all of your last transmission. Not a yes, and not a readback.</td></tr>
+<tr><td>WILCO</td><td>I understand your message and will comply with it</td></tr>
+<tr><td>STANDBY</td><td>Wait and I will call you</td></tr>
+<tr><td>SAY AGAIN</td><td>Repeat all, or the following part, of your last transmission</td></tr>
+<tr><td>CORRECTION</td><td>An error has been made; the correct version is…</td></tr>
+<tr><td>READ BACK</td><td>Repeat all, or the specified part, of this message back to me as received</td></tr>
+<tr><td>CONTACT</td><td>Establish radio contact with…</td></tr>
+<tr><td>MONITOR</td><td>Listen out on (frequency); don't call unless needed</td></tr>
+<tr><td>APPROVED</td><td>Permission for the proposed action is granted</td></tr>
+</table></div>
+<h3>Readability scale</h3>
+<div class="tbl"><table>
+<tr><th>Number</th><th>Meaning</th></tr>
+<tr><td>1</td><td>Unreadable</td></tr>
+<tr><td>2</td><td>Readable now and then</td></tr>
+<tr><td>3</td><td>Readable but with difficulty</td></tr>
+<tr><td>4</td><td>Readable</td></tr>
+<tr><td>5</td><td>Perfectly readable</td></tr>
+</table></div>
+<div class="box trap"><b>Common trap</b>Don't answer a question with ROGER. If ATC asks "Can you accept…?", the answer is AFFIRM or NEGATIVE.</div>`,
+qs:[
+{q:"What does WILCO mean?",o:["I understand your message and will comply with it","I have received all of your last transmission","Yes","Wait and I will call you"],e:"WILCO is used for instructions that don't need a full readback, such as 'report final'."},
+{q:"What does ROGER mean?",o:["I have received all of your last transmission","Yes, I agree","I will comply","Repeat your last message"],e:"ROGER only acknowledges receipt. It must not be used to answer a question or in place of a required readback."},
+{q:"ATC asks: \"Golf-CD, can you accept a left-hand circuit?\" Which reply is correct if you can?",o:["Affirm, Golf-CD","Roger, Golf-CD","Wilco, Golf-CD","Yes yes, Golf-CD"],e:"A question needs AFFIRM or NEGATIVE. ROGER only means you received the message."},
+{q:"What does STANDBY mean?",o:["Wait and I will call you","Stop transmitting","Change frequency","Repeat your message"],e:"STANDBY tells the other station you heard them and will come back. It is not approval of anything."},
+{q:"ATC tells you to \"monitor Tower on 118.5\". What should you do?",o:["Change to 118.5 and listen, without calling unless necessary","Change to 118.5 and call Tower immediately","Stay on the current frequency","Squawk standby"],e:"MONITOR means listen out. CONTACT means change frequency and call."},
+{q:"On the readability scale, what does readability 3 mean?",o:["Readable but with difficulty","Unreadable","Perfectly readable","Readable now and then"],e:"1 unreadable, 2 readable now and then, 3 with difficulty, 4 readable, 5 perfectly readable."},
+{q:"What does NEGATIVE mean?",o:["No, or permission not granted, or that is not correct","I have received your message","I will comply","Wait"],e:"NEGATIVE covers no, permission not granted and not correct."}
+]});
+
+T.push({ id:"readback", ref:"090 · 3", title:"Readbacks and clearances",
+blurb:"Which items you must read back, conditional clearances, and the words reserved for take-off.",
+learn:()=>`
+<h3>Items to read back in full</h3>
+<ul>
+<li>Taxi instructions, and level, heading and speed instructions</li>
+<li>Route and approach clearances, and the runway in use</li>
+<li>Clearances to take off, land, enter, backtrack, cross or hold short of an active runway</li>
+<li>Squawk codes and "squawk ident"</li>
+<li>Altimeter settings (with "hectopascals" below 1000)</li>
+<li>Frequency changes and the type of ATS service</li>
+<li>VDF information and transition levels</li>
+</ul>
+<p>Read back in the same order as given, and end with your callsign. Items not on the list, such as traffic information and the surface wind, are acknowledged rather than read back.</p>
+<h3>Example</h3>
+<p><b>ATC:</b> "Golf-CD, climb altitude three thousand feet, squawk four five two one."<br><b>You:</b> "Climb altitude three thousand feet, squawk four five two one, Golf-CD."</p>
+<h3>Conditional clearances</h3>
+<p>"Golf-CD, behind the landing Cessna, line up and wait behind." The readback must include the condition: "Behind the landing Cessna, line up and wait behind, Golf-CD." Before acting, identify the aircraft referred to.</p>
+<h3>Take-off</h3>
+<p>The words <b>"take off"</b> are used only in an actual take-off clearance (or when cancelling one). At all other times ATC and pilots say "departure" or "airborne", so that "take off" can never be heard by mistake.</p>`,
+qs:[
+{q:"Which of these must be read back in full?",o:["A frequency change","Traffic information","The surface wind","A weather report"],e:"Frequency changes are on the mandatory readback list. Traffic information and the wind are acknowledged."},
+{q:"ATC instructs: \"Golf-CD, squawk 4521.\" What is the correct reply?",o:["Squawk 4521, Golf-CD","Roger, Golf-CD","Wilco, Golf-CD","4521"],e:"Squawk codes must be read back, followed by your callsign."},
+{q:"What must be included when reading back a conditional clearance?",o:["The condition itself","Only the action","Only your callsign","The time"],e:"The condition is part of the clearance, so the readback must include it, for example 'behind the landing Cessna'."},
+{q:"When may the words \"take off\" be used on the radio?",o:["Only in a take-off clearance or when cancelling one","At any time when departing","Only by the pilot","When reporting airborne"],e:"Reserving 'take off' for the clearance itself prevents a pilot mistaking another instruction for permission to go."},
+{q:"In what order should you read back a clearance with several items?",o:["In the same order as given","In order of importance","Any order, as long as all items are included","Alphabetical order"],e:"Reading back in the order given makes it easier for the controller to check."},
+{q:"Which item is NOT on the list of mandatory readbacks?",o:["Traffic information","A QNH","A clearance to cross a runway","A heading instruction"],e:"Traffic information is acknowledged. Altimeter settings, runway clearances and headings must be read back."},
+{q:"ATC: \"Golf-CD, cleared to land runway 25.\" What is the correct reply?",o:["Cleared to land runway 25, Golf-CD","Roger, Golf-CD","Landing, Golf-CD","Wilco, Golf-CD"],e:"Landing clearances are on the readback list, with the runway and callsign."}
+]});
+
+T.push({ id:"services", ref:"090 · 4", title:"Air traffic services and stations",
+blurb:"Who you are talking to, and the UK Flight Information Services outside controlled airspace.",
+learn:()=>`
+<h3>Station callsign suffixes</h3>
+<div class="tbl"><table>
+<tr><th>Suffix</th><th>Service</th></tr>
+<tr><td>TOWER</td><td>Aerodrome control</td></tr>
+<tr><td>GROUND</td><td>Ground movement control</td></tr>
+<tr><td>APPROACH / RADAR</td><td>Approach control, with or without surveillance</td></tr>
+<tr><td>INFORMATION</td><td>Flight information service (including aerodrome FIS)</td></tr>
+<tr><td>RADIO</td><td>Air/ground communication service</td></tr>
+</table></div>
+<p>An <b>air/ground</b> operator ("Radio") can pass information but cannot give clearances or instructions. An <b>aerodrome FISO</b> ("Information") gives information to help you fly safely, but does not clear you to land or take off.</p>
+<h3>UK Flight Information Services</h3>
+<p>Outside controlled airspace, the UK provides four services. In all of them the <b>pilot remains responsible for collision avoidance</b>.</p>
+<div class="tbl"><table>
+<tr><th>Service</th><th>What you get</th></tr>
+<tr><td>Basic Service</td><td>Information useful for the safe conduct of the flight. No monitoring of your flight; traffic information only if the controller happens to be aware.</td></tr>
+<tr><td>Traffic Service</td><td>Surveillance-derived traffic information on relevant traffic. You decide how to avoid it.</td></tr>
+<tr><td>Deconfliction Service</td><td>Traffic information plus advice on avoiding action. Intended for IFR flight.</td></tr>
+<tr><td>Procedural Service</td><td>Non-surveillance service separating participating aircraft, mainly IFR.</td></tr>
+</table></div>
+<p>The type of service is agreed with the controller and must be read back.</p>
+<h3>Frequency monitoring codes</h3>
+<p>Some units publish a squawk to show that you are listening on their frequency without receiving a service. ATC can then contact you quickly if needed. 7000 is the general UK conspicuity code for VFR.</p>`,
+qs:[
+{q:"A ground station's callsign has the suffix \"RADIO\". What service does it provide?",o:["Air/ground communication service","Aerodrome control","Flight information service","Approach control with radar"],e:"RADIO is an air/ground station, which passes information but can't issue clearances or instructions."},
+{q:"Under a Basic Service, who is responsible for collision avoidance?",o:["The pilot","The controller","The controller and the pilot equally","Nobody outside controlled airspace"],e:"In every UK FIS the pilot is responsible for avoiding other traffic. A Basic Service does not monitor your flight."},
+{q:"What does a Traffic Service provide?",o:["Surveillance-derived traffic information, with the pilot responsible for avoiding it","Separation from all other traffic","Avoiding action instructions you must follow","Only weather information"],e:"Traffic Service gives information on relevant traffic from radar. You decide what to do about it."},
+{q:"Which station suffix indicates an aerodrome flight information service?",o:["INFORMATION","TOWER","RADIO","GROUND"],e:"FIS units, including aerodrome FIS, use INFORMATION. TOWER is aerodrome control."},
+{q:"An air/ground operator tells you the runway in use and the QNH. Can they clear you to land?",o:["No, they can only give information","Yes, if no other traffic is reported","Yes, outside controlled airspace","Only with the airfield manager's permission"],e:"Air/ground operators provide information only. The decision to land is yours."},
+{q:"What is a frequency monitoring code?",o:["A squawk showing you are listening on a unit's frequency without receiving a service","The code for radio failure","A code to request a service","A code for flights in controlled airspace only"],e:"Frequency monitoring codes help ATC identify and contact you if needed, for example to prevent an airspace infringement."},
+{q:"Which statement about the type of ATS service is correct?",o:["It must be agreed with the controller and read back","It is assigned automatically by squawk","It never needs to be stated","It only applies above 3,000 ft"],e:"The type of service is on the mandatory readback list, so both sides agree what is being provided."}
+]});
+
+T.push({ id:"emergency", ref:"090 · 5", title:"Emergencies and radio failure",
+blurb:"MAYDAY and PAN calls, 121.5 MHz, practice PANs, and what to do when the radio stops.",
+learn:()=>`
+<h3>Distress and urgency</h3>
+<p><b>MAYDAY MAYDAY MAYDAY</b> for grave and imminent danger needing immediate help. <b>PAN PAN, PAN PAN, PAN PAN</b> for an urgent situation that doesn't need immediate help. Then, as far as possible:</p>
+<ol>
+<li>Name of the station addressed</li>
+<li>Callsign</li>
+<li>Aircraft type</li>
+<li>Nature of the emergency</li>
+<li>Pilot's intentions</li>
+<li>Position, height and heading</li>
+<li>Pilot qualification (UK)</li>
+<li>Other useful information, such as persons on board and endurance</li>
+</ol>
+<ul>
+<li>Use the frequency you're already on. If you have no contact, use <b>121.5 MHz</b>. Squawk <b>7700</b>.</li>
+<li>The station receiving a MAYDAY controls distress traffic. It may impose silence with "Stop transmitting, MAYDAY".</li>
+<li>When the emergency is over, cancel it, for example "Cancel distress".</li>
+</ul>
+<h3>Practice PANs</h3>
+<p>In the UK you may practise a PAN on <b>121.5 MHz only</b>, to the Distress and Diversion cell, starting with "<b>Practice PAN</b>". Listen first and don't practise if the frequency is busy.</p>
+<h3>Radio failure</h3>
+<ul>
+<li>Check the basics: volume, squelch, frequency, headset plugs, the avionics master and circuit breakers.</li>
+<li>Squawk <b>7600</b>.</li>
+<li>If you think you can transmit but not receive, transmit your position and intentions <b>blind</b>, prefixed "Transmitting blind", twice each time.</li>
+<li>If you can receive but not transmit, ATC may use the <b>speechless</b> procedure, asking you to press the transmit button a set number of times.</li>
+</ul>`,
+qs:[
+{q:"Which is the international aeronautical emergency frequency?",o:["121.5 MHz","118.0 MHz","123.45 MHz","243.0 kHz"],e:"121.5 MHz is the VHF emergency frequency, monitored by the UK Distress and Diversion cell."},
+{q:"In a MAYDAY message, which comes first after the callsign and aircraft type?",o:["The nature of the emergency","The position","The number of persons on board","The pilot's qualification"],e:"After the station, callsign and type: nature of the emergency, intentions, position/height/heading, pilot qualification, other information."},
+{q:"Where may a UK pilot make a practice PAN?",o:["On 121.5 MHz only, prefixed \"Practice PAN\"","On any frequency in use","On the aerodrome frequency only","Practice PANs are not allowed"],e:"Practice PANs go to the Distress and Diversion cell on 121.5 MHz and must be clearly identified as practice."},
+{q:"Which squawk indicates radio communication failure?",o:["7600","7700","7500","7000"],e:"7600 is radio failure, 7700 emergency, 7500 unlawful interference, 7000 VFR conspicuity."},
+{q:"Your receiver has failed but you believe your transmitter works. What should you do?",o:["Transmit your messages blind, prefixed \"Transmitting blind\", twice","Stop transmitting altogether","Squawk 7500","Transmit on 121.5 only, once"],e:"Transmitting blind gives ATC your position and intentions. Each message is sent twice because you can't hear any reply."},
+{q:"The controller hears a MAYDAY on the frequency and says \"Stop transmitting, MAYDAY\". What does this mean?",o:["Other stations must keep silent while the emergency is handled","The emergency is over","You must make a MAYDAY yourself","Change frequency immediately"],e:"This imposes radio silence on other aircraft so the distress traffic isn't interrupted."},
+{q:"Which describes a PAN rather than a MAYDAY situation?",o:["An urgent situation that does not need immediate assistance","Grave and imminent danger","Fire in the cabin","Complete engine failure over the sea"],e:"PAN PAN is the urgency signal. MAYDAY is for grave and imminent danger requiring immediate help."}
+]});
+
+T.push({ id:"vhf", ref:"090 · 6", title:"VHF and routine calls",
+blurb:"How far VHF reaches, the freecall format, and the standard circuit reports.",
+learn:()=>`
+<h3>VHF</h3>
+<ul>
+<li>The aeronautical VHF voice band runs from <b>118 to 137 MHz</b>.</li>
+<li>VHF travels in straight lines, so it is <b>line of sight</b>. Hills and the curve of the earth block it.</li>
+<li>Approximate range: <span class="mono">range (nm) ≈ 1.23 × √(height in ft)</span>. At 2,500 ft that is about 61 nm.</li>
+</ul>
+<h3>The freecall</h3>
+<p>For a UK FIS freecall, after making initial contact and being asked to "pass your message":</p>
+<ol>
+<li>Callsign</li>
+<li>Aircraft type</li>
+<li>Departure point</li>
+<li>Destination</li>
+<li>Position (somewhere the controller will recognise)</li>
+<li>Altitude and altimeter setting</li>
+<li>Flight rules (VFR or IFR)</li>
+<li>Routing, intentions or request</li>
+</ol>
+<p>Example: "Golf-ABCD, Cessna 150, Eshott to Carlisle, 5 miles west of Morpeth, altitude 2,500 feet, QNH 1012, VFR, request Basic Service."</p>
+<h3>Circuit reports</h3>
+<ul>
+<li><b>Downwind</b>: when abeam the upwind end of the runway.</li>
+<li><b>Base</b>: if requested, on completing the turn onto base leg.</li>
+<li><b>Final</b>: after the turn onto final, within about 4 nm of the threshold.</li>
+<li><b>Long final</b>: on final between about 4 and 8 nm.</li>
+</ul>
+<div class="box trap"><b>Common trap</b>Before transmitting, listen. Make sure the frequency is clear and you aren't about to interrupt an exchange.</div>`,
+qs:[
+{q:"Which frequency band is used for aeronautical VHF voice communication?",o:["118 to 137 MHz","108 to 118 MHz","190 to 1,750 kHz","2 to 30 MHz"],e:"Voice communications use 118 to 137 MHz. 108 to 118 MHz is used by VOR and ILS."},
+{q:"Why might you lose radio contact with a station 40 nm away when flying low behind hills?",o:["VHF is line of sight and the hills block it","The station switches off at low level","VHF only works over water","The transmitter loses power at low level"],e:"VHF travels in straight lines. Terrain or the curve of the earth between you and the station blocks it."},
+{q:"Approximately what VHF range would you expect at 2,500 ft over flat ground?",o:["61 nm","25 nm","150 nm","10 nm"],e:"1.23 × √2,500 = 1.23 × 50 ≈ 61 nm."},
+{q:"In a UK freecall, what comes immediately after the aircraft type?",o:["Departure point","Position","Altitude","Request"],e:"Callsign, type, departure, destination, position, altitude and setting, flight rules, then intentions or request."},
+{q:"When is the \"downwind\" report normally made?",o:["When abeam the upwind end of the runway","At the start of the crosswind leg","Halfway along the downwind leg","When turning onto base"],e:"Downwind is reported abeam the upwind end of the runway."},
+{q:"At about what distance from the threshold is a \"final\" report made?",o:["Within about 4 nm","At 10 nm","At exactly 2 nm","Over the threshold"],e:"'Final' is reported after turning onto final within about 4 nm. Between about 4 and 8 nm is 'long final'."},
+{q:"What should you do immediately before transmitting?",o:["Listen to make sure the frequency is clear","Press the transmit button and wait two seconds","Change to 121.5","Squawk ident"],e:"Listening first avoids blocking another transmission or interrupting an exchange."}
+]});
+
+SUBJECTS.push({ id:"comms", code:"090", name:"Communications",
+  blurb:"Phonetics and numbers, standard words, readbacks and clearances, UK air traffic services, emergencies and radio failure, and routine calls.",
+  topics:T });
+})();
+
 
 // =====================================================================
 // App logic
@@ -1343,7 +2523,7 @@ let last = null;                  // id of last phase opened
 let prefs = { mode:"day", size:"m", haptic:true };
 let staleCleared = false;
 let currentPhase = null;
-let section = "cl";            // "cl" checklist or "st" Air Law study
+let section = "cl";            // "cl" checklist, "tr" training notes, "ex" exams
 
 const $ = id => document.getElementById(id);
 const home = $("home"), phaseView = $("phaseView"), hdr = $("hdr"), hdrTitle = $("hdrTitle");
@@ -1606,14 +2786,17 @@ window.addEventListener("popstate", e => {
   const ph = e.state && e.state.ph && byId(e.state.ph);
   ph ? renderPhase(ph) : renderHome();
 });
-$("backBtn").addEventListener("click", () => section === "st" ? Study.back() : goHome());
+$("backBtn").addEventListener("click", () => section === "cl" ? goHome() : Study.back());
 
 // ---------- section tabs (top-level screens only) ----------
 function markTabs(){
-  [["tabCl","cl"],["tabSt","st"]].forEach(([id, s]) => { const b = $(id); b.classList.toggle("on", section === s); b.setAttribute("aria-pressed", section === s ? "true" : "false"); });
+  [["tabCl","cl"],["tabTr","tr"],["tabEx","ex"]].forEach(([id, s]) => {
+    const b = $(id); b.classList.toggle("on", section === s); b.setAttribute("aria-pressed", section === s ? "true" : "false");
+  });
 }
 $("tabCl").addEventListener("click", () => { if(section === "cl") return; try{ history.replaceState({}, ""); }catch(e){} renderHome(); });
-$("tabSt").addEventListener("click", () => { if(section === "st") return; Study.showHome(); });
+$("tabTr").addEventListener("click", () => { if(section === "tr") return; Study.showTraining(); });
+$("tabEx").addEventListener("click", () => { if(section === "ex") return; Study.showExams(); });
 
 // ---------- bottom sheet ----------
 function openSheet(title, red, body){
@@ -1676,12 +2859,15 @@ $("setBtn").addEventListener("click", () => {
   wrap.appendChild(g);
 
   const ga = document.createElement("div"); ga.className = "setgroup";
-  ga.innerHTML = `<div class="setlabel">Air Law answers</div>`;
-  ga.appendChild(armedButton("resetbtn", "Reset Air Law answers", "Tap again to clear answers", () => {
-    Study.reset(); closeSheet(); if(section === "st") Study.showHome(); toast("Air Law answers cleared");
+  ga.innerHTML = `<div class="setlabel">Exam answers</div>`;
+  ga.appendChild(armedButton("resetbtn", "Reset exam answers", "Tap again to clear answers", () => {
+    Study.reset(); closeSheet();
+    if(section === "tr") Study.showTraining();
+    if(section === "ex") Study.showExams();
+    toast("Exam answers cleared");
   }));
   const gn = document.createElement("div"); gn.className = "setnote";
-  gn.textContent = "Air Law answers are kept on this device until you clear them. They are separate from checklist ticks.";
+  gn.textContent = "Exam answers for every subject are kept on this device until you clear them. They are separate from checklist ticks.";
   ga.appendChild(gn);
   wrap.appendChild(ga);
 
@@ -1698,38 +2884,62 @@ document.addEventListener("click", function once(){ keepAwake(); document.remove
 
 
 // =====================================================================
-// Air Law study section
-// Runs beside the checklist and shares only the header, the settings sheet
-// and the display mode. Its progress has its own storage key.
+// Training and Exams sections
+// Two tabs over the same SUBJECTS data. Training is the notes; Exams is
+// practice by topic, a mock paper per subject and review of misses.
+// Shares only the header, the settings sheet and the display mode with the
+// checklist. Answers have their own storage key.
 // =====================================================================
 const Study = (() => {
-  const SKEY = "ppl-air-law-v1";
+  const SKEY = "ppl-study-v2", OLD_KEY = "ppl-air-law-v1";
   const PASS = 75, MOCK_N = 20;
   const view = $("studyView");
   let store = { ans:{} };
   let sess = null;
 
+  // The nine CAA PPL(A) papers, in syllabus order. Subjects not yet written
+  // show on the Training screen as "not added yet".
+  const PAPERS = [
+    ["010","Air Law"],["020","Aircraft General Knowledge"],["030","Flight Performance & Planning"],
+    ["040","Human Performance"],["050","Meteorology"],["060","Navigation"],
+    ["070","Operational Procedures"],["080","Principles of Flight"],["090","Communications"]
+  ];
+
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[c]));
-  const qid = (t,i) => t.id + "-" + (i+1);
+  const subjectByCode = code => SUBJECTS.find(s => s.code === code);
+  const subjectById = id => SUBJECTS.find(s => s.id === id);
+  const topicOf = (s, tid) => s.topics.find(t => t.id === tid);
+  const qid = (s,t,i) => `${s.id}:${t.id}-${i+1}`;
   const ALLQ = [];
-  TOPICS.forEach(t => t.qs.forEach((q,i) => ALLQ.push({ id:qid(t,i), topic:t, q })));
+  SUBJECTS.forEach(s => s.topics.forEach(t => t.qs.forEach((q,i) => ALLQ.push({ id:qid(s,t,i), s, t, q }))));
   const byQ = {}; ALLQ.forEach(x => byQ[x.id] = x);
-  const topicById = id => TOPICS.find(t => t.id === id);
   const shuffle = a => { a = a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
 
-  function load(){ try{ const s = JSON.parse(localStorage.getItem(SKEY) || "null"); if(s && s.ans) store = s; }catch(e){} }
+  // ---------- storage ----------
+  function load(){
+    try{ const s = JSON.parse(localStorage.getItem(SKEY) || "null"); if(s && s.ans){ store = s; return; } }catch(e){}
+    // First run after the update: carry Air Law answers across from the old key.
+    try{
+      const o = JSON.parse(localStorage.getItem(OLD_KEY) || "null");
+      if(o && o.ans){
+        Object.keys(o.ans).forEach(k => { if(byQ["airlaw:" + k]) store.ans["airlaw:" + k] = o.ans[k]; });
+        save();
+      }
+    }catch(e){}
+  }
   function save(){ try{ localStorage.setItem(SKEY, JSON.stringify(store)); }catch(e){} }
   function rec(id, ok){ const p = store.ans[id] || { n:0, c:0 }; store.ans[id] = { n:p.n+1, c:p.c+(ok?1:0), ok, t:Date.now() }; save(); }
-  function reset(){ store = { ans:{} }; save(); }
+  function reset(){ store = { ans:{} }; save(); try{ localStorage.removeItem(OLD_KEY); }catch(e){} }
 
-  function tStats(t){ let a=0, ok=0; t.qs.forEach((q,i) => { const r = store.ans[qid(t,i)]; if(r){ a++; if(r.ok) ok++; } }); return { a, ok, n:t.qs.length }; }
-  function overall(){ let a=0, ok=0; ALLQ.forEach(x => { const r = store.ans[x.id]; if(r){ a++; if(r.ok) ok++; } }); return { a, ok, n:ALLQ.length }; }
-  const missed = () => ALLQ.filter(x => store.ans[x.id] && !store.ans[x.id].ok).map(x => x.id);
+  function stats(list){ let a=0, ok=0; list.forEach(x => { const r = store.ans[x.id]; if(r){ a++; if(r.ok) ok++; } }); return { a, ok, n:list.length }; }
+  const qsOf = s => ALLQ.filter(x => x.s === s);
+  const qsOfTopic = (s,t) => ALLQ.filter(x => x.s === s && x.t === t);
+  const missedIn = list => list.filter(x => store.ans[x.id] && !store.ans[x.id].ok).map(x => x.id);
 
   // ---------- screen chrome ----------
-  function enter(kind){
+  function enter(sec, kind){
     // kind: "top" | "sub" | "quiz"
-    section = "st";
+    section = sec;
     home.hidden = true; phaseView.hidden = true; view.hidden = false;
     currentPhase = null;
     $("emergFab").hidden = true;
@@ -1740,81 +2950,139 @@ const Study = (() => {
     window.scrollTo(0, 0);
   }
   function title(main, small){ hdrTitle.innerHTML = `${esc(main)}<small>${esc(small)}</small>`; }
+  function el(tag, cls, html){ const e = document.createElement(tag); if(cls) e.className = cls; if(html != null) e.innerHTML = html; return e; }
   function btn(cls, html, fn, attrs){
-    const b = document.createElement("button");
-    b.className = cls; b.innerHTML = html;
+    const b = el("button", cls, html);
     if(attrs) Object.entries(attrs).forEach(([k,v]) => b.setAttribute(k, v));
     b.addEventListener("click", fn);
     return b;
   }
+  function card(num, ref, name, pct, count, done, fn, disabled){
+    const b = btn("pbtn" + (done ? " done" : "") + (disabled ? " off" : ""),
+      `<span class="pnum">${num}</span>`+
+      `<span><span class="pref">${esc(ref)}</span><span class="pname" style="display:block">${esc(name)}</span></span>`+
+      `<span class="pbar"><i style="width:${pct}%"></i></span>`+
+      `<span class="pcount">${count}</span>`, fn, disabled ? { disabled:"" } : null);
+    return b;
+  }
+  const push = st => { try{ history.pushState(st, ""); }catch(e){} };
+  const replace = st => { try{ history.replaceState(st, ""); }catch(e){} };
 
-  // ---------- home ----------
-  function renderHome(){
+  // ---------- TRAINING ----------
+  function renderTrainingHome(){
     sess = null;
-    enter("top");
-    const o = overall();
-    title("PPL Air Law", `CAA syllabus 010 · ${ALLQ.length} questions`);
+    enter("tr", "top");
+    const built = PAPERS.filter(p => subjectByCode(p[0])).length;
+    title("Training", `PPL theory notes · ${built} of 9 subjects`);
     view.innerHTML = "";
-
-    const cav = document.createElement("div");
-    cav.className = "caveat";
-    cav.textContent = "Study notes and original practice questions — not the CAA question bank";
-    view.appendChild(cav);
-
-    const st = document.createElement("div");
-    st.className = "stat";
-    const pct = o.a ? Math.round(100 * o.ok / o.a) : 0;
-    st.innerHTML = o.a ? `<b>${o.a}</b> of ${o.n} questions tried · <b>${pct}%</b> right on last attempt · pass mark ${PASS}%`
-                       : `${o.n} questions across ${TOPICS.length} topics · pass mark ${PASS}%`;
-    view.appendChild(st);
-
-    const row = document.createElement("div"); row.className = "row2";
-    row.appendChild(btn("cont", `<span class="ct"><span class="k">Mock paper</span><div class="n">${MOCK_N} random questions</div><div class="x">Marked at the end against ${PASS}%</div></span><span class="arrow">›</span>`,
-      () => start("mock", shuffle(ALLQ.map(x => x.id)).slice(0, MOCK_N), null, false)));
-    const m = missed().length;
-    row.appendChild(btn("bigbtn ghost", `Review misses · ${m}`, () => start("review", shuffle(missed()), null, false), m ? null : { disabled:"" }));
-    view.appendChild(row);
-
-    view.appendChild(label("Topics", false));
-    const g = document.createElement("div"); g.className = "grid";
-    TOPICS.forEach((t, idx) => {
-      const s = tStats(t);
-      const done = s.ok === s.n;
-      const b = btn("pbtn" + (done ? " done" : ""),
-        `<span class="pnum">${String(idx+1).padStart(2,"0")}</span>`+
-        `<span><span class="pref">${esc(t.ref)}</span><span class="pname" style="display:block">${esc(t.title)}</span></span>`+
-        `<span class="pbar"><i style="width:${Math.round(100*s.ok/s.n)}%"></i></span>`+
-        `<span class="pcount">${done ? "✓ All right" : s.a ? s.ok + " / " + s.n + " right" : s.n + " questions"}</span>`,
-        () => openTopic(t));
-      g.appendChild(b);
+    view.appendChild(el("div", "caveat", "Study notes, not authoritative — check rules against current CAA publications"));
+    view.appendChild(el("div", "grid-label", "Subjects"));
+    const g = el("div", "grid");
+    PAPERS.forEach(([code, name]) => {
+      const s = subjectByCode(code);
+      if(!s){ g.appendChild(card(code, "Paper " + code, name, 0, "Not added yet", false, () => {}, true)); return; }
+      g.appendChild(card(code, `${s.topics.length} topics`, s.name, 0, "Read the notes ›", false, () => { push({ st:"trs", s:s.id }); renderTrainingSubject(s); }));
     });
     view.appendChild(g);
   }
-
-  // ---------- topic notes ----------
-  function renderTopic(t){
+  function renderTrainingSubject(s){
     sess = null;
-    enter("sub");
-    const s = tStats(t);
-    title(t.title, `Air Law · ${t.ref}`);
+    enter("tr", "sub");
+    title(s.name, `Training · paper ${s.code}`);
     view.innerHTML = "";
-    const wrap = document.createElement("div"); wrap.className = "topic";
-    const lede = document.createElement("p"); lede.className = "lede"; lede.textContent = t.blurb;
-    wrap.appendChild(lede);
-    const card = document.createElement("div"); card.className = "card";
-    card.innerHTML = `<div class="learn">${t.learn()}</div>`;
-    wrap.appendChild(card);
-    wrap.appendChild(btn("bigbtn", `Practise this topic · ${t.qs.length} questions${s.a ? " (" + s.ok + " right so far)" : ""}`,
-      () => start("topic", shuffle(t.qs.map((q,i) => qid(t,i))), t.id, false)));
-    view.appendChild(wrap);
+    const w = el("div", "topic");
+    w.appendChild(el("p", "lede", esc(s.blurb)));
+    w.appendChild(el("div", "grid-label", "Topics"));
+    const g = el("div", "grid");
+    s.topics.forEach((t, idx) => {
+      const st = stats(qsOfTopic(s,t));
+      g.appendChild(card(String(idx+1).padStart(2,"0"), t.ref, t.title, Math.round(100*st.ok/st.n),
+        st.a ? `${st.ok} / ${st.n} right` : `${st.n} questions`, st.ok === st.n,
+        () => { push({ st:"trt", s:s.id, t:t.id }); renderTrainingTopic(s, t); }));
+    });
+    w.appendChild(g);
+    w.appendChild(btn("bigbtn ghost", `Go to the ${s.name} exam ›`, () => { replace({ st:"exs", s:s.id }); renderExamSubject(s); }));
+    view.appendChild(w);
+  }
+  function renderTrainingTopic(s, t){
+    sess = null;
+    enter("tr", "sub");
+    title(t.title, `${s.name} · ${t.ref}`);
+    view.innerHTML = "";
+    const st = stats(qsOfTopic(s,t));
+    const w = el("div", "topic");
+    w.appendChild(el("p", "lede", esc(t.blurb)));
+    w.appendChild(el("div", "card", `<div class="learn">${t.learn()}</div>`));
+    w.appendChild(btn("bigbtn", `Practise this topic · ${st.n} questions${st.a ? " (" + st.ok + " right so far)" : ""}`,
+      () => start("topic", shuffle(qsOfTopic(s,t).map(x => x.id)), { s:s.id, t:t.id, from:"tr" }, false)));
+    const i = s.topics.indexOf(t), nt = s.topics[i+1];
+    if(nt) w.appendChild(btn("bigbtn ghost", `Next topic: ${esc(nt.title)} ›`, () => { replace({ st:"trt", s:s.id, t:nt.id }); renderTrainingTopic(s, nt); }));
+    view.appendChild(w);
+  }
+
+  // ---------- EXAMS ----------
+  function renderExamHome(){
+    sess = null;
+    enter("ex", "top");
+    const all = stats(ALLQ);
+    title("Exams", `Practice papers · pass mark ${PASS}%`);
+    view.innerHTML = "";
+    view.appendChild(el("div", "caveat", "Original practice questions — not the CAA question bank"));
+    view.appendChild(el("div", "stat", all.a
+      ? `<b>${all.a}</b> of ${all.n} questions tried · <b>${Math.round(100*all.ok/all.a)}%</b> right on last attempt`
+      : `${all.n} questions across ${SUBJECTS.length} subjects · each mock is ${MOCK_N} questions`));
+    const m = missedIn(ALLQ).length;
+    view.appendChild(btn("bigbtn ghost", `Review all misses · ${m}`, () => start("review", shuffle(missedIn(ALLQ)), { from:"ex" }, false), m ? null : { disabled:"" }));
+    view.appendChild(el("div", "grid-label", "Papers"));
+    const g = el("div", "grid");
+    PAPERS.forEach(([code, name]) => {
+      const s = subjectByCode(code);
+      if(!s) return;
+      const st = stats(qsOf(s));
+      const pct = st.a ? Math.round(100*st.ok/st.a) : 0;
+      const ready = st.a === st.n && pct >= PASS;
+      g.appendChild(card(code, st.a ? `${pct}% on ${st.a} tried` : `${st.n} questions`, s.name, Math.round(100*st.ok/st.n),
+        ready ? "✓ Ready" : st.a ? `${st.ok} / ${st.n} right` : "Not started", ready,
+        () => { push({ st:"exs", s:s.id }); renderExamSubject(s); }));
+    });
+    view.appendChild(g);
+  }
+  function renderExamSubject(s){
+    sess = null;
+    enter("ex", "sub");
+    const qs = qsOf(s), st = stats(qs);
+    title(s.name, `Exams · paper ${s.code}`);
+    view.innerHTML = "";
+    const w = el("div", "topic");
+    w.appendChild(el("div", "stat", st.a
+      ? `<b>${st.a}</b> of ${st.n} tried · <b>${Math.round(100*st.ok/st.a)}%</b> right on last attempt · pass mark ${PASS}%`
+      : `${st.n} questions · pass mark ${PASS}%`));
+    const row = el("div", "row2");
+    const n = Math.min(MOCK_N, qs.length);
+    row.appendChild(btn("cont", `<span class="ct"><span class="k">Mock paper</span><div class="n">${n} random ${esc(s.name)} questions</div><div class="x">Marked at the end against ${PASS}%</div></span><span class="arrow">›</span>`,
+      () => start("mock", shuffle(qs.map(x => x.id)).slice(0, n), { s:s.id, from:"ex" }, false)));
+    const m = missedIn(qs).length;
+    row.appendChild(btn("bigbtn ghost", `Review misses · ${m}`, () => start("review", shuffle(missedIn(qs)), { s:s.id, from:"ex" }, false), m ? null : { disabled:"" }));
+    w.appendChild(row);
+    w.appendChild(el("div", "grid-label", "Practise by topic"));
+    const g = el("div", "grid");
+    s.topics.forEach((t, idx) => {
+      const ts = stats(qsOfTopic(s,t));
+      g.appendChild(card(String(idx+1).padStart(2,"0"), t.ref, t.title, Math.round(100*ts.ok/ts.n),
+        ts.ok === ts.n ? "✓ All right" : ts.a ? `${ts.ok} / ${ts.n} right` : `${ts.n} questions`, ts.ok === ts.n,
+        () => start("topic", shuffle(qsOfTopic(s,t).map(x => x.id)), { s:s.id, t:t.id, from:"ex" }, false)));
+    });
+    w.appendChild(g);
+    w.appendChild(btn("bigbtn ghost", `Read the ${s.name} notes ›`, () => { replace({ st:"trs", s:s.id }); renderTrainingSubject(s); }));
+    view.appendChild(w);
   }
 
   // ---------- questions ----------
-  function start(kind, ids, topicId, replace){
+  function start(kind, ids, ctx, replaceEntry){
     if(!ids.length) return;
-    sess = { kind, ids, i:0, log:[], cur:null, picked:null, topic:topicId };
+    sess = { kind, ids, i:0, log:[], cur:null, picked:null, ctx };
     nextQ();
-    try{ history[replace ? "replaceState" : "pushState"]({ st:"q" }, ""); }catch(e){}
+    (replaceEntry ? replace : push)({ st:"q" });
     renderQ();
   }
   function nextQ(){
@@ -1822,17 +3090,21 @@ const Study = (() => {
     sess.cur = { id, opts:shuffle(x.q.o.map((t,i) => ({ t, ok:i === 0 }))) };
     sess.picked = null;
   }
-  function sessLabel(){ return sess.kind === "mock" ? "Mock paper" : sess.kind === "review" ? "Review misses" : topicById(sess.topic).title; }
+  function sessLabel(){
+    const s = sess.ctx.s && subjectById(sess.ctx.s);
+    if(sess.kind === "mock") return `${s.name} mock`;
+    if(sess.kind === "review") return s ? `${s.name} misses` : "All misses";
+    return topicOf(s, sess.ctx.t).title;
+  }
   function renderQ(){
-    enter("quiz");
+    enter(sess.ctx.from, "quiz");
     const x = byQ[sess.cur.id], mock = sess.kind === "mock", picked = sess.picked;
-    title(sessLabel(), `Question ${sess.i+1} of ${sess.ids.length}`);
+    title(sessLabel(), `Question ${sess.i+1} of ${sess.ids.length}` + (sess.ctx.s ? "" : ` · ${x.s.name}`));
     hprogBar.style.width = (sess.i / sess.ids.length * 100) + "%";
     view.innerHTML = "";
-    const w = document.createElement("div"); w.className = "quiz";
-    const q = document.createElement("p"); q.className = "qtext"; q.textContent = x.q.q;
-    w.appendChild(q);
-    const opts = document.createElement("div"); opts.className = "opts";
+    const w = el("div", "quiz");
+    const q = el("p", "qtext"); q.textContent = x.q.q; w.appendChild(q);
+    const opts = el("div", "opts");
     const answered = !mock && picked !== null;
     sess.cur.opts.forEach((o,k) => {
       let cls = "opt";
@@ -1842,13 +3114,10 @@ const Study = (() => {
     w.appendChild(opts);
     if(answered){
       const ok = sess.cur.opts[picked].ok;
-      const e = document.createElement("div");
-      e.className = "expl " + (ok ? "good" : "bad"); e.setAttribute("role","status");
-      e.innerHTML = `<span class="v">${ok ? "Correct" : "Not quite"}</span>${esc(x.q.e)}`;
+      const e = el("div", "expl " + (ok ? "good" : "bad"), `<span class="v">${ok ? "Correct" : "Not quite"}</span>${esc(x.q.e)}`);
+      e.setAttribute("role", "status");
       w.appendChild(e);
-      const last = sess.i >= sess.ids.length - 1;
-      const nb = btn("bigbtn", last ? "See results ›" : "Next question ›", advance);
-      w.appendChild(nb);
+      w.appendChild(btn("bigbtn", sess.i >= sess.ids.length - 1 ? "See results ›" : "Next question ›", advance));
       setTimeout(() => e.scrollIntoView({ behavior:"smooth", block:"nearest" }), 0);
     }
     view.appendChild(w);
@@ -1864,64 +3133,63 @@ const Study = (() => {
   }
   function advance(){
     sess.i++;
-    if(sess.i >= sess.ids.length){
-      try{ history.replaceState({ st:"res" }, ""); }catch(e){}
-      renderResult();
-    } else { nextQ(); renderQ(); }
+    if(sess.i >= sess.ids.length){ replace({ st:"res" }); renderResult(); }
+    else { nextQ(); renderQ(); }
   }
 
   // ---------- results ----------
   function renderResult(){
-    enter("sub");
+    enter(sess.ctx.from, "sub");
     const n = sess.log.length, right = sess.log.filter(l => l.ok).length;
     const pct = n ? Math.round(100 * right / n) : 0;
     title(sessLabel(), "Results");
     view.innerHTML = "";
-    const w = document.createElement("div"); w.className = "quiz";
-    const sc = document.createElement("div"); sc.className = "score";
-    sc.innerHTML = `<span class="n">${right}/${n}</span><span class="p">${pct}%</span>` +
-      (sess.kind === "mock" ? `<span class="pill ${pct >= PASS ? "good" : "bad"}">${pct >= PASS ? "Above" : "Below"} the ${PASS}% pass mark</span>` : "");
-    w.appendChild(sc);
+    const w = el("div", "quiz");
+    w.appendChild(el("div", "score", `<span class="n">${right}/${n}</span><span class="p">${pct}%</span>` +
+      (sess.kind === "mock" ? `<span class="pill ${pct >= PASS ? "good" : "bad"}">${pct >= PASS ? "Above" : "Below"} the ${PASS}% pass mark</span>` : "")));
     const wrong = sess.log.filter(l => !l.ok);
     w.appendChild(label(wrong.length ? "Missed, with the reasoning" : "Every question right", !!wrong.length));
     wrong.forEach(l => {
-      const x = byQ[l.id], d = document.createElement("div");
-      d.className = "miss";
-      d.innerHTML = `<div class="mq">${esc(x.q.q)}</div>`+
+      const x = byQ[l.id];
+      w.appendChild(el("div", "miss",
+        `<div class="mq">${esc(x.q.q)}</div>`+
         `<div class="ma y"><b>You said</b>${esc(l.opts[l.k].t)}</div>`+
         `<div class="ma c"><b>Correct</b>${esc(l.opts.find(o => o.ok).t)}</div>`+
-        `<div class="why">${esc(x.q.e)}</div>`;
-      w.appendChild(d);
+        `<div class="why">${esc(x.q.e)}</div>`));
     });
-    if(wrong.length) w.appendChild(btn("bigbtn", `Retry the ${wrong.length} missed`, () => start("review", shuffle(wrong.map(l => l.id)), null, true)));
-    if(sess.kind === "mock") w.appendChild(btn("bigbtn" + (wrong.length ? " ghost" : ""), "Another mock paper", () => start("mock", shuffle(ALLQ.map(x => x.id)).slice(0, MOCK_N), null, true)));
-    w.appendChild(btn("bigbtn ghost", sess.kind === "topic" ? "Back to the notes" : "Back to topics", back));
+    const ctx = sess.ctx;
+    if(wrong.length) w.appendChild(btn("bigbtn", `Retry the ${wrong.length} missed`, () => start("review", shuffle(wrong.map(l => l.id)), { s:ctx.s, from:ctx.from }, true)));
+    if(sess.kind === "mock"){
+      const s = subjectById(ctx.s), qs = qsOf(s);
+      w.appendChild(btn("bigbtn" + (wrong.length ? " ghost" : ""), "Another mock paper",
+        () => start("mock", shuffle(qs.map(x => x.id)).slice(0, Math.min(MOCK_N, qs.length)), ctx, true)));
+    }
+    w.appendChild(btn("bigbtn ghost", "Done", back));
     view.appendChild(w);
   }
 
   // ---------- navigation ----------
-  function openTopic(t){
-    try{ history.pushState({ st:"tp", tp:t.id }, ""); }catch(e){}
-    renderTopic(t);
-  }
   function back(){
-    if(history.state && history.state.st && history.state.st !== "home"){ try{ history.back(); return; }catch(e){} }
-    renderHome();
+    const s = history.state && history.state.st;
+    if(s && s !== "tr" && s !== "ex"){ try{ history.back(); return; }catch(e){} }
+    section === "ex" ? renderExamHome() : renderTrainingHome();
   }
   // Called from popstate with a study history entry
-  function fromState(s){
-    if(s.st === "tp" && topicById(s.tp)) return renderTopic(topicById(s.tp));
-    if(s.st === "q" && sess) return renderQ();
-    if(s.st === "res" && sess) return renderResult();
-    renderHome();
+  function fromState(st){
+    const s = st.s && subjectById(st.s);
+    if(st.st === "trs" && s) return renderTrainingSubject(s);
+    if(st.st === "trt" && s && topicOf(s, st.t)) return renderTrainingTopic(s, topicOf(s, st.t));
+    if(st.st === "exs" && s) return renderExamSubject(s);
+    if(st.st === "q" && sess) return renderQ();
+    if(st.st === "res" && sess) return renderResult();
+    if(st.st === "ex") return renderExamHome();
+    renderTrainingHome();
   }
-  function showHome(){
-    try{ history.replaceState({ st:"home" }, ""); }catch(e){}
-    renderHome();
-  }
+  function showTraining(){ replace({ st:"tr" }); renderTrainingHome(); }
+  function showExams(){ replace({ st:"ex" }); renderExamHome(); }
 
   load();
-  return { showHome, renderHome, fromState, back, reset, hasProgress:() => overall().a > 0 };
+  return { showTraining, showExams, fromState, back, reset };
 })();
 
 // ---------- boot ----------

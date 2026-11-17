@@ -1,15 +1,17 @@
-"""Build index.html from the original checklist plus the Air Law study files.
+"""Build the app page from the original checklist plus the Training and Exams files.
 
 Every change to the checklist is an exact, single-occurrence replacement, so a
 change that no longer matches stops the build instead of silently drifting.
 The NORMAL and EMERG data arrays are never edited.
+
+Output: app/src/main/assets/index.html
 """
-import pathlib, re, sys
+import pathlib, sys
 
 here = pathlib.Path(__file__).parent
 src = (here / "c150-original.html").read_text(encoding="utf-8")
 css = (here / "study.css").read_text(encoding="utf-8")
-data = (here / "study-data.js").read_text(encoding="utf-8")
+data = "\n\n".join(f.read_text(encoding="utf-8") for f in sorted((here / "subjects").glob("*.js")))
 app = (here / "study-app.js").read_text(encoding="utf-8")
 
 SVG_DEFS = """<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
@@ -19,48 +21,66 @@ SVG_DEFS = """<svg width="0" height="0" style="position:absolute" aria-hidden="t
 </defs></svg>
 """
 
+TABS = ('  <nav id="secTabs" aria-label="Sections">'
+        '<button id="tabCl" type="button">Checklist</button>'
+        '<button id="tabTr" type="button">Training</button>'
+        '<button id="tabEx" type="button">Exams</button></nav>\n')
+
+NAV_JS = r'''$("backBtn").addEventListener("click", () => section === "cl" ? goHome() : Study.back());
+
+// ---------- section tabs (top-level screens only) ----------
+function markTabs(){
+  [["tabCl","cl"],["tabTr","tr"],["tabEx","ex"]].forEach(([id, s]) => {
+    const b = $(id); b.classList.toggle("on", section === s); b.setAttribute("aria-pressed", section === s ? "true" : "false");
+  });
+}
+$("tabCl").addEventListener("click", () => { if(section === "cl") return; try{ history.replaceState({}, ""); }catch(e){} renderHome(); });
+$("tabTr").addEventListener("click", () => { if(section === "tr") return; Study.showTraining(); });
+$("tabEx").addEventListener("click", () => { if(section === "ex") return; Study.showExams(); });
+'''
+
+SETTINGS_JS = r'''  const ga = document.createElement("div"); ga.className = "setgroup";
+  ga.innerHTML = `<div class="setlabel">Exam answers</div>`;
+  ga.appendChild(armedButton("resetbtn", "Reset exam answers", "Tap again to clear answers", () => {
+    Study.reset(); closeSheet();
+    if(section === "tr") Study.showTraining();
+    if(section === "ex") Study.showExams();
+    toast("Exam answers cleared");
+  }));
+  const gn = document.createElement("div"); gn.className = "setnote";
+  gn.textContent = "Exam answers for every subject are kept on this device until you clear them. They are separate from checklist ticks.";
+  ga.appendChild(gn);
+  wrap.appendChild(ga);
+
+  openSheet("Settings", false, wrap);
+'''
+
 edits = [
     ("<title>C150/152 Checklist</title>", "<title>PPL Kneeboard</title>"),
     ("</style>\n</head>", css + "</style>\n</head>"),
     ('<body data-mode="day">\n', '<body data-mode="day">\n' + SVG_DEFS),
     ('  <div class="hprog"><i id="hprogBar"></i></div>\n',
-     '  <div class="hprog"><i id="hprogBar"></i></div>\n'
-     '  <nav id="secTabs" aria-label="Sections"><button id="tabCl" type="button">Checklist</button><button id="tabSt" type="button">Air Law</button></nav>\n'),
+     '  <div class="hprog"><i id="hprogBar"></i></div>\n' + TABS),
     ('  <div id="phaseView" hidden></div>\n',
      '  <div id="phaseView" hidden></div>\n  <div id="studyView" hidden></div>\n'),
-    # Air Law data goes after the untouched checklist data
+    # Study data goes after the untouched checklist data
     ("\n\n// =====================================================================\n// App logic\n",
      "\n\n" + data + "\n\n// =====================================================================\n// App logic\n"),
-    ("let currentPhase = null;\n", "let currentPhase = null;\nlet section = \"cl\";            // \"cl\" checklist or \"st\" Air Law study\n"),
+    ("let currentPhase = null;\n",
+     'let currentPhase = null;\nlet section = "cl";            // "cl" checklist, "tr" training notes, "ex" exams\n'),
     ("function renderHome(){\n  currentPhase = null;\n",
      "function renderHome(){\n  currentPhase = null;\n"
-     "  section = \"cl\"; $(\"studyView\").hidden = true; $(\"emergFab\").hidden = false;\n"
-     "  hdr.classList.add(\"top\"); hdr.classList.remove(\"insub\"); markTabs();\n"),
+     '  section = "cl"; $("studyView").hidden = true; $("emergFab").hidden = false;\n'
+     '  hdr.classList.add("top"); hdr.classList.remove("insub"); markTabs();\n'),
     ("  home.hidden = true; phaseView.hidden = false;\n",
      "  home.hidden = true; phaseView.hidden = false;\n"
-     "  section = \"cl\"; $(\"studyView\").hidden = true; $(\"emergFab\").hidden = false;\n"
-     "  hdr.classList.remove(\"top\", \"insub\");\n"),
+     '  section = "cl"; $("studyView").hidden = true; $("emergFab").hidden = false;\n'
+     '  hdr.classList.remove("top", "insub");\n'),
     ("  closeSheet();\n  const ph = e.state && e.state.ph && byId(e.state.ph);\n",
-     "  closeSheet();\n  if(e.state && e.state.st){ Study.fromState(e.state); return; }\n  const ph = e.state && e.state.ph && byId(e.state.ph);\n"),
-    ('$("backBtn").addEventListener("click", goHome);\n',
-     '$("backBtn").addEventListener("click", () => section === "st" ? Study.back() : goHome());\n\n'
-     "// ---------- section tabs (top-level screens only) ----------\n"
-     "function markTabs(){\n"
-     '  [["tabCl","cl"],["tabSt","st"]].forEach(([id, s]) => { const b = $(id); b.classList.toggle("on", section === s); b.setAttribute("aria-pressed", section === s ? "true" : "false"); });\n'
-     "}\n"
-     '$("tabCl").addEventListener("click", () => { if(section === "cl") return; try{ history.replaceState({}, ""); }catch(e){} renderHome(); });\n'
-     '$("tabSt").addEventListener("click", () => { if(section === "st") return; Study.showHome(); });\n'),
-    ('  openSheet("Settings", false, wrap);\n',
-     "  const ga = document.createElement(\"div\"); ga.className = \"setgroup\";\n"
-     "  ga.innerHTML = `<div class=\"setlabel\">Air Law answers</div>`;\n"
-     "  ga.appendChild(armedButton(\"resetbtn\", \"Reset Air Law answers\", \"Tap again to clear answers\", () => {\n"
-     "    Study.reset(); closeSheet(); if(section === \"st\") Study.showHome(); toast(\"Air Law answers cleared\");\n"
-     "  }));\n"
-     "  const gn = document.createElement(\"div\"); gn.className = \"setnote\";\n"
-     "  gn.textContent = \"Air Law answers are kept on this device until you clear them. They are separate from checklist ticks.\";\n"
-     "  ga.appendChild(gn);\n"
-     "  wrap.appendChild(ga);\n\n"
-     '  openSheet("Settings", false, wrap);\n'),
+     "  closeSheet();\n  if(e.state && e.state.st){ Study.fromState(e.state); return; }\n"
+     "  const ph = e.state && e.state.ph && byId(e.state.ph);\n"),
+    ('$("backBtn").addEventListener("click", goHome);\n', NAV_JS),
+    ('  openSheet("Settings", false, wrap);\n', SETTINGS_JS),
     ("// ---------- boot ----------\n", app + "\n// ---------- boot ----------\n"),
 ]
 

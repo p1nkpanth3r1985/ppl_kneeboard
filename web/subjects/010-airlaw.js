@@ -497,3 +497,7 @@ qs:[
 {q:'Which of these meets the Annex 13 definition of an accident?',o:['A passenger is seriously injured during the flight','Two aircraft pass at an uncomfortably close distance','A pilot reports a minor instrument defect after landing','A flight is delayed by technical problems'],e:'Serious injury qualifies as an accident. A near-miss that nearly became an accident is a serious incident; a minor defect or a delay is not an accident.'},
 {q:'Which Annex covers security and acts of unlawful interference?',o:['Annex 17','Annex 13','Annex 11','Annex 14'],e:'Annex 17 is security. Annex 13 is accident investigation, Annex 11 is air traffic services and Annex 14 is aerodromes.'}
 ]});
+
+SUBJECTS.push({ id:"airlaw", code:"010", name:"Air Law",
+  blurb:"The rules: ICAO and the Chicago Convention, licensing, rules of the air, airspace and VMC, altimetry, aerodromes and signals.",
+  topics:TOPICS });

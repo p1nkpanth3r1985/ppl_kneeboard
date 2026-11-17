@@ -12,7 +12,7 @@
   body[data-mode="night"]{ --mag:#f26ba6; --magtint:#3a1830; --ground:#26394b; --rw:#4a5e73; --mk:#eaf1f8; }
 
   /* Section tabs: only on the two top-level screens */
-  #secTabs{display:none;gap:6px;margin-top:10px;max-width:560px;}
+  #secTabs{display:none;gap:6px;margin-top:10px;max-width:640px;}
   header.top #secTabs{display:flex;}
   header.insub #backBtn{display:flex;}
   #secTabs button{
@@ -137,3 +137,7 @@
   #studyView .miss .ma b{font-size:.65rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-right:6px;}
   #studyView .miss .y b{color:var(--emerg);} #studyView .miss .c b{color:var(--tick);}
   #studyView .miss .why{color:var(--muted);margin-top:6px;}
+  #studyView .pbtn.off{opacity:.5;box-shadow:none;cursor:default;}
+  #studyView .pbtn.off .pref{color:var(--muted);}
+  #studyView .grid + .bigbtn{margin-top:0;}
+  #studyView > .bigbtn{margin:0 0 18px;}
