@@ -1513,6 +1513,562 @@ SUBJECTS.push({ id:"airlaw", code:"010", name:"Air Law",
   topics:TOPICS });
 
 
+// 020 Aircraft General Knowledge
+(() => {
+const pitotStatic = `<figure class="fig wide"><svg viewBox="0 0 440 210" role="img" aria-label="Pitot-static system: pitot feeds only the airspeed indicator; static feeds the airspeed indicator, altimeter and VSI">
+<rect class="fb" x="1" y="1" width="438" height="208" rx="6"/>
+<rect x="20" y="40" width="70" height="26" rx="4" class="f-tint ln"/><text class="tb" x="55" y="58" text-anchor="middle">PITOT</text>
+<rect x="20" y="140" width="70" height="26" rx="4" class="f-mag ln"/><text class="tb" x="55" y="158" text-anchor="middle">STATIC</text>
+${[["ASI",120],["ALT",230],["VSI",340]].map(([n,x]) => `<circle cx="${x+30}" cy="100" r="32" class="f-card ln"/><text class="tb" x="${x+30}" y="105" text-anchor="middle">${n}</text>`).join("")}
+<path d="M90,53 L150,53 L150,68" class="ln pa" style="stroke-width:3"/>
+<path d="M90,153 L400,153 M150,153 L150,132 M260,153 L260,132 M370,153 L370,132" class="ln pb" style="stroke-width:3"/>
+<text class="tm" x="160" y="30">pitot pressure (ram air)</text><text class="tm" x="160" y="190">static pressure (outside air pressure)</text>
+</svg><figcaption>The ASI compares pitot and static pressure. The altimeter and VSI use static pressure only.</figcaption></figure>`;
+
+const fourStroke = `<div class="sq">
+<div class="tile"><div class="big">1</div><div class="d"><b>Induction</b>: piston down, inlet valve open, mixture drawn in</div></div>
+<div class="tile"><div class="big">2</div><div class="d"><b>Compression</b>: piston up, both valves closed</div></div>
+<div class="tile"><div class="big">3</div><div class="d"><b>Power</b>: spark ignites, burning gas drives the piston down</div></div>
+<div class="tile"><div class="big">4</div><div class="d"><b>Exhaust</b>: piston up, exhaust valve open, gases pushed out</div></div>
+</div>`;
+
+const T = [];
+T.push({ id:"airframe", ref:"020 · 1", title:"Airframe, controls and landing gear",
+blurb:"How the structure carries loads, the control runs, undercarriage, brakes and tyres, and the structural limits.",
+learn:()=>`
+<h3>Structure</h3>
+<ul>
+<li><b>Monocoque</b>: the skin carries the loads, like an egg shell. <b>Semi-monocoque</b>, used on most light aircraft, adds frames, stringers and longerons so skin and framework share the load.</li>
+<li>The wing's main <b>spar</b> carries the bending load; ribs give the aerofoil shape; the skin takes torsion.</li>
+<li>Flying controls are usually moved by cables, pulleys and push-pull rods. Check for full and free movement in the correct sense before every flight.</li>
+</ul>
+<h3>Landing gear, brakes and tyres</h3>
+<ul>
+<li>Most trainers have a <b>tricycle</b> undercarriage: a nosewheel plus two mainwheels. It is directionally stable on the ground and gives good visibility on take-off and landing.</li>
+<li>Nose legs often have an <b>oleo</b> (oil and air) strut to absorb shocks, and a shimmy damper to stop the nosewheel oscillating.</li>
+<li>Brakes are normally <b>hydraulic disc</b> brakes on the mainwheels, operated by toe pedals. Check for leaks, pad wear and disc condition.</li>
+<li>Tyres: check inflation, cuts, wear and <b>creep marks</b>. These are painted marks on the tyre and wheel; if they no longer line up, the tyre has slipped on the rim and the inner tube valve may be at risk.</li>
+</ul>
+<h3>Structural limits</h3>
+<div class="tbl"><table>
+<tr><th>Category</th><th>Limit load factors</th><th>Typical use</th></tr>
+<tr><td>Normal</td><td>+3.8 g to −1.52 g</td><td>Normal flying, no aerobatics</td></tr>
+<tr><td>Utility</td><td>+4.4 g to −1.76 g</td><td>Limited manoeuvres such as spins, if approved</td></tr>
+<tr><td>Aerobatic</td><td>+6.0 g to −3.0 g</td><td>Aerobatics</td></tr>
+</table></div>
+<p>The <b>limit load</b> is the most the structure should ever see in service. The <b>ultimate load</b> is 1.5 times that; beyond the limit load, permanent damage is possible.</p>
+<div class="box trap"><b>Common trap</b>Creep marks show the tyre slipping on the wheel, not tread wear.</div>`,
+qs:[
+{q:"What is a semi-monocoque structure?",o:["One where the skin and an internal framework of frames and stringers share the loads","One where the skin carries no load at all","One where the skin alone carries all the loads","A structure made entirely of steel tube"],e:"Semi-monocoque combines a load-bearing skin with frames, stringers and longerons. Pure monocoque relies on the skin alone; a tube frame with fabric covering uses the framework alone."},
+{q:"Which part of the wing carries most of the bending load?",o:["The main spar","The ribs","The leading edge","The wing tip"],e:"The spar runs along the span and resists bending. Ribs keep the aerofoil shape."},
+{q:"What do creep marks on a tyre and wheel show?",o:["Whether the tyre has slipped round on the wheel rim","How much tread is left","The correct inflation pressure","The date the tyre was fitted"],e:"If the marks are out of line, the tyre has moved on the rim, which can tear the valve from an inner tube."},
+{q:"What is the purpose of a shimmy damper on the nosewheel?",o:["To stop the nosewheel oscillating from side to side","To absorb landing shocks","To steer the aircraft","To lock the nosewheel straight in flight"],e:"Shimmy is a rapid side-to-side oscillation of the nosewheel. The damper stops it. Shock absorption is the oleo's job."},
+{q:"What are the limit load factors for an aircraft in the Normal category?",o:["+3.8 g to −1.52 g","+4.4 g to −1.76 g","+6.0 g to −3.0 g","+2.0 g to −1.0 g"],e:"Normal +3.8/−1.52, Utility +4.4/−1.76, Aerobatic +6.0/−3.0."},
+{q:"How does ultimate load relate to limit load?",o:["Ultimate load is 1.5 times the limit load","They are the same","Ultimate load is half the limit load","Ultimate load is twice the limit load"],e:"Structures are designed with a 1.5 safety factor. Between limit and ultimate load, permanent deformation is possible; beyond ultimate, failure."},
+{q:"How are the brakes on a typical light training aircraft operated?",o:["Hydraulically, by toe pedals on the rudder pedals","Mechanically, by the control column","Electrically, from a switch","By the flap lever"],e:"Most trainers have hydraulic disc brakes on the mainwheels, worked by pressing the top of the rudder pedals."},
+{q:"An oleo strut absorbs landing shocks using:",o:["Oil and compressed air or nitrogen","Springs only","Rubber blocks only","The tyre pressure alone"],e:"An oleo-pneumatic strut uses compressed gas as a spring and oil forced through an orifice to damp the motion."},
+{type:"match", q:"Match each part to its main job.", pairs:[["Spar","Carries the wing's bending load"],["Ribs","Give the wing its aerofoil shape"],["Oleo strut","Absorbs landing shocks"],["Shimmy damper","Stops the nosewheel oscillating"]],
+  e:"Knowing what each part does tells you what to look for on the walk-round."},
+{q:"Why is a tricycle undercarriage easier to handle on the ground than a tailwheel?",o:["The CG is ahead of the mainwheels, so it tends to run straight","It has bigger brakes","It always has nosewheel steering linked to the ailerons","It makes the aircraft lighter"],e:"With the CG ahead of the mainwheels, a swing tends to correct itself. A tailwheel aircraft's CG is behind the mainwheels, so a swing tends to grow (a ground loop)."},
+{q:"During your pre-flight check you find the control column moves the ailerons the wrong way. What should you do?",o:["Do not fly; report it as a serious defect","Fly carefully and use the rudder for roll","Ask a passenger to help hold the controls","Note it in the tech log after the flight"],e:"Crossed control cables have caused fatal accidents after maintenance. Always check controls for full, free and correct movement, and never fly with a fault."},
+{q:"What does a red line on a structural or engine instrument normally mean?",o:["A limit that must never be exceeded","The normal operating range","A caution range for smooth air only","The minimum value for starting"],e:"Red lines mark maximum (or minimum) limits; green arcs normal ranges; yellow arcs caution ranges."}
+]});
+
+T.push({ id:"engine", ref:"020 · 2", title:"The piston engine",
+blurb:"The four-stroke cycle, magnetos and ignition, oil, temperatures, detonation and the fixed-pitch propeller.",
+learn:()=>`
+<h3>The four-stroke cycle</h3>
+${fourStroke}
+<p>Light aircraft engines are usually <b>horizontally opposed</b> and <b>air-cooled</b>. Each cylinder fires once every two turns of the crankshaft.</p>
+<h3>Ignition: magnetos</h3>
+<ul>
+<li>Two independent <b>magnetos</b>, each firing one of two spark plugs in every cylinder. Two plugs give a better burn and a back-up if one system fails.</li>
+<li>Magnetos make their own electricity from engine rotation. The engine keeps running with the master switch off or a flat battery.</li>
+<li>The <b>mag check</b> at the power check compares the RPM drop on each magneto with the limits in the POH. Your checklist gives a maximum drop of 125 RPM and a maximum difference of 50 RPM.</li>
+<li>Switching a magneto off <b>earths</b> it through the P-lead. If a P-lead is broken, that magneto stays <b>live</b> with the switch off, and the propeller is dangerous to touch. The <b>dead cut check</b> before shutdown confirms both earth properly.</li>
+</ul>
+<h3>Oil and temperatures</h3>
+<ul>
+<li>Oil lubricates, cools, seals and cleans. Oil pressure should rise within about 30 seconds of starting; if not, shut down.</li>
+<li>Low oil pressure with high oil temperature points to an engine problem; land as soon as possible.</li>
+<li>Long climbs at low airspeed and full power raise cylinder head temperatures; a cruise-climb at a higher speed helps cooling.</li>
+</ul>
+<h3>Detonation and pre-ignition</h3>
+<ul>
+<li><b>Detonation</b>: the mixture explodes violently instead of burning smoothly, from too low a fuel grade, too lean a mixture or high temperatures. It can damage pistons quickly.</li>
+<li><b>Pre-ignition</b>: the mixture ignites before the spark, from a hot spot such as carbon deposits.</li>
+</ul>
+<h3>Fixed-pitch propeller</h3>
+<p>With a fixed-pitch propeller, the tachometer (RPM) is the power indicator. RPM rises with airspeed in a dive and falls in a climb at the same throttle setting.</p>`,
+qs:[
+{type:"order", q:"Put the four strokes of the cycle in order.", items:["Induction","Compression","Power","Exhaust"], e:"Suck, squeeze, bang, blow. Each cylinder completes the cycle every two crankshaft revolutions."},
+{q:"Why does a piston aero engine have two magnetos?",o:["For redundancy and a more complete burn, with two plugs per cylinder","To start the engine faster","To charge the battery","So one can run while the other cools"],e:"Dual ignition is safer (one can fail) and burns the mixture more efficiently from two flame fronts."},
+{q:"The master switch is turned off in flight. What happens to the engine?",o:["It keeps running, because the magnetos are self-powered","It stops at once","It runs rough on one magneto","It stops when the battery runs flat"],e:"Magnetos generate their own current. Electrical instruments and radios would stop, but the engine would not."},
+{q:"What is the danger of a broken magneto P-lead?",o:["The magneto stays live with the ignition off, so the propeller could start the engine if moved","The engine will not start","The battery will discharge","The oil pressure will drop"],e:"The P-lead earths the magneto when switched off. Broken, it can't, so always treat a propeller as live."},
+{q:"What is the purpose of the dead cut check?",o:["To confirm both magnetos switch off properly before shutdown","To test the starter motor","To check the fuel selector","To check the alternator output"],e:"Briefly switching the magnetos off at idle should make the engine falter. If it doesn't, a magneto isn't earthing."},
+{type:"calc", gen:() => { const rpm = rnd(1700, 1700), l = rnd(60, 125, 5), r = l + rnd(10, 70, 5);
+  return { q:`At the power check (your checklist limits: maximum drop 125 RPM, maximum difference 50 RPM), RPM is ${rpm}. Left magneto gives ${rpm - l} RPM, right gives ${rpm - r} RPM. What is the difference between the two drops?`, a:r - l, tol:0, unit:" RPM",
+    steps:[`Left drop = ${rpm} − ${rpm - l} = ${l}`, `Right drop = ${rpm} − ${rpm - r} = ${r}`, `Difference = ${r} − ${l} = ${r - l} RPM`, r > 125 || r - l > 50 ? "Outside your checklist limits: don't fly." : "Within your checklist limits."] }; },
+  e:"Check both the size of each drop and the difference between them against the limits in your checklist and POH."},
+{q:"Oil pressure has not risen within 30 seconds of starting. What should you do?",o:["Shut the engine down","Increase RPM to raise the pressure","Wait another five minutes","Take off; it will rise in flight"],e:"No oil pressure means no lubrication. Shut down at once to avoid engine damage. Your checklist says the same."},
+{q:"Which of these is NOT a function of engine oil?",o:["Providing the fuel for combustion","Lubricating","Cooling","Sealing and cleaning"],e:"Oil lubricates, cools, seals and cleans. It is not part of the combustion process."},
+{q:"What is detonation?",o:["Explosive, uncontrolled burning of the mixture after the spark","Ignition from a hot spot before the spark","A magneto failure","Fuel freezing in the carburettor"],e:"Detonation is a violent explosion instead of a smooth burn. Causes include low-grade fuel, too lean a mixture and high temperatures."},
+{q:"What is pre-ignition?",o:["The mixture igniting before the spark, from a hot spot","The mixture exploding after the spark","Starting the engine with the primer","Ignition with both magnetos off"],e:"Pre-ignition comes from glowing deposits or overheated parts. Detonation happens after normal ignition."},
+{q:"In an aircraft with a fixed-pitch propeller, which instrument shows engine power?",o:["The tachometer (RPM)","The manifold pressure gauge","The oil pressure gauge","The ammeter"],e:"With fixed pitch, RPM is the power indication. Constant-speed propellers use manifold pressure as well."},
+{q:"With the throttle fixed, what happens to RPM as a fixed-pitch propeller aircraft enters a dive?",o:["It rises","It falls","It stays the same","It drops to idle"],e:"Higher airspeed unloads the propeller, so it turns faster. Watch you don't exceed the RPM red line."}
+]});
+
+T.push({ id:"fuel", ref:"020 · 3", title:"Fuel systems and carburation",
+blurb:"Fuel grades and colours, gravity-fed systems, drains and vents, the carburettor, mixture and carb icing.",
+learn:()=>`
+<h3>Fuel grades</h3>
+<div class="tbl"><table>
+<tr><th>Fuel</th><th>Colour</th><th>Notes</th></tr>
+<tr><td>AVGAS 100LL</td><td>Blue</td><td>Standard aviation gasoline for most piston engines</td></tr>
+<tr><td>Jet A-1</td><td>Clear to straw</td><td>Kerosene for turbines and some diesel engines. In a petrol engine it causes detonation and engine failure</td></tr>
+<tr><td>Mogas / UL91</td><td>Varies</td><td>Only where the engine and airframe are approved for it</td></tr>
+</table></div>
+<p>Jet A-1 nozzles are usually wider than avgas nozzles so they don't fit an avgas filler, but don't rely on that: check the grade every time.</p>
+<h3>The fuel system</h3>
+<ul>
+<li>High-wing aircraft like the Cessna 150 usually feed fuel by <b>gravity</b> from the wing tanks; low-wing aircraft need fuel pumps.</li>
+<li>Tank <b>vents</b> let air in as fuel is used. A blocked vent can starve the engine.</li>
+<li><b>Water</b> is heavier than fuel and collects at the lowest points. Drain samples from every drain point before flight and check for water and debris.</li>
+<li><b>Unusable fuel</b> is the amount the system can't deliver; it doesn't count towards endurance.</li>
+</ul>
+<h3>The carburettor and mixture</h3>
+<ul>
+<li>In a float carburettor, air speeds up through a <b>venturi</b>; the drop in pressure draws fuel from the float chamber. The throttle valve (butterfly) controls how much mixture reaches the cylinders.</li>
+<li>As you climb, air density falls but the fuel flow doesn't, so the mixture becomes too <b>rich</b>. Leaning with the mixture control restores the right ratio.</li>
+<li>Full rich for take-off at low aerodromes; lean as the POH directs in the cruise. <b>Idle cut-off</b> stops the engine by shutting off the fuel.</li>
+</ul>
+<h3>Carburettor icing</h3>
+<p>Fuel evaporation and the pressure drop in the venturi cool the air, so ice can form well above 0 °C in humid air. Carb heat takes hot, <b>unfiltered</b> air from around the exhaust; use it as the checklist directs, and not on the ground in dusty conditions. Fuel-injected engines don't suffer carburettor icing.</p>`,
+qs:[
+{q:"What colour is AVGAS 100LL?",o:["Blue","Green","Red","Clear to straw"],e:"100LL is dyed blue. Jet A-1 is clear to straw coloured."},
+{q:"What would happen if Jet A-1 were put into a piston engine designed for avgas?",o:["Detonation and probable engine failure","It would run normally","It would only cause rough idling","It would improve performance"],e:"Kerosene doesn't burn properly in a spark-ignition engine. Misfuelling has caused fatal accidents; always confirm the grade."},
+{q:"Why do you drain a fuel sample before flight?",o:["To check for water and contamination, which collect at the lowest point","To check the fuel quantity","To cool the fuel","To release vapour from the tank"],e:"Water is heavier than fuel and settles at the drains. Take samples from all drain points until they are clean."},
+{q:"How is fuel usually fed to the engine in a high-wing trainer such as the Cessna 150?",o:["By gravity from the wing tanks","By an electric pump only","By the oil pump","By pressure from the propeller"],e:"The tanks sit above the engine, so gravity feeds the carburettor."},
+{q:"What could a blocked fuel tank vent cause?",o:["Fuel starvation as a vacuum builds in the tank","Overfilling","Carburettor icing","Oil leaks"],e:"As fuel leaves the tank, air must replace it. A blocked vent stops this and the flow can stop."},
+{q:"As you climb without leaning, the mixture becomes:",o:["Too rich","Too lean","Unchanged","Weak at low level only"],e:"Air density falls with height while fuel flow is unchanged, so the fuel/air ratio rises: too rich."},
+{q:"What does the idle cut-off position of the mixture control do?",o:["Shuts off fuel to stop the engine","Gives the richest mixture","Turns off the magnetos","Opens the carburettor heat"],e:"Shutting down with idle cut-off stops the engine by fuel starvation, leaving no fuel in the cylinders to fire unexpectedly."},
+{q:"Why is carb heat air unfiltered, and when should you avoid using it on the ground?",o:["It is taken from around the exhaust, so avoid it on dusty or gravel surfaces","It is filtered, so it can be used anywhere","It is only used for starting","It comes from the cabin"],e:"Unfiltered hot air bypasses the air filter. Using it on the ground can draw in dust and grit."},
+{q:"How does a float carburettor draw fuel in?",o:["Air speeds up through a venturi; the lower pressure draws fuel from the float chamber","The fuel pump sprays it directly into the cylinders","The magnetos pull it in electrically","Gravity alone pours it into the cylinders"],e:"The venturi effect is the same Bernoulli principle as lift."},
+{q:"Which engine type does not suffer from carburettor icing?",o:["A fuel-injected engine","A float-carburettor engine at low power","Any engine on a humid day","A carburetted engine in cruise"],e:"Fuel injection has no venturi or evaporation in the induction air path, so no carburettor ice. Intake icing from snow or freezing rain is still possible."},
+{type:"match", q:"Match each fuel to its usual appearance.", pairs:[["AVGAS 100LL","Blue"],["Jet A-1","Clear to straw"],["Water in a sample","Bubbles or a separate layer at the bottom"]],
+  e:"A clear sample from an avgas tank is suspicious: it may be water or the wrong fuel."},
+{q:"What is unusable fuel?",o:["Fuel the system cannot deliver to the engine, which must not be counted in your endurance","Fuel that has been contaminated","Fuel in the carburettor","The reserve fuel"],e:"The POH gives total and usable capacity. Plan only with usable fuel."}
+]});
+
+T.push({ id:"electrics", ref:"020 · 4", title:"The electrical system",
+blurb:"Battery, alternator, master switch, ammeter, circuit breakers and what still works when the electrics fail.",
+learn:()=>`
+<ul>
+<li>Light aircraft use a <b>DC</b> system, usually 14 V or 28 V.</li>
+<li>The <b>battery</b> starts the engine and is a back-up supply if the alternator fails.</li>
+<li>The engine-driven <b>alternator</b> powers the system in flight and recharges the battery. Most alternators need some battery power to start producing current.</li>
+<li>The <b>master switch</b> connects the battery and alternator to the system; some aircraft have a split switch for each.</li>
+<li><b>Circuit breakers</b> and fuses protect each circuit from overload. Reset a popped breaker once only, after a short pause; if it pops again, leave it out.</li>
+<li>The <b>ammeter</b> shows whether the battery is charging (positive) or discharging (negative). A load meter instead shows the alternator's output.</li>
+</ul>
+<h3>Alternator failure</h3>
+<p>Signs: low-voltage warning light, ammeter showing discharge. Shed all non-essential loads to stretch the battery, follow the checklist (your electrical failure drill: shed loads, check and reset, master off for 3 seconds then on), and land as soon as practical. The battery will only last a limited time.</p>
+<h3>What still works?</h3>
+<div class="tbl"><table>
+<tr><th>Keeps working with total electrical failure</th><th>Stops</th></tr>
+<tr><td>Engine (magnetos), ASI, altimeter, VSI, compass, vacuum-driven gyros (AI and DI on many trainers)</td><td>Radios, transponder, electric turn coordinator, fuel gauges (on many aircraft), lights, electric flaps, stall warner if electric</td></tr>
+</table></div>
+<div class="box trap"><b>Common trap</b>An electrical failure does not stop the engine. A vacuum pump failure does not stop the electrics. Know which instruments run from which source in your aircraft.</div>`,
+qs:[
+{q:"What is the main job of the alternator in flight?",o:["To supply the electrical system and recharge the battery","To fire the spark plugs","To drive the vacuum pump","To start the engine"],e:"The alternator is engine driven and powers everything electrical in flight. The magnetos look after ignition separately."},
+{q:"The ammeter shows a steady discharge in flight. What is most likely?",o:["The alternator has failed and the battery is supplying the system","The battery is overcharging","The magnetos have failed","Everything is normal"],e:"A discharge means the battery is being drained. Shed loads and follow the electrical failure checklist."},
+{q:"A circuit breaker pops in flight. What is the usual advice?",o:["Wait a moment, reset it once; if it pops again, leave it out","Hold it in so the circuit keeps working","Reset it repeatedly until it stays in","Never reset it in flight"],e:"A breaker that trips again shows a real fault. Forcing it in can start an electrical fire. Your radio failure drill says 'reset only once'."},
+{q:"With a total electrical failure, which instrument would normally keep working?",o:["The airspeed indicator","The transponder","The radio","The electric turn coordinator"],e:"The pitot-static instruments (ASI, altimeter, VSI) and the compass need no electricity."},
+{q:"After an alternator failure, why shed non-essential electrical loads?",o:["To make the battery last as long as possible","To stop the engine overheating","To reset the magnetos","To charge the battery"],e:"The battery has limited capacity. Reducing loads buys time for the essential radio and transponder."},
+{q:"What does the master switch do?",o:["Connects the battery and alternator to the aircraft's electrical system","Switches the magnetos on and off","Turns on the fuel pump only","Controls the radio volume"],e:"The master is the electrical system's main switch. The magneto switch is separate."},
+{q:"Which statement about magnetos and the electrical system is correct?",o:["The magnetos are independent of the battery and alternator","The magnetos are powered by the battery","The magnetos are powered by the alternator","The magnetos stop if the master switch is off"],e:"That's why the engine keeps running after an electrical failure."},
+{type:"order", q:"Put the actions from your checklist's electrical failure drill in order.", items:["Shed all non-essential electrical load","Check field/output and reset circuit breakers","Check ammeter/voltage and warning light","Master switch off for 3 seconds, then on"],
+  e:"If output returns, keep to essential services only and land or divert as soon as practicable, as your checklist says."},
+{q:"Why might the fuel gauges become unreliable after a total electrical failure?",o:["On many aircraft the fuel gauges are electrically powered","Fuel stops flowing without electricity","The fuel freezes","They are linked to the magnetos"],e:"Know your fuel by time and consumption, not just by the gauges."},
+{q:"What is the usual system voltage in a light aircraft?",o:["14 V or 28 V DC","230 V AC","110 V AC","6 V DC"],e:"Light aircraft use low-voltage DC systems, typically 12/14 V or 24/28 V."},
+{type:"match", q:"Match each component to its job.", pairs:[["Battery","Starts the engine and backs up the supply"],["Alternator","Powers the system in flight and recharges the battery"],["Circuit breaker","Protects a circuit from overload"],["Ammeter","Shows charge or discharge"]],
+  e:"A quick way to diagnose an electrical problem is to ask which of these has failed."}
+]});
+
+T.push({ id:"instruments", ref:"020 · 5", title:"Flight instruments",
+blurb:"The pitot-static instruments and their blockages, ASI markings, the gyro instruments and the magnetic compass.",
+learn:()=>`
+${pitotStatic}
+<h3>Blockages</h3>
+<div class="tbl"><table>
+<tr><th>Blocked</th><th>ASI</th><th>Altimeter</th><th>VSI</th></tr>
+<tr><td>Static (in a climb)</td><td>Under-reads</td><td>Stuck at the level where it blocked</td><td>Reads zero</td></tr>
+<tr><td>Static (in a descent)</td><td>Over-reads</td><td>Stuck</td><td>Reads zero</td></tr>
+<tr><td>Pitot (and its drain)</td><td>Acts like an altimeter: over-reads in a climb, under-reads in a descent</td><td>Normal</td><td>Normal</td></tr>
+</table></div>
+<p>Many aircraft have an <b>alternate static source</b> inside the cabin. Cabin pressure is usually slightly lower than outside, so the ASI and altimeter may read a little high.</p>
+<h3>ASI markings</h3>
+<div class="tbl"><table>
+<tr><th>Marking</th><th>Meaning</th></tr>
+<tr><td>White arc</td><td>Flap operating range: from the stall speed with full flap (Vso) to the maximum flap extended speed (Vfe)</td></tr>
+<tr><td>Green arc</td><td>Normal operating range: from the clean stall speed (Vs1) to the maximum structural cruising speed (Vno)</td></tr>
+<tr><td>Yellow arc</td><td>Caution range, smooth air only: Vno to Vne</td></tr>
+<tr><td>Red line</td><td>Never exceed speed (Vne)</td></tr>
+</table></div>
+<h3>Gyro instruments</h3>
+<ul>
+<li><b>Attitude indicator</b>: shows pitch and bank; on many trainers it is driven by a <b>vacuum</b> pump. Check the suction gauge.</li>
+<li><b>Direction indicator (DI)</b>: has no magnetic sense, and drifts (precesses). Realign it with the compass in steady, level flight, about every 15 minutes.</li>
+<li><b>Turn coordinator</b>: shows rate of roll and turn, often electric. The balance ball is a simple inclinometer: step on the ball to centre it.</li>
+</ul>
+<h3>Magnetic compass errors (northern hemisphere)</h3>
+<ul>
+<li><b>Acceleration errors</b> on easterly or westerly headings: accelerate and it shows a turn towards north; decelerate, towards south (ANDS).</li>
+<li><b>Turning errors</b> when rolling out: undershoot north, overshoot south (UNOS).</li>
+</ul>`,
+qs:[
+{q:"Which instrument uses both pitot and static pressure?",o:["The airspeed indicator","The altimeter","The VSI","The magnetic compass"],e:"The ASI measures the difference between pitot (total) and static pressure: dynamic pressure."},
+{q:"The static source becomes blocked during a climb. What will the altimeter do?",o:["Stay at the reading where the blockage happened","Over-read","Under-read","Read zero"],e:"With the static pressure trapped, the altimeter has nothing new to measure and freezes."},
+{q:"The static source is blocked and the aircraft climbs. What does the ASI do?",o:["Under-reads","Over-reads","Reads correctly","Reads zero"],e:"The trapped static pressure is higher than the real outside pressure, so pitot minus static is too small."},
+{q:"The pitot tube and its drain hole are blocked. How does the ASI behave in a climb?",o:["It over-reads, acting like an altimeter","It under-reads","It reads correctly","It drops to zero"],e:"Pitot pressure is trapped while static pressure falls in the climb, so the difference grows and the ASI shows an increasing speed."},
+{q:"What does the top of the white arc on the ASI show?",o:["The maximum flap extended speed (Vfe)","The never exceed speed","The stall speed with full flap","The maximum structural cruising speed"],e:"The white arc runs from Vso (bottom) to Vfe (top)."},
+{q:"In which range should you fly only in smooth air?",o:["The yellow arc","The green arc","The white arc","Below the white arc"],e:"The yellow arc, from Vno to Vne, is the caution range: only in smooth air, avoiding large control movements."},
+{q:"Why must the DI be realigned with the compass during flight?",o:["Gyroscopic precession makes it drift","It is affected by deviation","It only works on northerly headings","It is powered by the magnetos"],e:"The DI has no magnetic sense. Realign it with the compass in steady, level flight, about every 15 minutes."},
+{q:"On many light trainers, what drives the attitude indicator?",o:["A vacuum pump","The battery directly","The pitot tube","The magnetos"],e:"Many trainers use a vacuum system for the AI and DI and an electric turn coordinator, so one failure doesn't take out all the gyros."},
+{q:"In the northern hemisphere, flying east, you accelerate. What does the magnetic compass show?",o:["A turn towards north","A turn towards south","No change","A turn towards east"],e:"Acceleration errors on east or west headings: Accelerate North, Decelerate South (ANDS)."},
+{q:"When rolling out of a turn onto north using the compass in the northern hemisphere, you should:",o:["Roll out before the compass shows north (undershoot)","Roll out after it passes north (overshoot)","Roll out exactly as it reaches north","Use the compass only on easterly headings"],e:"Undershoot north, overshoot south (UNOS) allows for the compass's turning errors."},
+{q:"The balance ball is out to the right in a turn. What should you do?",o:["Apply right rudder","Apply left rudder","Apply more bank","Reduce power"],e:"'Step on the ball': press the rudder on the side the ball has moved to."},
+{type:"match", q:"Match each ASI marking to its meaning.", pairs:[["White arc","Flap operating range"],["Green arc","Normal operating range"],["Yellow arc","Caution, smooth air only"],["Red line","Never exceed speed"]],
+  e:"Use the actual speeds from your aircraft's POH; the markings are a reminder."},
+{q:"Using the alternate static source in the cabin, what is the usual effect on the instruments?",o:["The ASI and altimeter read slightly high","They read slightly low","No effect at all","The VSI stops working"],e:"Cabin air pressure is usually a little lower than outside, so the instruments read slightly higher. The POH may give a correction."}
+]});
+
+T.push({ id:"airworthiness", ref:"020 · 6", title:"Airworthiness and maintenance",
+blurb:"The certificates and records that keep an aircraft legal to fly, and what a pilot may do themselves.",
+learn:()=>`
+<ul>
+<li><b>Certificate of airworthiness (C of A)</b>: shows the aircraft type meets the airworthiness standard. It stays valid only while the aircraft is maintained and has a current airworthiness review.</li>
+<li><b>Airworthiness review certificate (ARC)</b>: confirms the aircraft's airworthiness has been reviewed. Usually renewed every year.</li>
+<li><b>Certificate of release to service (CRS)</b>: signed after maintenance to release the aircraft back into service.</li>
+<li><b>Technical log</b>: records flying hours, defects and when the next maintenance is due. Check it before every flight.</li>
+<li>Aircraft on a <b>Permit to Fly</b> (for example LAA types) follow a different system with their own conditions.</li>
+</ul>
+<h3>Pilot maintenance</h3>
+<p>A pilot-owner may do certain simple tasks, such as specific inspections or replacing some items, as allowed by the maintenance rules and recorded properly. As a student or club pilot, you report defects and leave maintenance to the maintenance organisation.</p>
+<h3>Defects</h3>
+<p>Write any defect in the tech log. If it affects airworthiness, the aircraft must not fly until it has been put right and released. If in doubt, don't fly.</p>
+<div class="box note"><b>Check</b>The exact documents and intervals depend on how the aircraft is registered and maintained. Ask your school how its aircraft are managed.</div>`,
+qs:[
+{q:"What does a certificate of release to service (CRS) show?",o:["That maintenance has been completed and the aircraft released back into service","That the pilot is fit to fly","That the aircraft is registered","That the insurance is valid"],e:"A CRS is signed by the person or organisation that did the maintenance."},
+{q:"How often is an airworthiness review certificate (ARC) normally renewed?",o:["Every year","Every five years","Every month","Only when the aircraft is sold"],e:"The ARC usually runs for 12 months, after which the aircraft's airworthiness is reviewed again."},
+{q:"Where would you check how many hours remain before the next scheduled maintenance?",o:["The technical log","The pilot's logbook","The POH","The certificate of registration"],e:"The tech log records hours flown, defects and maintenance due."},
+{q:"You notice a cracked exhaust pipe on the walk-round. What should you do?",o:["Record the defect, report it, and don't fly until it has been assessed","Fly and report it afterwards","Tape it up and fly","Ignore it if the engine starts normally"],e:"An exhaust crack can cause carbon monoxide in the cabin or a fire. Defects affecting airworthiness ground the aircraft until fixed."},
+{q:"Which statement about a student pilot doing maintenance is correct?",o:["A student should report defects and leave maintenance to the maintenance organisation","A student may carry out any repair","Students must change the oil before each flight","Maintenance never needs recording"],e:"Pilot-owner maintenance is limited to specific tasks with proper records, and doesn't apply to students flying school aircraft."},
+{type:"match", q:"Match each document to what it shows.", pairs:[["Certificate of registration","Who owns the aircraft and its registration mark"],["Certificate of airworthiness","The type meets the airworthiness standard"],["Airworthiness review certificate","The aircraft's airworthiness has been reviewed recently"],["Technical log","Hours, defects and maintenance due"]],
+  e:"Before flight you're checking that each of these is in date and shows nothing outstanding."},
+{q:"An LAA-type homebuilt aircraft usually flies on:",o:["A Permit to Fly","A full certificate of airworthiness","No paperwork","A temporary licence"],e:"Permit aircraft have their own airworthiness system and operating conditions."},
+{q:"Which of these would make an aircraft unairworthy?",o:["An unrectified defect affecting safety recorded in the tech log","A dirty windscreen that is easily cleaned","The fuel tank being half full","A passenger's luggage on board"],e:"An outstanding airworthiness defect grounds the aircraft until it is rectified and released."},
+{q:"You are about to fly and see that scheduled maintenance is overdue by 2 hours in the tech log. What should you do?",o:["Not fly until the maintenance is done or properly extended","Fly, as 2 hours is small","Fly but reduce power","Reset the hours in the log"],e:"Maintenance limits are legal limits unless a permitted extension is properly recorded."},
+{q:"What is the purpose of the walk-round inspection in relation to airworthiness?",o:["To find obvious defects and confirm the aircraft is fit for the flight","To replace the annual inspection","To certify the aircraft for release","It is optional for short flights"],e:"The pre-flight inspection is the pilot's check. It doesn't replace maintenance, but it catches problems that appear between inspections."},
+{q:"Who is responsible for deciding whether the aircraft is fit for the flight?",o:["The pilot-in-command","The fuel bowser driver","The air traffic controller","The aircraft owner only"],e:"The PIC must be satisfied the aircraft is airworthy before each flight."}
+]});
+
+SUBJECTS.push({ id:"agk", code:"020", name:"Aircraft General Knowledge",
+  blurb:"How the aircraft is built and how its systems work: airframe, engine, fuel and carburation, electrics, flight instruments, and the paperwork that keeps it airworthy.",
+  topics:T });
+})();
+
+
+// 030 Flight Performance and Planning
+(() => {
+// An example aircraft for the calculations: invented figures, not any real type's.
+const EX = { bem:520, bemArm:0.85, seatArm:0.95, fuelArm:1.05, bagArm:1.60, mtom:760 };
+const factorsTable = `<div class="tbl"><table>
+<tr><th>Condition</th><th>Take-off distance factor</th><th>Landing distance factor</th></tr>
+<tr><td>10% more weight</td><td>1.20</td><td>1.10</td></tr>
+<tr><td>Each 1,000 ft of aerodrome elevation</td><td>1.10</td><td>1.05</td></tr>
+<tr><td>Each 10 °C rise in temperature</td><td>1.10</td><td>1.05</td></tr>
+<tr><td>Dry grass (up to 20 cm, firm soil)</td><td>1.20</td><td>1.15</td></tr>
+<tr><td>Wet grass (up to 20 cm, firm soil)</td><td>1.30</td><td>1.35</td></tr>
+<tr><td>Wet paved surface</td><td>—</td><td>1.15</td></tr>
+<tr><td>2% uphill slope (take-off) / 2% downhill slope (landing)</td><td>1.10</td><td>1.10</td></tr>
+<tr><td>Tailwind of 10% of lift-off speed</td><td>1.20</td><td>1.20</td></tr>
+<tr><td>Soft ground or snow</td><td>1.25 or more</td><td>1.25 or more</td></tr>
+<tr><td>Safety factor, if the POH figures are unfactored</td><td>1.33</td><td>1.43</td></tr>
+</table></div>`;
+
+const T = [];
+T.push({ id:"mass", ref:"030 · 1", title:"Mass and balance",
+blurb:"The definitions, moments and centre of gravity, and why both the weight and the CG must be in limits.",
+learn:()=>`
+<h3>Definitions</h3>
+<div class="tbl"><table>
+<tr><th>Term</th><th>Meaning</th></tr>
+<tr><td>Basic empty mass</td><td>The aircraft with unusable fuel, full oil and fixed equipment, from its weight schedule</td></tr>
+<tr><td>Datum</td><td>The reference point from which all arms are measured, set by the manufacturer</td></tr>
+<tr><td>Arm</td><td>Distance of an item from the datum</td></tr>
+<tr><td>Moment</td><td>Mass × arm</td></tr>
+<tr><td>Centre of gravity (CG)</td><td>Total moment ÷ total mass</td></tr>
+<tr><td>Maximum take-off mass</td><td>The most the aircraft may weigh at the start of the take-off</td></tr>
+</table></div>
+<h3>Working out the CG</h3>
+<p>List every item with its mass and arm, multiply to get each moment, add the masses and the moments, then divide. Check that both the total mass and the CG fall within the envelope in the POH.</p>
+<div class="tbl"><table>
+<tr><th>Item</th><th>Mass (kg)</th><th>Arm (m)</th><th>Moment (kg m)</th></tr>
+<tr><td>Basic empty mass</td><td>520</td><td>0.85</td><td>442.0</td></tr>
+<tr><td>Pilot and passenger</td><td>160</td><td>0.95</td><td>152.0</td></tr>
+<tr><td>Fuel 60 L × 0.72</td><td>43</td><td>1.05</td><td>45.2</td></tr>
+<tr><td>Baggage</td><td>10</td><td>1.60</td><td>16.0</td></tr>
+<tr><td><b>Total</b></td><td><b>733</b></td><td></td><td><b>655.2</b></td></tr>
+</table></div>
+<p>CG = 655.2 ÷ 733 = <b>0.894 m</b> aft of the datum. These are made-up example figures; always use your aircraft's own weight schedule and POH.</p>
+<h3>Why it matters</h3>
+<ul>
+<li><b>Overweight</b>: longer take-off run, poorer climb, higher stall speed, structural loads beyond design.</li>
+<li><b>CG forward</b> of the limit: heavy elevator, may not be able to flare or rotate.</li>
+<li><b>CG aft</b> of the limit: unstable in pitch, possibly unrecoverable stall or spin.</li>
+<li>Fuel burn moves the CG during the flight; check it at take-off and at landing.</li>
+</ul>`,
+qs:[
+{q:"How is the centre of gravity calculated?",o:["Total moment divided by total mass","Total mass divided by total moment","Total mass multiplied by total arm","The average of all the arms"],e:"Add up all the moments (mass × arm), add up the masses, then divide moment by mass."},
+{q:"What is a moment in mass and balance?",o:["Mass multiplied by its arm from the datum","The time taken to load the aircraft","The mass of fuel used per hour","The distance between the CG limits"],e:"Moment = mass × arm. Moments add up even though arms don't."},
+{q:"What is the datum?",o:["The reference point from which all arms are measured","The aircraft's centre of gravity","The maximum take-off mass","The forward CG limit"],e:"The manufacturer chooses the datum; it can be anywhere, even ahead of the aircraft's nose."},
+{type:"calc", gen:() => { const p = rnd(130, 190, 5), L = rnd(40, 90, 5), f = Math.round(L * 0.72), b = rnd(0, 20, 5);
+  const m = EX.bem + p + f + b, mo = EX.bem*EX.bemArm + p*EX.seatArm + f*EX.fuelArm + b*EX.bagArm, cg = mo / m;
+  return { q:`Example aircraft: basic empty mass ${EX.bem} kg at ${EX.bemArm} m; front seats ${p} kg at ${EX.seatArm} m; fuel ${L} L (at 0.72 kg/L = ${f} kg) at ${EX.fuelArm} m; baggage ${b} kg at ${EX.bagArm} m. Where is the CG, in metres aft of the datum? (two decimal places)`, a:Math.round(cg*100)/100, tol:0.01, unit:" m",
+    steps:[`Moments: ${EX.bem}×${EX.bemArm} = ${(EX.bem*EX.bemArm).toFixed(1)}; ${p}×${EX.seatArm} = ${(p*EX.seatArm).toFixed(1)}; ${f}×${EX.fuelArm} = ${(f*EX.fuelArm).toFixed(1)}; ${b}×${EX.bagArm} = ${(b*EX.bagArm).toFixed(1)}`,
+      `Total mass = ${m} kg; total moment = ${mo.toFixed(1)} kg m`, `CG = ${mo.toFixed(1)} ÷ ${m} = ${cg.toFixed(3)} m`] }; },
+  e:"Invented example figures. Use your own aircraft's weight schedule for real loading."},
+{type:"calc", gen:() => { const L = rnd(30, 110, 5), kg = L * 0.72;
+  return { q:`Avgas has a specific gravity of 0.72. What is the mass of ${L} litres? (nearest kg)`, a:Math.round(kg), tol:1, unit:" kg",
+    steps:[`Mass = litres × 0.72`, `${L} × 0.72 = ${kg.toFixed(1)} kg`] }; }},
+{type:"calc", gen:() => { const m = rnd(60, 110), a = [0.95, 1.05, 1.6, 2.2][rnd(0, 3)], mo = m * a;
+  return { q:`A ${m} kg item is placed ${a} m aft of the datum. What is its moment? (one decimal place)`, a:Math.round(mo*10)/10, tol:0.1, unit:" kg m",
+    steps:[`Moment = mass × arm = ${m} × ${a} = ${mo.toFixed(1)} kg m`] }; }},
+{q:"What is the main danger of the CG being behind the aft limit?",o:["Reduced stability in pitch and possibly an unrecoverable stall or spin","Heavy elevator forces","A longer take-off run only","Higher fuel consumption only"],e:"An aft CG reduces the tailplane's restoring moment. Beyond the limit, the aircraft may be unstable and recovery may not be possible."},
+{q:"What is the main danger of the CG being ahead of the forward limit?",o:["Not enough elevator authority to rotate or flare","The aircraft becomes unstable in pitch","Lower stall speed","Better climb performance"],e:"A forward CG needs more tail download. Near or beyond the limit, you can run out of elevator at low speed."},
+{q:"Why should the CG be checked for the landing as well as the take-off?",o:["Burning fuel changes both the mass and the CG during the flight","The datum moves in flight","Passengers may move about","It is only required for aerobatics"],e:"If the fuel tanks are away from the CG, using fuel moves it. Some loadings are fine at take-off but out of limits at landing."},
+{q:"Which effect would being over the maximum take-off mass NOT cause?",o:["A lower stall speed","A longer take-off run","A poorer rate of climb","Higher loads on the structure"],e:"More mass raises the stall speed; it also lengthens the take-off and reduces climb."},
+{type:"order", q:"Put the steps of a mass and balance calculation in order.", items:["List each item's mass and arm","Work out each moment (mass × arm)","Add up the masses and the moments","Divide total moment by total mass to find the CG","Check mass and CG against the POH envelope"],
+  e:"Then repeat for the landing, with the fuel you expect to use taken off."},
+{q:"What is included in the basic empty mass?",o:["The aircraft, unusable fuel, full oil and fixed equipment","The aircraft plus a full load of fuel","The aircraft plus the pilot","Only the airframe without the engine"],e:"Basic empty mass comes from the aircraft's weight schedule, which is updated when equipment changes."}
+]});
+
+T.push({ id:"takeoff", ref:"030 · 2", title:"Take-off and landing performance",
+blurb:"Runway distances, what makes them longer, the CAA factors and safety margins, and the effect of wind.",
+learn:()=>`
+<h3>Declared distances</h3>
+<div class="tbl"><table>
+<tr><th>Distance</th><th>Meaning</th></tr>
+<tr><td>TORA</td><td>Take-off run available: the runway length available for the ground run</td></tr>
+<tr><td>TODA</td><td>Take-off distance available: TORA plus any clearway</td></tr>
+<tr><td>ASDA</td><td>Accelerate-stop distance available: TORA plus any stopway</td></tr>
+<tr><td>LDA</td><td>Landing distance available</td></tr>
+</table></div>
+<h3>CAA factors</h3>
+<p>From the CAA's Safety Sense leaflet on aeroplane performance. The factors <b>multiply</b> together.</p>
+${factorsTable}
+<p>Example: book take-off distance 400 m, dry grass (×1.20), 10 °C warmer than the chart (×1.10), safety factor (×1.33): 400 × 1.20 × 1.10 × 1.33 = <b>702 m</b> needed.</p>
+<h3>Wind</h3>
+<p>When using the POH charts, the CAA advises allowing for <b>no more than 50% of the reported headwind</b> component and <b>at least 150% of any tailwind</b> component. Headwind shortens the distances; tailwind lengthens them sharply.</p>
+<div class="box trap"><b>Common trap</b>Don't add the percentages; multiply the factors. 1.20 × 1.30 is 1.56, not 1.50.</div>`,
+qs:[
+{type:"calc", gen:() => { const d = rnd(300, 500, 10); const opts = [["dry grass",1.2],["wet grass",1.3],["a 2% uphill slope",1.1],["an aerodrome 1,000 ft above sea level",1.1],["a temperature 10 °C above the chart figure",1.1],["10% more weight than the chart",1.2]];
+  const a = opts[rnd(0, 5)], b = opts.filter(x => x !== a)[rnd(0, 4)], r = d * a[1] * b[1] * 1.33;
+  return { q:`The POH gives an unfactored take-off distance of ${d} m. Conditions: ${a[0]} and ${b[0]}. Using the CAA factors and the 1.33 safety factor, what distance do you need? (nearest 10 m)`, a:Math.round(r/10)*10, tol:10, unit:" m",
+    steps:[`Factors: ${a[0]} ×${a[1]}, ${b[0]} ×${b[1]}, safety ×1.33`, `${d} × ${a[1]} × ${b[1]} × 1.33 = ${r.toFixed(0)} m`] }; },
+  e:"Factors multiply. Compare the answer with the take-off distance available."},
+{type:"calc", gen:() => { const d = rnd(350, 480, 10), wet = rnd(0, 1), f = wet ? 1.35 : 1.15, r = d * f * 1.43;
+  return { q:`The POH gives an unfactored landing distance of ${d} m. You are landing on ${wet ? "wet" : "dry"} grass. Using the CAA factors and the 1.43 safety factor, what landing distance do you need? (nearest 10 m)`, a:Math.round(r/10)*10, tol:10, unit:" m",
+    steps:[`${wet ? "Wet" : "Dry"} grass landing factor ×${f}; safety factor ×1.43`, `${d} × ${f} × 1.43 = ${r.toFixed(0)} m`] }; }},
+{q:"How should the CAA performance factors be combined?",o:["Multiplied together","Added together","Only the largest one used","Averaged"],e:"The Safety Sense leaflet is explicit: factors must be multiplied."},
+{q:"What is the CAA's recommended safety factor for take-off distance, if the POH figures are unfactored?",o:["1.33","1.43","1.10","2.00"],e:"1.33 for take-off and 1.43 for landing."},
+{q:"What is the CAA's recommended safety factor for landing distance, if the POH figures are unfactored?",o:["1.43","1.33","1.15","1.50"],e:"Landing has the higher factor, 1.43, because touchdown point and technique vary more."},
+{q:"What factor does dry grass add to the take-off distance?",o:["1.20","1.30","1.10","1.43"],e:"Dry grass up to 20 cm on firm soil: ×1.20 for take-off. Wet grass: ×1.30."},
+{q:"When using the POH wind correction, how much of a reported headwind does the CAA advise you to allow for?",o:["No more than 50%","All of it","150%","None"],e:"Wind varies, so take credit for only half the headwind, and allow for at least 150% of any tailwind."},
+{q:"What is TODA?",o:["Take-off run available plus any clearway","The length of the runway only","The runway plus stopway","The landing distance available"],e:"TODA = TORA + clearway. ASDA = TORA + stopway."},
+{q:"Which combination gives the longest take-off distance?",o:["Heavy, hot, high aerodrome, wet grass, slight tailwind","Light, cold, sea level, paved, headwind","Light, hot, sea level, paved","Heavy, cold, sea level, paved, headwind"],e:"Each adverse factor multiplies the distance: weight, temperature, elevation, surface and tailwind all add up fast."},
+{q:"What factor does a tailwind of 10% of the lift-off speed add to the take-off distance?",o:["1.20","1.05","1.10","1.50"],e:"Even a small tailwind makes a big difference: ×1.20 for take-off and landing."},
+{type:"match", q:"Match each declared distance to its definition.", pairs:[["TORA","Runway length available for the ground run"],["TODA","TORA plus clearway"],["ASDA","TORA plus stopway"],["LDA","Length available for landing"]],
+  e:"Declared distances are published in the AIP and flight guides for each runway."},
+{q:"Very short wet grass on firm subsoil can be very slippery. What landing distance increase does the CAA leaflet mention for it?",o:["Up to 60% (a factor of 1.6)","10%","25%","There is no effect"],e:"Short, wet grass can behave like ice for braking. The leaflet notes it can give a 60% increase."}
+]});
+
+T.push({ id:"density", ref:"030 · 3", title:"Pressure and density altitude",
+blurb:"Working out pressure altitude and density altitude, and what they do to performance.",
+learn:()=>`
+<h3>Pressure altitude</h3>
+<p>Pressure altitude is the altitude in the standard atmosphere for the pressure you're at. It is what the altimeter shows with <b>1013 hPa</b> set. From the aerodrome elevation and QNH:</p>
+<p><span class="mono">pressure altitude = elevation + (1013 − QNH) × 30 ft</span></p>
+<p>Example: elevation 500 ft, QNH 1003: 500 + 10 × 30 = <b>800 ft</b>.</p>
+<h3>Density altitude</h3>
+<p>Density altitude is pressure altitude corrected for temperature. Performance depends on density, so a hot day at a low aerodrome can perform like a much higher one. A rule of thumb:</p>
+<p><span class="mono">density altitude ≈ pressure altitude + 120 × (OAT − ISA temperature) ft</span></p>
+<p>Example: pressure altitude 800 ft (ISA about 13 °C), OAT 28 °C: 800 + 120 × 15 = <b>2,600 ft</b>.</p>
+<h3>Effect on performance</h3>
+<ul>
+<li>Less dense air means less engine power, less propeller thrust and less lift at a given true airspeed.</li>
+<li>Take-off and landing runs get longer (true airspeed is higher for the same IAS) and climb rates fall.</li>
+<li>Humidity also reduces density a little.</li>
+</ul>`,
+qs:[
+{type:"calc", gen:() => { const el = rnd(0, 800, 50), q = rnd(990, 1030); const pa = el + (1013 - q) * 30;
+  return { q:`Aerodrome elevation ${el} ft, QNH ${q} hPa. What is the pressure altitude? (use 30 ft per hPa; a minus sign if below sea level)`, a:pa, tol:0, unit:" ft", neg:true,
+    steps:[`Pressure altitude = elevation + (1013 − QNH) × 30`, `${el} + (1013 − ${q}) × 30 = ${el} + ${(1013 - q) * 30} = ${pa} ft`] }; },
+  e:"Low QNH raises the pressure altitude; high QNH lowers it."},
+{type:"calc", gen:() => { const pa = rnd(0, 3000, 500), isa = 15 - 2 * pa / 1000, oat = Math.round(isa + rnd(5, 20)), da = pa + 120 * (oat - isa);
+  return { q:`Pressure altitude ${pa} ft, outside air temperature ${oat} °C. Using the 120 ft per °C rule and 2 °C per 1,000 ft for ISA, what is the density altitude? (nearest 100 ft)`, a:Math.round(da/100)*100, tol:100, unit:" ft",
+    steps:[`ISA at ${pa} ft = 15 − ${2*pa/1000} = ${isa} °C`, `ISA deviation = ${oat} − ${isa} = ${oat - isa} °C`, `DA = ${pa} + 120 × ${oat - isa} = ${da} ft`] }; }},
+{q:"What does the altimeter show when 1013 hPa is set on the subscale?",o:["Pressure altitude","Density altitude","Height above the aerodrome","True altitude"],e:"Pressure altitude is the altitude in the standard atmosphere for the current pressure."},
+{q:"Which conditions give a high density altitude?",o:["High temperature, high elevation, low pressure","Low temperature, low elevation, high pressure","Low temperature, high pressure","Any cloudy day"],e:"Heat, height and low pressure all reduce density."},
+{q:"How does a high density altitude affect take-off performance?",o:["Longer take-off run and poorer climb","Shorter take-off run","No effect if the IAS is the same","Better climb"],e:"Less power, less thrust, and a higher true airspeed for the same IAS all lengthen the run and reduce the climb."},
+{q:"Aerodrome elevation 300 ft, QNH 1023 hPa. What is the pressure altitude?",o:["0 ft","600 ft","300 ft","−300 ft"],e:"300 + (1013 − 1023) × 30 = 300 − 300 = 0 ft."},
+{q:"How does humidity affect air density?",o:["Humid air is slightly less dense","Humid air is much denser","It has no effect","Humid air is denser only in winter"],e:"Water vapour is lighter than the nitrogen and oxygen it replaces, so moist air is slightly less dense."},
+{q:"At a high density altitude, compared with sea level, the true airspeed at lift-off (same IAS) is:",o:["Higher","Lower","The same","Zero"],e:"In thinner air the same IAS means a higher TAS, and so a higher groundspeed and longer run."},
+{q:"Why is density altitude important when using performance charts?",o:["Aircraft performance depends on air density, not just elevation","It changes the aircraft's empty mass","It is needed for the radio","It sets the transponder code"],e:"Many POH charts take pressure altitude and temperature as inputs, which together give density."},
+{type:"match", q:"Match each term to its meaning.", pairs:[["Pressure altitude","Altitude shown with 1013 hPa set"],["Density altitude","Pressure altitude corrected for temperature"],["Elevation","Height of the aerodrome above mean sea level"]],
+  e:"Elevation is fixed; pressure and density altitude change with the weather."}
+]});
+
+T.push({ id:"climbcruise", ref:"030 · 4", title:"Climb, cruise, range and endurance",
+blurb:"What changes climb performance, and how to fly for the longest distance or the longest time.",
+learn:()=>`
+<h3>Climb</h3>
+<ul>
+<li><b>Vx</b> (best angle) gives most height for distance: obstacle clearance.</li>
+<li><b>Vy</b> (best rate) gives most height for time: the normal climb.</li>
+<li>Climb performance falls with more weight, higher density altitude and higher temperature. Flap usually reduces the rate of climb.</li>
+</ul>
+<h3>Range and endurance</h3>
+<div class="tbl"><table>
+<tr><th>Aim</th><th>Fly at</th></tr>
+<tr><td>Maximum range (furthest distance)</td><td>Roughly the speed for best lift/drag ratio; a little faster into a headwind, a little slower with a tailwind</td></tr>
+<tr><td>Maximum endurance (longest time)</td><td>A lower speed, for the least power required</td></tr>
+</table></div>
+<ul>
+<li>Leaning the mixture as the POH directs reduces fuel flow in the cruise.</li>
+<li>Wind doesn't change endurance, but it changes the distance covered in that time.</li>
+<li>The POH cruise tables give power settings, TAS and fuel flow for different altitudes and RPM.</li>
+</ul>`,
+qs:[
+{q:"Which speed gives the greatest height gain in a given time?",o:["Vy","Vx","Vne","Vfe"],e:"Vy is best rate of climb. Vx is best angle."},
+{q:"How does increased weight affect the rate of climb?",o:["It reduces it","It increases it","No effect","It increases it only at high altitude"],e:"More weight needs more lift and more power just to stay level, leaving less spare for climbing."},
+{q:"To stay airborne for the longest time (for example while holding), you should fly at:",o:["The maximum endurance speed, which is lower than the best range speed","Vne","The maximum range speed","Full power"],e:"Endurance is about using the least fuel per hour, which happens at the speed for least power required."},
+{q:"Flying into a strong headwind, how should the speed for best range change?",o:["Fly a little faster","Fly a little slower","No change","Fly at Vx"],e:"Into a headwind, a bit more speed reduces the time spent fighting the wind, improving range over the ground."},
+{q:"Does wind affect the endurance of an aircraft?",o:["No; it affects distance covered, not time airborne","Yes; a headwind increases endurance","Yes; a tailwind increases endurance","Only above 5,000 ft"],e:"Endurance depends on fuel flow. Wind changes how far you get in that time."},
+{q:"What is the usual effect of lowering flap on the rate of climb?",o:["It reduces it","It increases it","No effect","It doubles it"],e:"Flap adds drag. Small settings may sometimes help the angle of climb from a short strip, as the POH directs, but the rate is reduced."},
+{type:"calc", gen:() => { const f = rnd(60, 100, 5), r = rnd(18, 28), m = f / r * 60;
+  return { q:`Usable fuel ${f} L, fuel flow ${r} L/h. What is the endurance in minutes, with no reserve? (nearest minute)`, a:Math.round(m), tol:1, unit:" min",
+    steps:[`Endurance = usable fuel ÷ fuel flow = ${f} ÷ ${r} = ${(f/r).toFixed(2)} h`, `× 60 = ${m.toFixed(0)} min`] }; },
+  e:"Plan to land with your final reserve intact, so the usable endurance for the trip is less than this."},
+{q:"Where would you find the fuel flow for a given cruise power setting and altitude?",o:["The cruise performance table in the POH","The certificate of airworthiness","The tech log","The ASI markings"],e:"The POH cruise tables give RPM, TAS and fuel flow at different altitudes and temperatures."},
+{q:"How does a higher density altitude affect the climb?",o:["Climb rate reduces","Climb rate increases","No change","Only Vx changes"],e:"Less power and thrust are available in thinner air, so the climb rate falls."},
+{type:"match", q:"Match each speed or aim to what it gives you.", pairs:[["Vx","Most height for distance"],["Vy","Most height for time"],["Best range speed","Most distance for fuel"],["Best endurance speed","Most time for fuel"]],
+  e:"The POH gives the actual speeds for your aircraft."}
+]});
+
+T.push({ id:"fuelplan", ref:"030 · 5", title:"Fuel planning",
+blurb:"Building up the fuel for a flight, the reserve rules, conversions and monitoring fuel in flight.",
+learn:()=>`
+<h3>Building up the fuel</h3>
+<div class="tbl"><table>
+<tr><th>Part</th><th>What for</th></tr>
+<tr><td>Taxi</td><td>Start-up, taxi and power checks</td></tr>
+<tr><td>Trip</td><td>Take-off, climb, cruise and descent to the destination</td></tr>
+<tr><td>Contingency</td><td>Unexpected headwinds, routing changes, holding</td></tr>
+<tr><td>Alternate</td><td>Diverting from the destination to an alternate, if needed</td></tr>
+<tr><td>Final reserve</td><td>Fuel you plan never to use</td></tr>
+</table></div>
+<h3>Final reserve for aeroplanes (non-commercial rules)</h3>
+<ul>
+<li><b>VFR by day</b>: 30 minutes at holding speed at 1,500 ft above the destination.</li>
+<li>VFR by day, taking off and landing at the same aerodrome and staying within sight of it: 10 minutes at maximum continuous cruise power.</li>
+<li>VFR by night: 45 minutes.</li>
+</ul>
+<p>Many schools and pilots set a larger personal reserve, for example an hour. Check your school's rules.</p>
+<h3>Conversions</h3>
+<p>1 US gallon = 3.785 L. 1 imperial gallon = 4.546 L. Avgas: 1 L ≈ 0.72 kg.</p>
+<h3>In flight</h3>
+<ul>
+<li>Check fuel against the plan at regular intervals (the F in FREDA). If it doesn't match, find out why.</li>
+<li>Decide early: divert while you still have options, not when the reserve is being used.</li>
+</ul>`,
+qs:[
+{q:"What is the final reserve fuel for an aeroplane flying VFR by day under the non-commercial rules?",o:["30 minutes at holding speed at 1,500 ft above the destination","10 minutes in all cases","45 minutes","1 hour"],e:"30 minutes for VFR by day; 45 for VFR by night. The 10-minute case applies only to flights staying in sight of the departure aerodrome."},
+{q:"When may the shorter 10-minute final reserve be used for a VFR day flight?",o:["When taking off and landing at the same aerodrome and staying within sight of it","On any local flight","When the weather is good","When carrying no passengers"],e:"It is a narrow case: same aerodrome, in sight of it throughout."},
+{type:"calc", gen:() => { const t = rnd(40, 120, 5), r = rnd(18, 28), trip = r * t / 60, res = r * 0.5, tot = trip + res;
+  return { q:`Flight time ${t} min, fuel flow ${r} L/h. Ignoring taxi and contingency, how much fuel do you need for the trip plus a 30-minute final reserve? (nearest litre)`, a:Math.round(tot), tol:1, unit:" L",
+    steps:[`Trip = ${r} × ${t}/60 = ${trip.toFixed(1)} L`, `Reserve = ${r} × 0.5 = ${res.toFixed(1)} L`, `Total = ${tot.toFixed(1)} L`] }; },
+  e:"Add taxi and contingency fuel too, and never plan to use the final reserve."},
+{type:"calc", gen:() => { const g = rnd(15, 26), l = g * 3.785;
+  return { q:`A POH gives usable fuel as ${g} US gallons. How many litres is that? (nearest litre)`, a:Math.round(l), tol:1, unit:" L",
+    steps:[`1 US gallon = 3.785 L`, `${g} × 3.785 = ${l.toFixed(1)} L`] }; }},
+{type:"calc", gen:() => { const kg = rnd(30, 80), l = kg / 0.72;
+  return { q:`How many litres of avgas weigh ${kg} kg? (nearest litre)`, a:Math.round(l), tol:1, unit:" L",
+    steps:[`Litres = kg ÷ 0.72`, `${kg} ÷ 0.72 = ${l.toFixed(1)} L`] }; }},
+{q:"What is contingency fuel for?",o:["Unexpected extras such as stronger headwinds or a route change","Starting the engine","The final approach only","Filling the tanks to the top"],e:"Contingency covers the unexpected without eating into the final reserve."},
+{type:"order", q:"Put the parts of the fuel calculation in the order they're used in a flight.", items:["Taxi fuel","Trip fuel","Contingency fuel","Alternate fuel","Final reserve"],
+  e:"Plan to land with the final reserve still in the tanks."},
+{q:"Halfway through a flight you have used more fuel than planned. What should you do?",o:["Work out why, recalculate, and divert early if the reserve is threatened","Carry on and hope the wind changes","Lean the mixture fully and continue","Ignore it; the gauges are unreliable"],e:"Fuel checks against the plan are there to catch this. Decide early, while you still have options."},
+{q:"What is the final reserve for an aeroplane flying VFR at night?",o:["45 minutes","30 minutes","10 minutes","60 minutes"],e:"At night the reserve rises to 45 minutes at holding speed at 1,500 ft above the destination."},
+{q:"Why is unusable fuel excluded from fuel planning?",o:["The fuel system cannot deliver it to the engine","It is contaminated","It is kept for emergencies","It is too heavy"],e:"Only usable fuel keeps the engine running."},
+{q:"The fuel gauges read more than your fuel log shows. Which should you trust for planning?",o:["The lower figure, and check why they differ","The higher figure","The gauges always","Neither; land immediately"],e:"Light aircraft gauges are often inaccurate. Plan on the more conservative figure and use time and fuel flow as your main check."}
+]});
+
+T.push({ id:"planning", ref:"030 · 6", title:"Flight planning and the PLOG",
+blurb:"Planning a cross-country: route, safety altitude, the PLOG, weather, NOTAMs and notification.",
+learn:()=>`
+<h3>Planning a route</h3>
+<ul>
+<li>Draw the route on the current chart, checking airspace, danger areas, obstacles and terrain.</li>
+<li>Choose turning points that are easy to identify.</li>
+<li>Work out a <b>safety altitude</b> for each leg. A common method: the highest ground or obstacle within 5 nm of track, plus 1,000 ft, rounded up to the next 100 ft. Your school may use a different margin.</li>
+<li>Pick cruising levels that clear the safety altitude where possible and suit the airspace.</li>
+</ul>
+<h3>The PLOG</h3>
+<div class="tbl"><table>
+<tr><th>Column</th><th>Source</th></tr>
+<tr><td>True track and distance</td><td>Measured on the chart</td></tr>
+<tr><td>Wind velocity</td><td>Forecast for the level and time</td></tr>
+<tr><td>Heading and groundspeed</td><td>Wind triangle (flight computer)</td></tr>
+<tr><td>Magnetic heading</td><td>True heading ± variation</td></tr>
+<tr><td>Time and fuel</td><td>Distance ÷ groundspeed; time × fuel flow</td></tr>
+</table></div>
+<h3>Before you go</h3>
+<ul>
+<li>Weather: forecasts, METARs and TAFs for departure, destination and alternates.</li>
+<li>NOTAMs for the route and aerodromes, and any temporary restrictions.</li>
+<li>Prior permission (PPR) where the destination needs it; opening hours.</li>
+<li>Mass and balance, performance and fuel.</li>
+<li>Book out with the departure aerodrome. A flight plan is required for some flights, for example when crossing an international FIR boundary.</li>
+</ul>`,
+qs:[
+{type:"calc", gen:() => { const h = rnd(400, 2600, 10), sa = Math.ceil((h + 1000) / 100) * 100;
+  return { q:`Using the method "highest point within 5 nm of track, plus 1,000 ft, rounded up to the next 100 ft": the highest obstacle near your leg is ${h.toLocaleString("en-GB")} ft AMSL. What is the safety altitude?`, a:sa, tol:0, unit:" ft",
+    steps:[`${h} + 1,000 = ${h + 1000} ft`, `Round up to the next 100 ft: ${sa} ft`] }; },
+  e:"Different schools use different margins; follow yours."},
+{q:"Which wind direction goes into the PLOG wind triangle?",o:["The forecast wind, in degrees true","The surface wind from the ATIS in degrees magnetic","The wind at the destination only","No wind is needed"],e:"Forecast winds aloft are in degrees true, matching true tracks measured on the chart. Convert to magnetic heading after the triangle."},
+{q:"Why should turning points be features that are easy to identify?",o:["So you can confirm your position at each change of heading","They make the route shorter","They avoid the need for a PLOG","They are required by law"],e:"A turning point you can't find makes every leg after it uncertain."},
+{q:"Which of these should you check before a cross-country flight?",o:["NOTAMs for the route and aerodromes","The aircraft's last owner","The fuel price","The previous day's METARs only"],e:"NOTAMs can close aerodromes, activate restricted airspace or warn of hazards."},
+{q:"When is a flight plan required in the UK for a VFR flight?",o:["For some flights, for example when crossing an international FIR boundary","For every flight","Never","Only at night"],e:"Most UK domestic VFR flights only need booking out, but flights crossing international FIR boundaries need a flight plan. Check the current requirements in the AIP."},
+{q:"What does PPR mean?",o:["Prior permission required","Pilot position report","Public parking restricted","Planned power reduction"],e:"Many aerodromes require you to contact them before arriving."},
+{type:"order", q:"Put these PLOG steps for one leg in a sensible order.", items:["Measure true track and distance on the chart","Enter the forecast wind for the level","Work out true heading and groundspeed","Apply variation to get magnetic heading","Work out the time and fuel for the leg"],
+  e:"Then add up times and fuel for the whole route and compare with the fuel available."},
+{q:"What is the main purpose of a safety altitude?",o:["To give clearance above terrain and obstacles if visibility deteriorates","To set the transition altitude","To decide the cruising speed","To satisfy ATC only"],e:"It's the altitude to climb to if you lose sight of the ground or are uncertain of position."},
+{type:"calc", gen:() => { const d = rnd(20, 60), g = rnd(80, 115, 5), r = rnd(20, 26), m = d * 60 / g, f = r * m / 60;
+  return { q:`PLOG leg: ${d} nm at a groundspeed of ${g} kt, fuel flow ${r} L/h. How much fuel will the leg use? (one decimal place)`, a:Math.round(f*10)/10, tol:0.3, unit:" L",
+    steps:[`Time = ${d} × 60 ÷ ${g} = ${m.toFixed(1)} min`, `Fuel = ${r} × ${m.toFixed(1)} ÷ 60 = ${f.toFixed(1)} L`] }; }},
+{q:"Why should you plan an alternate aerodrome?",o:["In case the destination becomes unavailable or the weather worsens","Because it is always a legal requirement for VFR","To make the flight longer","To refuel on every flight"],e:"An alternate gives you a planned option if things change. Include the fuel to reach it."},
+{type:"match", q:"Match each source to what you get from it.", pairs:[["AIP aerodrome pages","Runways, circuits, frequencies and procedures"],["NOTAMs","Temporary changes and hazards"],["TAF","Forecast weather at an aerodrome"],["Chart","Airspace, terrain and obstacles"]],
+  e:"A complete brief uses all of them."}
+]});
+
+SUBJECTS.push({ id:"fpp", code:"030", name:"Flight Performance & Planning",
+  blurb:"Mass and balance, take-off and landing performance with the CAA factors, density altitude, climb and range, fuel planning, and planning a cross-country.",
+  topics:T });
+})();
+
+
 // 040 Human Performance and Limitations
 (() => {
 const swiss = `<figure class="fig wide"><svg viewBox="0 0 440 200" role="img" aria-label="Swiss cheese model: an accident happens when holes in several layers of defence line up">
@@ -2419,6 +2975,264 @@ extendTopic("nav", "radionav", { qs:[
 ]});
 
 
+// 070 Operational Procedures
+(() => {
+const wakeFig = `<figure class="fig wide"><svg viewBox="0 0 440 200" role="img" aria-label="Avoiding wake turbulence: lift off before the heavier aircraft's rotation point and land beyond its touchdown point">
+<rect class="fb" x="1" y="1" width="438" height="198" rx="6"/>
+<rect class="f-rw" x="20" y="150" width="400" height="18" rx="2"/>
+<text class="tb" x="30" y="30">DEPARTING</text>
+<circle cx="220" cy="150" r="5" class="f-mag"/><text class="t" x="220" y="186" text-anchor="middle">heavier aircraft rotates</text>
+<path d="M220,150 Q300,110 420,60" class="ln pb dash" style="stroke-width:2"/>
+<path d="M60,150 Q140,128 200,90 Q260,55 420,30" class="ln pa" style="stroke-width:3"/>
+<circle cx="170" cy="112" r="4" class="f-ink"/><text class="t" x="110" y="100">you lift off before it</text>
+<text class="t" x="300" y="128">its wake</text>
+</svg><figcaption>On departure, lift off before the heavier aircraft's rotation point and climb above its path. On approach, stay above its path and land beyond its touchdown point. Vortices sink and drift with the wind.</figcaption></figure>`;
+
+const T = [];
+T.push({ id:"rules", ref:"070 · 1", title:"Operating rules and fuel",
+blurb:"The pilot-in-command's responsibilities, pre-flight requirements, fuel reserves and passengers.",
+learn:()=>`
+<h3>The pilot-in-command</h3>
+<ul>
+<li>Responsible for the safety of the aircraft and everyone on board, and for following the rules.</li>
+<li>Must be satisfied before flight that the aircraft is airworthy, correctly loaded, has enough fuel, and that the weather and route are suitable.</li>
+<li>Must not fly if unfit, and must brief passengers.</li>
+</ul>
+<h3>Fuel</h3>
+<ul>
+<li>Plan enough fuel for the flight, plus a final reserve: <b>30 minutes</b> at holding speed for VFR by day, <b>45 minutes</b> for VFR by night.</li>
+<li>Monitor fuel in flight. If the fuel expected on landing would be less than the final reserve, take action: divert or land.</li>
+</ul>
+<h3>Passengers</h3>
+<ul>
+<li>Brief them on seat belts and harnesses, doors and exits, emergency equipment, what to do in an emergency and when not to talk (for example on the approach).</li>
+<li>No smoking on board.</li>
+<li>Check what they bring: no dangerous goods such as fuel cans, gas canisters or loose lithium batteries without proper care.</li>
+</ul>
+<h3>Documents</h3>
+<p>Carry what the rules and your school require, such as the POH, the certificates of registration and airworthiness, insurance, the radio licence and your licence or student authorisation. Your school's checklist lists them.</p>`,
+qs:[
+{q:"Who is responsible for deciding whether a flight can be made safely?",o:["The pilot-in-command","Air traffic control","The aircraft owner","The person who refuelled the aircraft"],e:"The PIC must be satisfied about the aircraft, the loading, fuel, weather and route before flight."},
+{q:"What is the final reserve fuel for an aeroplane flying VFR by day?",o:["30 minutes at holding speed","10 minutes in all cases","45 minutes","No reserve is required"],e:"30 minutes for VFR day, 45 minutes for VFR night, under the non-commercial operating rules."},
+{q:"In flight, you calculate you will land with less than your final reserve. What should you do?",o:["Take action now: divert or land where you can do so safely","Continue and hope for a tailwind","Climb higher to save fuel","Nothing; the reserve is there to be used"],e:"The final reserve is not planned to be used. If it is threatened, divert or land in good time."},
+{q:"Which of these should a passenger briefing include?",o:["Seat belts, doors and exits, and what to do in an emergency","The route to the nearest café","How to fly the aircraft","Air traffic control frequencies"],e:"Passengers need to know how to secure themselves, how to get out, and what you'll ask of them in an emergency."},
+{q:"A passenger arrives with a spare can of petrol for their car. What should you do?",o:["Refuse to carry it; it is a dangerous good","Put it in the baggage area","Hold it on your lap","Strap it to a seat"],e:"Fuel cans are dangerous goods and must not be carried in a light aircraft cabin."},
+{q:"Who must be fit to fly before the flight?",o:["The pilot-in-command","Only the passengers","Only the instructor on a solo flight","Nobody; it is assumed"],e:"The PIC must not fly if they know or suspect they are unfit, for any reason."},
+{type:"order", q:"Put these pre-flight decisions in a sensible order.", items:["Check the weather and NOTAMs","Plan the route and fuel","Do the mass and balance and performance","Book out and brief passengers","Carry out the aircraft checks"],
+  e:"Decisions that could cancel the flight come first, so you don't waste time preparing an aircraft you won't fly."},
+{q:"Is smoking permitted on board a light aircraft during flight?",o:["No","Yes, with the window open","Yes, in the cruise only","Yes, if the PIC agrees"],e:"No smoking on board. The fire risk in a small cabin full of fuel and oil is too high."},
+{q:"Which of these must be satisfied before every flight?",o:["The aircraft is airworthy and correctly loaded, with enough fuel","The aircraft has been washed","The radio has a new battery","There are no passengers"],e:"Airworthiness, loading and fuel are the PIC's core pre-flight responsibilities."},
+{type:"match", q:"Match each final reserve to the type of flight.", pairs:[["VFR by day","30 minutes"],["VFR by night","45 minutes"],["VFR by day, same aerodrome, in sight of it","10 minutes"]],
+  e:"These are minimums. Many schools set a bigger personal reserve."},
+{q:"Why brief passengers not to talk during certain phases of flight?",o:["The pilot needs to concentrate and hear the radio during take-off, approach and landing","It saves fuel","It is required by ATC","It keeps the cabin cooler"],e:"A sterile cockpit at busy times reduces distraction."},
+{q:"You realise during the walk-round that there isn't enough fuel for the planned flight plus reserve. What do you do?",o:["Refuel, or shorten the flight so the reserve is protected","Go anyway and refuel at the destination","Plan to use the reserve","Fly faster to save fuel"],e:"Never start a flight without the fuel for the trip plus reserve."}
+]});
+
+T.push({ id:"wake", ref:"070 · 2", title:"Wake turbulence, downwash and windshear",
+blurb:"How to avoid the wake of a heavier aircraft, helicopter downwash, and what windshear does on the approach.",
+learn:()=>`
+${wakeFig}
+<h3>Wake turbulence</h3>
+<ul>
+<li>Vortices are strongest behind aircraft that are <b>heavy, clean and slow</b>, such as on take-off and approach.</li>
+<li>They sink below the generating aircraft's path and keep sinking until they decay or reach the ground. Near the ground they can last around 80 seconds, and up to two and a half minutes in calm conditions.</li>
+<li>A light crosswind of about 5 kt can hold the upwind vortex over the runway.</li>
+<li>No vortices are produced once the nosewheel is on the ground.</li>
+</ul>
+<h3>Spacing on departure</h3>
+<ul>
+<li>Allow <b>2 minutes</b> behind a heavier aircraft taking off from the same point.</li>
+<li>Allow <b>3 minutes</b> if you are starting part-way along the runway (an intermediate point).</li>
+</ul>
+<h3>Avoiding the wake</h3>
+<ul>
+<li>Approach: stay above and upwind of the heavier aircraft's path, and land beyond its touchdown point. If you can't, go around.</li>
+<li>Departure: lift off before its rotation point and climb above its path. If you can't, wait.</li>
+</ul>
+<h3>Helicopter downwash</h3>
+<p>Strongest when hovering or hover-taxiing, and extends to about three times the rotor diameter. Keep well clear of helicopters with rotors turning.</p>
+<h3>Windshear</h3>
+<p>A sudden change in wind speed or direction, near thunderstorms, fronts, hills and buildings. On the approach, a sudden loss of headwind drops the airspeed and the aircraft sinks. Use a speed margin in gusty conditions, and go around early if the approach becomes unstable.</p>`,
+qs:[
+{q:"How long should you allow behind a heavier aircraft taking off from the same point?",o:["2 minutes","30 seconds","5 minutes","No delay is needed"],e:"Two minutes from the same point, three minutes from an intermediate point."},
+{q:"How long should you allow if you start your take-off part-way along the runway behind a heavier aircraft that used the full length?",o:["3 minutes","2 minutes","1 minute","10 minutes"],e:"Starting part-way along means you'll be lower through the area where it rotated, so allow more time."},
+{q:"Landing behind a heavier aircraft, where should you aim to touch down?",o:["Beyond its touchdown point","Before its touchdown point","Exactly at its touchdown point","It doesn't matter"],e:"Its vortices stop at touchdown. Stay above its path and land beyond where it landed."},
+{q:"Taking off behind a heavier aircraft, where should you aim to lift off?",o:["Before its rotation point, then climb above its path","After its rotation point","At exactly the same point","As late as possible"],e:"Its vortices start at rotation. Lifting off earlier keeps you above them."},
+{q:"How do wake vortices move after they are produced?",o:["They sink and drift with the wind","They rise and disappear immediately","They stay at the height they formed","They move into wind"],e:"They descend below the flight path and drift downwind; near the ground they spread sideways."},
+{q:"Which wind condition is particularly dangerous for wake turbulence over the runway?",o:["A light crosswind of about 5 kt","A strong 25 kt crosswind","A strong headwind","Gusty winds over 30 kt"],e:"A light crosswind can hold the upwind vortex on the runway. Strong winds break vortices up faster."},
+{q:"When is a helicopter's downwash strongest?",o:["When hovering or hover-taxiing","In fast forward flight","With the engine off","Only on the ground with rotors stopped"],e:"In the hover the rotor supports the full weight, pushing a strong flow of air downwards and outwards."},
+{q:"How far does helicopter downwash typically extend?",o:["About three times the rotor diameter","Only directly under the helicopter","About 1 km","Ten times the rotor diameter"],e:"Keep well clear of hovering helicopters."},
+{q:"On final approach the aircraft suddenly loses headwind. What happens?",o:["Airspeed drops and the aircraft sinks below the approach path","Airspeed increases","Nothing changes","The aircraft climbs"],e:"A sudden loss of headwind reduces IAS until the aircraft accelerates again. Close to the ground this can be dangerous: add power and go around if needed."},
+{q:"Are wake vortices produced once a landing aircraft's nosewheel is on the runway?",o:["No","Yes, strongest then","Only at night","Only from helicopters"],e:"Once the wing stops producing lift for flight, the vortices stop."},
+{type:"match", q:"Match each situation to the right technique.", pairs:[["Landing behind a heavier aircraft","Stay above its path and land beyond its touchdown point"],["Departing behind a heavier aircraft","Lift off before its rotation point"],["Gusty approach","Add a speed margin and be ready to go around"],["Helicopter hovering near the runway","Keep well clear of its downwash"]],
+  e:"Most wake turbulence encounters are avoidable with timing and positioning."},
+{q:"Which aircraft produces the strongest wake vortices?",o:["A heavy aircraft flying slowly with flap up","A light aircraft flying fast","A heavy aircraft parked","A glider at high speed"],e:"Vortex strength depends on the lift being made and the angle of attack: heavy, clean and slow is worst."}
+]});
+
+T.push({ id:"emergency", ref:"070 · 3", title:"Emergencies, fire and smoke",
+blurb:"Handling fire on the ground and in the air, smoke in the cabin, and using the extinguisher.",
+learn:()=>`
+<h3>Principles</h3>
+<ul>
+<li>Fly the aircraft first. Then deal with the emergency using the memory drill, then the checklist.</li>
+<li>Tell someone: MAYDAY or PAN on the frequency in use or 121.5 MHz, and squawk 7700.</li>
+</ul>
+<h3>Fire</h3>
+<div class="tbl"><table>
+<tr><th>Fire</th><th>Key idea</th></tr>
+<tr><td>Engine fire on start</td><td>Keep cranking to draw the fire into the engine, then cut fuel, as your drill directs; evacuate if it continues</td></tr>
+<tr><td>Engine fire in flight</td><td>Starve it of fuel: throttle closed, mixture idle cut-off, fuel off, magnetos off; forced landing without power</td></tr>
+<tr><td>Electrical fire</td><td>Remove the power: master off, shed loads; ventilate</td></tr>
+<tr><td>Cabin fire</td><td>Use the extinguisher, then ventilate; land as soon as possible</td></tr>
+</table></div>
+<p>Your checklist has the exact drills for your aircraft; learn them by heart.</p>
+<h3>Using a fire extinguisher</h3>
+<ul>
+<li>Know where it is and check it is in date and charged before each flight.</li>
+<li>Aim at the base of the fire.</li>
+<li>Many extinguishers produce fumes or powder that affect visibility and breathing; ventilate the cabin afterwards.</li>
+</ul>
+<h3>Smoke</h3>
+<p>Open the fresh air vents, shut off the cabin heat if the smoke comes from there, and find the source. Smoke in the cabin is a reason to land as soon as possible.</p>`,
+qs:[
+{q:"In any emergency, what comes first?",o:["Fly the aircraft","Make a radio call","Read the checklist","Squawk 7700"],e:"Aviate, navigate, communicate. Losing control while dealing with the emergency makes it worse."},
+{q:"What is the main aim of the engine fire in flight drill?",o:["To starve the fire of fuel","To increase airspeed to blow the fire out","To restart the engine","To land with power"],e:"Throttle closed, mixture cut-off, fuel off and magnetos off stop fuel reaching the fire. Then a forced landing without power."},
+{q:"What is the first priority with an electrical fire?",o:["Remove the electrical power","Open the fuel cock","Climb","Increase power"],e:"Turning the master off removes the source of heat. Then shed loads and ventilate as the checklist directs."},
+{q:"Where should you aim a fire extinguisher?",o:["At the base of the fire","At the top of the flames","At the smoke","Upwards into the air"],e:"The base is where the fuel is burning."},
+{q:"After using an extinguisher in the cabin, what should you do?",o:["Ventilate the cabin","Close all vents","Turn up the cabin heat","Climb to a higher altitude"],e:"Extinguishant fumes and powder affect breathing and visibility; fresh air clears them."},
+{q:"Smoke appears from the cabin heater outlet. What is a sensible first action?",o:["Shut off the cabin heat and open the fresh air vents","Turn the heat to maximum","Ignore it","Close all the vents"],e:"Cutting the heater stops the smoke at its source. Then consider the cause, possibly an exhaust problem, and land."},
+{q:"Your checklist's engine fire during start drill begins with which action?",o:["Keep cranking the engine for 3–4 seconds","Open the door","Switch the master off","Apply full power"],e:"Cranking draws the fire back into the engine. Then mixture idle cut-off, throttle open, fuel off."},
+{type:"order", q:"Put your checklist's engine fire in the air drill in order.", items:["Throttle: closed","Mixture: idle cut-off","Fuel: off","Magnetos: off","Cabin heater/defrost: off","Radio: MAYDAY, then forced landing without power"],
+  e:"Learn it by heart from your own checklist; this is the order in your Pooley's booklet."},
+{q:"Which of these should be checked on the fire extinguisher before flight?",o:["It is secure, charged and in date","Its colour","Its weight in pounds","It is empty"],e:"Your preliminary checks include the extinguisher: condition, in date, secure and accessible."},
+{q:"Which call is right for an engine fire in flight?",o:["MAYDAY","PAN","No call needed","Request traffic information"],e:"A fire in flight is grave and imminent danger: MAYDAY, MAYDAY, MAYDAY."},
+{type:"match", q:"Match each fire to the key idea in dealing with it.", pairs:[["Engine fire in flight","Starve it of fuel"],["Electrical fire","Remove the power"],["Cabin fire","Extinguish, then ventilate"],["Fire on the ground","Shut down and evacuate upwind"]],
+  e:"The details are in your checklist's emergency section."}
+]});
+
+T.push({ id:"landings", ref:"070 · 4", title:"Forced landings and ditching",
+blurb:"Choosing a field, preparing the cabin, landing on water, and survival afterwards.",
+learn:()=>`
+<h3>Choosing a field</h3>
+<p>Size, shape, surface, slope, surroundings and the wind. Prefer a long field into wind, with a firm, level surface and a clear approach. Avoid crops that hide ditches, and fields with livestock or power lines.</p>
+<h3>Preparing for the landing</h3>
+<ul>
+<li>MAYDAY call and squawk 7700.</li>
+<li>Brief passengers; tighten harnesses; unlatch the doors before touchdown so they can't jam.</li>
+<li>Fuel off, mixture idle cut-off, magnetos off; master off after the final flap selection, as your drill directs, to reduce the fire risk.</li>
+<li>Land as slowly as safely possible, under control.</li>
+</ul>
+<h3>Ditching</h3>
+<ul>
+<li>Head for the coast or shipping if you can.</li>
+<li>From your checklist: in a <b>large swell with light wind</b>, land <b>along</b> the swell; in a <b>light swell with strong wind</b>, land <b>into wind</b>. In both cases tail down, as slowly as possible.</li>
+<li>Wear life jackets over water, <b>uninflated</b>. Inflate them only once outside the aircraft, or they can trap you in the cabin.</li>
+<li>After ditching, get out quickly with the survival equipment; the aircraft may sink fast.</li>
+</ul>
+<h3>After the landing</h3>
+<p>Get everyone clear, check for injuries, and raise the alarm. If you have an ELT or PLB, activate it. Stay with the aircraft unless it is unsafe: it is easier to find than a person.</p>`,
+qs:[
+{q:"Over water, when should life jackets be inflated?",o:["Only after leaving the aircraft","Before ditching","As soon as you take off","When the engine fails"],e:"An inflated life jacket inside a flooding cabin can pin you against the roof and prevent escape. Your checklist says the same."},
+{q:"From your checklist: ditching in a large swell with a light wind, how should you land?",o:["Along the swell, tail down, as slowly as possible","Into wind, across the swell","Downwind at high speed","Nose first"],e:"Landing into the face of a big swell is like hitting a wall. Along the swell is gentler."},
+{q:"From your checklist: ditching in a light swell with a strong wind, how should you land?",o:["Into wind, tail down, as slowly as possible","Along the swell","Downwind","Across the wind"],e:"With a strong wind and small waves, landing into wind gives the lowest groundspeed."},
+{q:"Why unlatch the doors before a forced landing or ditching?",o:["So they can't jam shut if the airframe distorts","To slow the aircraft","To improve visibility","To reduce drag"],e:"A distorted door frame can trap occupants. Unlatching first keeps an exit open."},
+{q:"Which field would generally be the best choice for a forced landing?",o:["A long, firm, level field into wind with a clear approach","A short field with high trees at the end","A field of tall crops","A field with livestock"],e:"Size, shape, surface, slope, surroundings and the wind: a long, smooth, level field into wind is ideal."},
+{q:"After a forced landing in a remote area with no injuries, what is usually best?",o:["Stay with the aircraft and raise the alarm","Walk away to find help immediately","Try to take off again","Leave a note and go home"],e:"An aircraft is far easier to spot from the air than a person. Activate any ELT or PLB."},
+{q:"Why turn the master switch off before a forced landing?",o:["To reduce the risk of fire after impact","To save the battery","To stop the radio","Because the instruments are not needed"],e:"Your drill turns it off after the final flap selection, since flaps may be electric."},
+{type:"order", q:"Put these actions for a forced landing without power in a sensible order.", items:["Set best glide speed and trim","Choose a field","Plan the approach","Check for the cause and attempt a restart","MAYDAY call and squawk 7700","Security checks and passenger brief before landing"],
+  e:"If you're low, cut the list short: the field and the approach matter most."},
+{q:"Which of these is NOT one of the usual factors for choosing a forced landing field?",o:["The colour of the nearest building","Size","Surface","Slope"],e:"Size, shape, surface, slope, surroundings, and the wind direction."},
+{type:"match", q:"Match each ditching item to the right action, as in your checklist.", pairs:[["Large swell, light wind","Along the swell"],["Light swell, strong wind","Into wind"],["Life jackets","Inflate only once outside the aircraft"]],
+  e:"In both cases tail down, as slowly as possible, and life jackets uninflated until outside."},
+{q:"What is a PLB?",o:["A personal locator beacon that sends a distress signal","A pilot's logbook","A type of life jacket","A brake lever"],e:"PLBs and aircraft ELTs alert search and rescue via satellite."}
+]});
+
+T.push({ id:"fuel", ref:"070 · 5", title:"Fuel handling and contamination",
+blurb:"Refuelling safely, checking the grade, water and contamination, and fuel management in flight.",
+learn:()=>`
+<h3>Refuelling</h3>
+<ul>
+<li>Confirm the fuel grade on the bowser or pump matches the aircraft, every time. Avgas 100LL is blue; Jet A-1 is clear to straw.</li>
+<li>Engine off, master off, no passengers on board unless your operator's procedures allow it, no smoking nearby.</li>
+<li>Connect the <b>bonding</b> (earthing) lead before opening the tank, to discharge static electricity.</li>
+<li>Have a fire extinguisher to hand. Replace the fuel caps securely and check them.</li>
+</ul>
+<h3>Contamination</h3>
+<ul>
+<li>Water is the commonest contaminant. It is heavier than fuel and collects at the drains.</li>
+<li>After refuelling, let the fuel settle, then take samples from every drain point until they are clear and the right colour.</li>
+<li>A clear sample from an avgas tank may be water or the wrong fuel; investigate before flying.</li>
+</ul>
+<h3>In flight</h3>
+<ul>
+<li>Know the system: which tanks feed, what the selector positions do.</li>
+<li>Check fuel against your plan regularly.</li>
+<li>If the engine falters, the fuel system is one of the first things to check: selector, quantity, mixture, carb heat, primer.</li>
+</ul>`,
+qs:[
+{q:"Why is a bonding lead connected before refuelling?",o:["To discharge static electricity and prevent a spark","To weigh the fuel","To stop the aircraft moving","To measure the fuel temperature"],e:"Fuel flowing through hoses builds static charge. Bonding equalises it before vapour is exposed."},
+{q:"What should you confirm before any fuel goes into the aircraft?",o:["The fuel grade matches the aircraft's requirement","The price per litre","The time of day","The colour of the bowser"],e:"Misfuelling with Jet A-1 has caused fatal engine failures in piston aircraft."},
+{q:"Why let fuel settle before taking samples after refuelling?",o:["So any water has time to collect at the drains","To let it cool","To allow vapour to escape","To let the fuel expand"],e:"Water takes time to sink through the fuel to the lowest point."},
+{q:"You take a fuel sample from an avgas aircraft and it is completely clear. What might it be?",o:["Water or the wrong fuel","Perfect avgas","Oil","Normal; avgas is always clear"],e:"Avgas 100LL is blue. A clear sample needs investigating before flight."},
+{q:"Which of these is unsafe during refuelling?",o:["Smoking nearby","Having a fire extinguisher to hand","Connecting the bonding lead first","Switching the master off"],e:"No smoking or naked flames anywhere near refuelling."},
+{q:"The engine starts to falter in flight. Which fuel-related checks are among the first?",o:["Fuel selector, quantity, mixture, carb heat and primer","The radio and transponder","The flap position","The cabin heat only"],e:"Your engine failure drill includes carb heat, fuel on and contents, mixture rich and primer locked."},
+{q:"Where in the fuel system does water collect?",o:["At the lowest points, such as the tank drains and gascolator","At the top of the tank","In the fuel cap","In the carburettor venturi only"],e:"Water is heavier than fuel, so it settles at the drains."},
+{q:"After refuelling, what should you check before flight?",o:["The fuel caps are secure","The tyres are cold","The radio is on","The fuel is warm"],e:"A loose cap can siphon fuel out of the tank in flight. Your external checks include 'fuel cap secured'."},
+{type:"order", q:"Put the refuelling steps in a sensible order.", items:["Check the fuel grade","Connect the bonding lead","Refuel","Replace and secure the caps","Let the fuel settle and take samples"],
+  e:"Then record the fuel added and check the total against your plan."},
+{type:"match", q:"Match each fuel sample to its appearance.", pairs:[["AVGAS 100LL","Blue"],["Jet A-1","Clear to straw"],["Water in a sample","A separate layer or bubbles at the bottom"]],
+  e:"Colour is one check; the grade marked on the pump or bowser is another."},
+{q:"Who is responsible for making sure the correct fuel has been put in the aircraft?",o:["The pilot-in-command","Only the refueller","The aerodrome operator","Nobody"],e:"Even if someone else refuels, the PIC must check the grade and quantity."}
+]});
+
+T.push({ id:"special", ref:"070 · 6", title:"Special conditions, noise and birds",
+blurb:"Ice and frost, hot and high aerodromes, contaminated runways, noise abatement and bird strikes.",
+learn:()=>`
+<h3>Cold weather</h3>
+<ul>
+<li>Remove <b>all</b> ice, frost and snow from the wings, tail and controls before flight. Even a thin layer of frost can raise the stall speed and lengthen the take-off.</li>
+<li>Check that controls and their hinges are free of ice.</li>
+<li>Cold engines may need pre-heating, as the POH directs.</li>
+</ul>
+<h3>Hot and high, contaminated runways</h3>
+<ul>
+<li>High temperature and elevation increase density altitude: longer runs, poorer climb.</li>
+<li>Standing water, slush, snow and wet grass increase the take-off distance and reduce braking on landing.</li>
+<li>Use the CAA factors and be prepared not to go.</li>
+</ul>
+<h3>Noise abatement</h3>
+<ul>
+<li>Follow the published noise abatement procedures and circuit patterns for each aerodrome.</li>
+<li>Avoid flying low over noise-sensitive areas such as villages, hospitals and farms with livestock.</li>
+<li>Safety comes first: noise procedures never override a safe operation.</li>
+</ul>
+<h3>Birds</h3>
+<ul>
+<li>Bird activity is greatest at dawn and dusk and near coasts, rubbish tips and ploughed fields.</li>
+<li>If you see birds ahead, climb if you can; birds usually dive to avoid aircraft.</li>
+<li>Report bird strikes, and have the aircraft checked before further flight.</li>
+</ul>`,
+qs:[
+{q:"How much frost on the wings is acceptable for take-off?",o:["None; remove it all","A thin layer is fine","Up to 3 mm","Frost doesn't matter on light aircraft"],e:"Even light frost roughens the wing, raising the stall speed and lengthening the take-off run."},
+{q:"Why check the control hinges in icy conditions?",o:["Ice can jam the controls","They need lubricating","To check the paint","Ice makes them lighter"],e:"Ice in hinges or gaps can restrict or lock the controls."},
+{q:"Which runway condition increases the take-off distance?",o:["Standing water or slush","A dry, paved surface","A slight headwind","A downhill slope on take-off"],e:"Contamination drags at the wheels, lengthening the ground run. Downslope and headwind shorten it."},
+{q:"Noise abatement procedures and safety conflict. Which takes priority?",o:["Safety","Noise abatement","Whichever the passenger prefers","ATC's preference always"],e:"Noise procedures never override safe operation of the aircraft."},
+{q:"When is bird activity typically greatest?",o:["At dawn and dusk","At midday","At midnight","It is the same all day"],e:"Birds move between feeding and roosting sites around dawn and dusk."},
+{q:"You see a flock of birds ahead. What is the usual advice?",o:["Climb if you can; birds tend to dive away","Descend under them","Fly straight through them","Turn on the landing light only"],e:"Birds usually dive when threatened, so climbing tends to give the most separation."},
+{q:"After a bird strike, what should you do?",o:["Report it and have the aircraft checked before further flight","Carry on and forget it","Only report it if the windscreen breaks","Clean it off and fly again"],e:"Even an apparently minor strike can damage structure, the propeller or the pitot tube."},
+{q:"Which of these increases the risk of a long take-off run on a summer day?",o:["High temperature","A cold morning","Low humidity","A strong headwind"],e:"Heat reduces air density, increasing density altitude: less power, lift and thrust."},
+{q:"Where are you likely to find large numbers of birds?",o:["Near coasts, rubbish tips and ploughed fields","Over large forests only","Over cities at night","At high altitude"],e:"Feeding areas attract birds, especially gulls."},
+{type:"match", q:"Match each condition to its main hazard.", pairs:[["Frost on the wings","Higher stall speed and longer take-off"],["Slush on the runway","Longer take-off run and poor braking"],["Hot, high aerodrome","Reduced engine and climb performance"],["Dusk near a rubbish tip","Bird strike"]],
+  e:"Each needs a decision on the ground: clear it, delay, or don't go."},
+{q:"How should you treat noise-sensitive areas shown on charts or in the AIP?",o:["Avoid flying low over them","Fly over them at circuit height","Ignore them outside controlled airspace","Only avoid them at weekends"],e:"Respecting noise-sensitive areas keeps aerodromes and pilots welcome."}
+]});
+
+SUBJECTS.push({ id:"ops", code:"070", name:"Operational Procedures",
+  blurb:"Operating rules and fuel reserves, wake turbulence and windshear, fire and emergencies, forced landings and ditching, fuel handling, and special conditions.",
+  topics:T });
+})();
+
+
 // 080 Principles of Flight
 (() => {
 const forces = `<figure class="fig wide"><svg viewBox="0 0 420 250" role="img" aria-label="Four forces: lift up, weight down, thrust forward, drag back">
@@ -3016,6 +3830,31 @@ extendTopic("comms", "vhf", { qs:[
 
 // Air Law: hands-on cruising-level diagram
 extendTopic("airlaw", "altimetry", { try:[["semicircular", "Pick a cruising level"]] });
+
+
+// Hands-on diagrams and extra questions for 020 AGK, 030 FPP and 070 Ops
+extendTopic("agk", "engine", { try:[["fourstroke", "Step through the four strokes"]] });
+extendTopic("agk", "instruments", { try:[["asi", "Read the ASI markings"], ["pitotstatic", "Pitot and static blockages"]] });
+
+extendTopic("fpp", "mass", { try:[["wb", "Load the example aircraft"]] });
+extendTopic("fpp", "takeoff", { try:[["perf", "Factor a take-off or landing distance"]] });
+extendTopic("fpp", "density", { try:[["densalt", "Pressure and density altitude"]], qs:[
+{q:"On a hot day at a sea-level aerodrome, the density altitude is 2,500 ft. How will the aircraft perform?",o:["As if it were taking off from about 2,500 ft","Exactly as at sea level","Better than at sea level","As if it were at 25,000 ft"],e:"Density altitude is the altitude in the standard atmosphere with the same density, and performance follows density."},
+{q:"QNH is higher than 1013 hPa. Compared with the aerodrome elevation, the pressure altitude is:",o:["Lower","Higher","The same","Always zero"],e:"Pressure altitude = elevation + (1013 − QNH) × 30. With QNH above 1013 the correction is negative."}
+]});
+extendTopic("fpp", "climbcruise", { qs:[
+{q:"Why might you climb at a speed above Vy on a long climb on a hot day?",o:["To improve engine cooling","To reach altitude in less time","To reduce the take-off distance","To lower the stall speed"],e:"A cruise-climb at a slightly higher speed gives more cooling airflow over the cylinders, at the cost of a lower climb rate."},
+{q:"What happens to the rate of climb as altitude increases?",o:["It reduces","It increases","It stays constant","It increases until the service ceiling"],e:"Power available falls as air density falls, so the excess power for climbing shrinks until the aircraft can barely climb at all."}
+]});
+extendTopic("fpp", "fuelplan", { try:[["fuelplan", "Build a fuel plan"]] });
+
+extendTopic("ops", "wake", { try:[["wake", "Wake turbulence spacing and drift"]] });
+extendTopic("ops", "emergency", { qs:[
+{q:"Your checklist's cabin fire drill starts with the master switch. Why might it say to switch it back on after 3 seconds?",o:["To restore essential services once the electrical source of the fire is cut off, as the drill directs","To restart the engine","To test the fire extinguisher","To reset the magnetos"],e:"Follow your checklist exactly: it gives the master switch action, shedding non-essentials, the extinguisher and ventilation, then the radio call."}
+]});
+extendTopic("ops", "landings", { qs:[
+{q:"Over water, how should life jackets be worn by the occupants of a single-engine aircraft, according to your checklist's preparation section?",o:["Worn, uninflated","Stowed in the baggage area","Worn and inflated","Only carried by the pilot"],e:"Your Pilot's Preparation checklist says life jackets should be worn uninflated over water. There is no time to put them on after an engine failure."}
+]});
 
 
 // Lesson cards for the PPL(A) flight exercises (UK numbering, Ex 1a to 19).
@@ -3993,6 +4832,237 @@ WIDGETS.imsafe = root => {
     const missing = items.filter(([k]) => !state[k]).map(i => i[1]);
     msg.className = "wmsg" + (missing.length ? " warn" : "");
     msg.textContent = missing.length ? `Not yet OK: ${missing.join(", ")}. If any one of these is doubtful, the safe decision is not to fly, or to fly a simpler flight with an instructor.` : "All six OK. Fit to fly, as far as you can judge.";
+  }
+  draw();
+};
+
+
+// ---------- Aircraft General Knowledge ----------
+// Example V-speeds for the dial: illustrative, typical of a light two-seat trainer. Not from any POH.
+const ASI_EX = { vso:42, vs1:48, vfe:85, vno:107, vne:141 };
+WIDGETS.asi = root => {
+  const pic = W.box("wsvg"), out = W.box(), msg = W.box("wmsg");
+  const v = W.slider("Indicated airspeed", 30, 160, 1, 70, x => x + " kt", draw);
+  root.append(W.box("fine", "Example speeds for a light trainer, for illustration only. Use the figures in your aircraft's POH."), v.el, pic, out, msg);
+  const A0 = 30, A1 = 160, ang = s => (-150 + (s - A0) / (A1 - A0) * 300) * Math.PI / 180;
+  const pt = (s, r) => [150 + Math.sin(ang(s)) * r, 120 - Math.cos(ang(s)) * r];
+  const arc = (s1, s2, r, cls, w) => { const [x1, y1] = pt(s1, r), [x2, y2] = pt(s2, r), large = (s2 - s1) / (A1 - A0) * 300 > 180 ? 1 : 0;
+    return `<path d="M${x1.toFixed(1)},${y1.toFixed(1)} A${r},${r} 0 ${large} 1 ${x2.toFixed(1)},${y2.toFixed(1)}" style="fill:none;stroke:${cls};stroke-width:${w}"/>`; };
+  function zone(s){
+    const E = ASI_EX;
+    if(s < E.vso) return ["Below the white arc", "Below the stall speed with full flap: the aircraft can't fly level here.", true];
+    if(s < E.vs1) return ["White arc only", "Flap operating range, below the clean stall speed: only with flap down.", false];
+    if(s <= E.vfe) return ["White and green arcs", "Flap may be used, and you are above the clean stall speed.", false];
+    if(s <= E.vno) return ["Green arc", "Normal operating range. Flap must be up above Vfe.", false];
+    if(s < E.vne) return ["Yellow arc", "Caution range: smooth air only, no large or abrupt control movements.", true];
+    return ["Red line or above", "At or beyond the never exceed speed: structural failure is possible.", true];
+  }
+  function draw(){
+    const s = v.get(), E = ASI_EX, [nx, ny] = pt(s, 78);
+    pic.innerHTML = `<svg viewBox="0 0 300 240" role="img" aria-label="Airspeed indicator at ${s} knots">
+      <circle cx="150" cy="120" r="108" class="f-ink"/><circle cx="150" cy="120" r="104" style="fill:#1a1f26"/>
+      ${arc(E.vso, E.vfe, 94, "#f2f2f2", 7)}${arc(E.vs1, E.vno, 86, "#2db36a", 9)}${arc(E.vno, E.vne, 86, "#f2c230", 9)}
+      ${(() => { const [a1, b1] = pt(E.vne, 78), [a2, b2] = pt(E.vne, 100); return `<line x1="${a1}" y1="${b1}" x2="${a2}" y2="${b2}" style="stroke:#e0442b;stroke-width:5"/>`; })()}
+      ${[40,60,80,100,120,140,160].map(k => { const [a, b] = pt(k, 66); return `<text x="${a.toFixed(1)}" y="${(b + 4).toFixed(1)}" text-anchor="middle" style="font:700 12px sans-serif;fill:#f2f2f2">${k}</text>`; }).join("")}
+      <line x1="150" y1="120" x2="${nx.toFixed(1)}" y2="${ny.toFixed(1)}" style="stroke:#ffffff;stroke-width:4;stroke-linecap:round"/>
+      <circle cx="150" cy="120" r="7" style="fill:#f2f2f2"/>
+      <text x="150" y="168" text-anchor="middle" style="font:700 10px sans-serif;fill:#c8c8c8">KNOTS</text>
+    </svg>`;
+    const [z, m, warn] = zone(s);
+    out.innerHTML = W.outs([["Airspeed", s + " kt", true], ["You are in", z, warn]]);
+    msg.className = "wmsg" + (warn ? " warn" : ""); msg.textContent = m;
+  }
+  draw();
+};
+
+WIDGETS.pitotstatic = root => {
+  const out = W.box(), msg = W.box("wmsg");
+  let blk = "static", ph = "climb";
+  const s1 = W.seg([["none","No blockage"],["static","Static blocked"],["pitot","Pitot and drain blocked"]], blk, x => { blk = x; draw(); });
+  const s2 = W.seg([["climb","Climbing"],["level","Level"],["descent","Descending"]], ph, x => { ph = x; draw(); });
+  root.append(W.box("zlabel", "Blockage"), s1.el, W.box("zlabel", "The aircraft is"), s2.el, out, msg);
+  function draw(){
+    let asi = "Correct", alt = "Correct", vsi = "Correct", text = "With no blockage every instrument reads correctly.";
+    if(blk === "static"){
+      alt = "Frozen"; vsi = "Zero";
+      asi = ph === "climb" ? "Under-reads" : ph === "descent" ? "Over-reads" : "Correct (at the level it blocked)";
+      text = "Trapped static pressure stays at its old value. In a climb the real outside pressure falls, so pitot minus trapped static is too small: the ASI under-reads. In a descent the reverse. The altimeter freezes and the VSI shows zero.";
+    }
+    if(blk === "pitot"){
+      asi = ph === "climb" ? "Over-reads" : ph === "descent" ? "Under-reads" : "Steady but meaningless";
+      text = "With the pitot and its drain blocked, pitot pressure is trapped. As static pressure falls in a climb, the difference grows: the ASI over-reads, acting like an altimeter. The altimeter and VSI use static only, so they read correctly.";
+    }
+    const bad = x => x !== "Correct";
+    out.innerHTML = W.outs([["ASI", asi, bad(asi)], ["Altimeter", alt, bad(alt)], ["VSI", vsi, bad(vsi)]]);
+    msg.textContent = text;
+  }
+  draw();
+};
+
+WIDGETS.fourstroke = root => {
+  const pic = W.box("wsvg"), msg = W.box("wmsg");
+  const STEPS = [
+    ["Induction", "Piston moves down. Inlet valve open: fuel/air mixture is drawn into the cylinder.", 160, true, false, false],
+    ["Compression", "Piston moves up. Both valves closed: the mixture is squeezed.", 90, false, false, false],
+    ["Power", "Spark plugs fire near the top. The burning gas expands and drives the piston down: the only stroke that makes power.", 160, false, false, true],
+    ["Exhaust", "Piston moves up. Exhaust valve open: burnt gases are pushed out.", 90, false, true, false]
+  ];
+  let k = 0;
+  const bar = W.box("deckbar");
+  root.append(pic, msg, bar);
+  const b = (t, f) => { const x = document.createElement("button"); x.type = "button"; x.className = "seg1"; x.textContent = t; x.addEventListener("click", f); return x; };
+  bar.append(b("‹ Back", () => { k = (k + 3) % 4; draw(); }), b("Reset", () => { k = 0; draw(); }), b("Next stroke ›", () => { k = (k + 1) % 4; draw(); }));
+  function draw(){
+    const [name, text, py, inOpen, exOpen, spark] = STEPS[k];
+    pic.innerHTML = `<svg viewBox="0 0 300 230" role="img" aria-label="${name} stroke">
+      <rect class="fb" x="1" y="1" width="298" height="228" rx="6"/>
+      <rect x="100" y="40" width="100" height="160" class="f-card ln"/>
+      <rect x="104" y="${py}" width="92" height="30" class="f-rw"/>
+      <line x1="150" y1="${py + 30}" x2="150" y2="215" class="ln" style="stroke-width:5"/>
+      <line x1="${inOpen ? 112 : 108}" y1="40" x2="${inOpen ? 132 : 128}" y2="${inOpen ? 52 : 40}" class="ln pa" style="stroke-width:5"/>
+      <line x1="${exOpen ? 168 : 172}" y1="${exOpen ? 52 : 40}" x2="${exOpen ? 188 : 192}" y2="40" class="ln pb" style="stroke-width:5"/>
+      <text class="tm" x="95" y="30" text-anchor="end">inlet ${inOpen ? "OPEN" : "closed"}</text>
+      <text class="tm" x="205" y="30">exhaust ${exOpen ? "OPEN" : "closed"}</text>
+      ${spark ? `<text x="150" y="${py - 14}" text-anchor="middle" style="font:800 22px sans-serif;fill:var(--mag)">✶</text>` : ""}
+      ${inOpen ? `<path d="M40,60 L95,60" class="ln pa" marker-end="url(#arr)"/>` : ""}
+      ${exOpen ? `<path d="M205,60 L260,60" class="ln pb" marker-end="url(#arr)"/>` : ""}
+      <text class="tb" x="150" y="${py + 20}" text-anchor="middle" style="fill:var(--mk)">${k + 1}</text>
+    </svg>`;
+    msg.innerHTML = `<b>${k + 1}. ${name}.</b> ${text}`;
+  }
+  draw();
+};
+
+// ---------- Flight Performance and Planning ----------
+WIDGETS.wb = root => {
+  // Invented example aircraft and envelope, matching the worked example in the notes.
+  const E = { bem:520, bemArm:0.85, seat:0.95, fuel:1.05, bag:1.60, mtom:760 };
+  const fwd = m => m <= 650 ? 0.80 : 0.80 + (m - 650) / (760 - 650) * 0.04, aft = 0.95;
+  const pic = W.box("wsvg"), out = W.box(), msg = W.box("wmsg");
+  const seats = W.slider("Pilot and passenger", 60, 200, 5, 160, x => x + " kg", draw);
+  const fuel = W.slider("Fuel at take-off", 0, 100, 5, 60, x => x + " L", draw);
+  const bag = W.slider("Baggage (max 25 kg)", 0, 25, 1, 10, x => x + " kg", draw);
+  const burn = W.slider("Fuel used on the flight", 0, 100, 5, 40, x => x + " L", draw);
+  const ctl = W.box("wgrid"); ctl.append(seats.el, fuel.el, bag.el, burn.el);
+  root.append(W.box("fine", "Invented example aircraft and envelope, for practice only. Use your aircraft's weight schedule and POH for real loading."), ctl, pic, out, msg);
+  function calc(L){
+    const f = L * 0.72, m = E.bem + seats.get() + f + bag.get();
+    const mo = E.bem * E.bemArm + seats.get() * E.seat + f * E.fuel + bag.get() * E.bag;
+    return { m, cg:mo / m, ok:m <= E.mtom && mo / m >= fwd(m) && mo / m <= aft };
+  }
+  function draw(){
+    if(burn.get() > fuel.get()) burn.set(fuel.get());
+    const to = calc(fuel.get()), ld = calc(fuel.get() - burn.get());
+    const X = cg => 40 + (cg - 0.76) / (0.98 - 0.76) * 260, Y = m => 200 - (m - 560) / (800 - 560) * 170;
+    const env = [[0.80, 560], [0.80, 650], [0.84, 760], [0.95, 760], [0.95, 560]].map(([c, m]) => `${X(c).toFixed(1)},${Y(m).toFixed(1)}`).join(" ");
+    pic.innerHTML = `<svg viewBox="0 0 320 230" role="img" aria-label="CG envelope with take-off and landing points">
+      <rect class="fb" x="1" y="1" width="318" height="228" rx="6"/>
+      <polygon points="${env}" class="f-tint ln"/>
+      ${[0.78, 0.82, 0.86, 0.90, 0.94, 0.98].map(c => `<text class="tm" x="${X(c)}" y="218" text-anchor="middle">${c.toFixed(2)}</text>`).join("")}
+      ${[600, 650, 700, 750, 800].map(m => `<text class="tm" x="34" y="${Y(m) + 3}" text-anchor="end">${m}</text>`).join("")}
+      <text class="tm" x="180" y="228" text-anchor="middle">CG (m aft of datum)</text>
+      <line x1="${X(to.cg)}" y1="${Y(to.m)}" x2="${X(ld.cg)}" y2="${Y(ld.m)}" class="ln dash"/>
+      <circle cx="${X(to.cg).toFixed(1)}" cy="${Y(to.m).toFixed(1)}" r="7" style="fill:${to.ok ? "var(--tick)" : "var(--emerg)"}"/>
+      <circle cx="${X(ld.cg).toFixed(1)}" cy="${Y(ld.m).toFixed(1)}" r="6" style="fill:var(--card);stroke:${ld.ok ? "var(--tick)" : "var(--emerg)"};stroke-width:3"/>
+      <text class="t" x="${X(to.cg) + 10}" y="${Y(to.m) - 8}">take-off</text><text class="t" x="${X(ld.cg) + 10}" y="${Y(ld.m) + 14}">landing</text>
+    </svg>`;
+    out.innerHTML = W.outs([["Take-off mass", Math.round(to.m) + " kg", to.m > E.mtom], ["Take-off CG", to.cg.toFixed(3) + " m", !to.ok], ["Landing mass", Math.round(ld.m) + " kg"], ["Landing CG", ld.cg.toFixed(3) + " m", !ld.ok]]);
+    const why = r => r.m > E.mtom ? `over the ${E.mtom} kg maximum` : r.cg < fwd(r.m) ? "CG ahead of the forward limit" : r.cg > aft ? "CG behind the aft limit" : "within limits";
+    msg.className = "wmsg" + (to.ok && ld.ok ? "" : " warn");
+    msg.textContent = `Take-off: ${why(to)}. Landing: ${why(ld)}. ` + (to.ok && ld.ok ? "Both points are inside the envelope." : "Change the load or fuel until both points sit inside the envelope.");
+  }
+  draw();
+};
+
+WIDGETS.perf = root => {
+  const FACT = [["dry","Dry grass",1.20,1.15],["wet","Wet grass",1.30,1.35],["slope","2% slope (uphill for take-off, downhill for landing)",1.10,1.10],["elev","1,000 ft elevation",1.10,1.05],["temp","10 °C warmer than the chart",1.10,1.05],["wt","10% heavier than the chart",1.20,1.10],["tail","Tailwind 10% of lift-off speed",1.20,1.20],["soft","Soft ground or snow",1.25,1.25]];
+  let mode = "to", on = { dry:true }, safety = true;
+  const out = W.box(), msg = W.box("wmsg");
+  const m = W.seg([["to","Take-off"],["ldg","Landing"]], mode, x => { mode = x; draw(); });
+  const book = W.slider("Distance from the POH chart", 200, 700, 10, 400, x => x + " m", draw);
+  const avail = W.slider("Distance available (TODA or LDA)", 300, 1200, 10, 700, x => x + " m", draw);
+  const chips = W.box("toggles");
+  FACT.forEach(([k, lab]) => { const b = document.createElement("button"); b.type = "button"; b.className = "qchip tog" + (on[k] ? " on" : ""); b.textContent = lab;
+    b.addEventListener("click", () => { on[k] = !on[k]; if(k === "dry" && on.dry) on.wet = false; if(k === "wet" && on.wet) on.dry = false; [...chips.children].forEach((c, i) => c.classList.toggle("on", !!on[FACT[i][0]])); draw(); }); chips.appendChild(b); });
+  const sb = document.createElement("button"); sb.type = "button"; sb.className = "qchip tog on"; sb.textContent = "Add the CAA safety factor";
+  sb.addEventListener("click", () => { safety = !safety; sb.classList.toggle("on", safety); draw(); });
+  const ctl = W.box("wgrid"); ctl.append(book.el, avail.el);
+  root.append(m.el, ctl, W.box("zlabel", "Conditions today"), chips, sb, out, msg);
+  function draw(){
+    const i = mode === "to" ? 2 : 3, used = FACT.filter(f => on[f[0]]);
+    let mult = used.reduce((p, f) => p * f[i], 1);
+    const sf = mode === "to" ? 1.33 : 1.43;
+    if(safety) mult *= sf;
+    const need = book.get() * mult, ok = need <= avail.get();
+    out.innerHTML = W.outs([["Combined factor", "×" + mult.toFixed(2)], ["Distance needed", Math.round(need) + " m", true], ["Margin", (ok ? "+" : "") + Math.round(avail.get() - need) + " m", !ok]]);
+    msg.className = "wmsg" + (ok ? "" : " warn");
+    msg.textContent = `${book.get()} m × ${[...used.map(f => f[i].toFixed(2)), ...(safety ? [sf.toFixed(2)] : [])].join(" × ") || "1"} = ${Math.round(need)} m. ` + (ok ? "Fits the distance available." : "More than the distance available: don't go as planned.");
+  }
+  draw();
+};
+
+WIDGETS.densalt = root => {
+  const out = W.box(), msg = W.box("wmsg");
+  const el = W.slider("Aerodrome elevation", 0, 3000, 50, 300, x => x.toLocaleString("en-GB") + " ft", draw);
+  const q = W.slider("QNH", 980, 1040, 1, 1003, x => x + " hPa", draw);
+  const t = W.slider("Outside air temperature", -10, 40, 1, 28, x => x + " °C", draw);
+  const ctl = W.box("wgrid"); ctl.append(el.el, q.el, t.el);
+  root.append(ctl, out, msg);
+  function draw(){
+    const pa = el.get() + (1013 - q.get()) * 30, isa = 15 - 2 * pa / 1000, da = pa + 120 * (t.get() - isa);
+    out.innerHTML = W.outs([["Pressure altitude", Math.round(pa).toLocaleString("en-GB") + " ft"], ["ISA temp there", isa.toFixed(0) + " °C"], ["Density altitude", Math.round(da / 10) * 10 + " ft", true]]);
+    msg.className = "wmsg" + (da - el.get() > 2000 ? " warn" : "");
+    msg.textContent = `The aircraft will perform as if it were at about ${Math.round(da / 100) * 100} ft, ${Math.round((da - el.get()) / 100) * 100} ft ${da >= el.get() ? "above" : "below"} the real elevation. Pressure altitude = ${el.get()} + (1013 − ${q.get()}) × 30. Density altitude ≈ pressure altitude + 120 × (OAT − ISA).`;
+  }
+  draw();
+};
+
+WIDGETS.fuelplan = root => {
+  const out = W.box(), msg = W.box("wmsg");
+  let res = 30;
+  const trip = W.slider("Trip time", 15, 240, 5, 90, x => `${Math.floor(x/60)} h ${x%60} min`, draw);
+  const ff = W.slider("Fuel flow", 15, 35, 1, 23, x => x + " L/h", draw);
+  const taxi = W.slider("Taxi and run-up", 0, 10, 1, 3, x => x + " L", draw);
+  const cont = W.slider("Contingency", 0, 20, 5, 10, x => x + "% of trip", draw);
+  const alt = W.slider("Diversion to alternate", 0, 60, 5, 20, x => x + " min", draw);
+  const have = W.slider("Usable fuel on board", 20, 150, 1, 85, x => x + " L", draw);
+  const r = W.seg([[30,"VFR day: 30 min"],[45,"VFR night: 45 min"],[60,"Personal: 60 min"]], res, x => { res = x; draw(); });
+  const ctl = W.box("wgrid"); ctl.append(trip.el, ff.el, taxi.el, cont.el, alt.el, have.el);
+  root.append(ctl, W.box("zlabel", "Final reserve"), r.el, out, msg);
+  function draw(){
+    const f = ff.get(), t = f * trip.get() / 60, c = t * cont.get() / 100, a = f * alt.get() / 60, fr = f * res / 60, need = taxi.get() + t + c + a + fr, spare = have.get() - need;
+    out.innerHTML = W.outs([["Trip", t.toFixed(1) + " L"], ["Contingency", c.toFixed(1) + " L"], ["Alternate", a.toFixed(1) + " L"], ["Final reserve", fr.toFixed(1) + " L"], ["Total needed", need.toFixed(1) + " L", true], ["Spare", (spare >= 0 ? "+" : "") + spare.toFixed(1) + " L", spare < 0]]);
+    msg.className = "wmsg" + (spare < 0 ? " warn" : "");
+    msg.textContent = spare < 0 ? `Short by ${(-spare).toFixed(1)} L. Add fuel (if mass and balance allow), shorten the route, or plan a fuel stop.` :
+      `Enough, with ${spare.toFixed(1)} L spare: about ${Math.round(spare / f * 60)} min of extra flying on top of all the allowances.`;
+  }
+  draw();
+};
+
+// ---------- Operational Procedures ----------
+WIDGETS.wake = root => {
+  const out = W.box(), msg = W.box("wmsg"), pic = W.box("wsvg");
+  let start = "same";
+  const s = W.seg([["same","Same starting point"],["inter","Starting part-way along"]], start, x => { start = x; draw(); });
+  const xw = W.slider("Crosswind", 0, 20, 1, 5, x => x + " kt", draw);
+  root.append(W.box("zlabel", "Departing behind a heavier aircraft"), s.el, xw.el, pic, out, msg);
+  function draw(){
+    const mins = start === "same" ? 2 : 3, w = xw.get();
+    // Vortices seen from the runway end; the wind blows right to left.
+    const upX = Math.max(20, 205 - w * 8), dnX = Math.max(20, 115 - w * 5);
+    pic.innerHTML = `<svg viewBox="0 0 320 150" role="img" aria-label="Runway seen from the end with the two vortices drifting in the crosswind">
+      <rect class="fb" x="1" y="1" width="318" height="148" rx="6"/>
+      <rect class="f-ground" x="10" y="118" width="300" height="10"/><rect class="f-rw" x="120" y="114" width="80" height="6"/>
+      <text class="tm" x="160" y="142" text-anchor="middle">runway, seen from the end</text>
+      ${w ? `<path d="M290,30 L240,30" class="ln" marker-end="url(#arr)"/><text class="tm" x="265" y="22" text-anchor="middle">wind ${w} kt</text>` : ""}
+      <circle cx="${upX}" cy="96" r="13" class="ln pb" style="fill:none;stroke-width:3"/><text class="tm" x="${upX}" y="74" text-anchor="middle">upwind</text>
+      <circle cx="${dnX}" cy="96" r="13" class="ln pa" style="fill:none;stroke-width:3"/><text class="tm" x="${dnX}" y="60" text-anchor="middle">downwind</text>
+      <text class="t" x="160" y="60" text-anchor="middle">${w >= 3 && w <= 7 ? "upwind vortex held over the runway" : w > 7 ? "both vortices blown clear" : "vortices spread slowly either side"}</text>
+    </svg>`;
+    out.innerHTML = W.outs([["Wait at least", mins + " min", true], ["Timed from", "its rotation"]]);
+    msg.className = "wmsg" + (w >= 3 && w <= 7 ? " warn" : "");
+    msg.textContent = (start === "same" ? "From the same point, allow 2 minutes." : "From part-way along, allow 3 minutes: you'll be lower through the area where it rotated.") +
+      (w >= 3 && w <= 7 ? " A light crosswind of about 5 kt can hold the upwind vortex over the runway: the most dangerous case." : "") + " Lift off before its rotation point and climb above its path.";
   }
   draw();
 };
