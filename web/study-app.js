@@ -43,7 +43,7 @@ const Study = (() => {
       }
     }catch(e){}
   }
-  function save(){ try{ localStorage.setItem(SKEY, JSON.stringify(store)); }catch(e){} }
+  function save(){ try{ localStorage.setItem(SKEY, JSON.stringify(store)); }catch(e){} if(window.pplAutoBackup) window.pplAutoBackup(); }
   // local calendar day, so a late-evening session counts for that evening
   const dayKey = ms => { const d = new Date(ms); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`; };
   function rec(id, ok){

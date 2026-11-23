@@ -785,6 +785,13 @@
   #studyView .xdel{flex:0 0 auto;min-width:40px;height:40px;border-radius:12px;border:var(--bw) solid var(--edge);background:transparent;color:var(--muted);font-weight:800;font-size:.8rem;padding:0 10px;}
   #studyView .xdel.armed{background:var(--emerg);border-color:var(--emerg);color:#fff;}
   #studyView .affbox{margin-top:10px;}
+
+  /* automatic backup */
+  #studyView .autobk{border-left:5px solid var(--accent);margin-bottom:12px;}
+  #studyView .abst{font-weight:700;font-size:.85rem;color:var(--tick);margin-top:6px;}
+  #studyView .abst.bad{color:var(--emerg);}
+  #studyView .abline{text-align:center;margin-top:-4px;}
+  #studyView .qchip.on{background:var(--accent);color:var(--on-accent);border-color:var(--accent-dark);}
 </style>
 </head>
 <body data-mode="day">
@@ -5345,7 +5352,7 @@ const Study = (() => {
       }
     }catch(e){}
   }
-  function save(){ try{ localStorage.setItem(SKEY, JSON.stringify(store)); }catch(e){} }
+  function save(){ try{ localStorage.setItem(SKEY, JSON.stringify(store)); }catch(e){} if(window.pplAutoBackup) window.pplAutoBackup(); }
   // local calendar day, so a late-evening session counts for that evening
   const dayKey = ms => { const d = new Date(ms); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`; };
   function rec(id, ok){
@@ -5817,7 +5824,7 @@ const Logbook = (() => {
 
   // ---------- storage ----------
   function load(){ try{ const s = JSON.parse(localStorage.getItem(LKEY) || "null"); if(s && Array.isArray(s.flights)) log = s; }catch(e){} }
-  function save(){ try{ localStorage.setItem(LKEY, JSON.stringify(log)); }catch(e){} }
+  function save(){ try{ localStorage.setItem(LKEY, JSON.stringify(log)); }catch(e){} autoSoon(); }
   const sorted = () => log.flights.slice().sort((a,b) => (b.date + (b.dep || "")).localeCompare(a.date + (a.dep || "")));
   function clean(f){
     const s = v => typeof v === "string" ? v.slice(0, 2000) : "";
@@ -5891,6 +5898,7 @@ const Logbook = (() => {
       w.appendChild(list);
     }
     w.appendChild(btn("bigbtn ghost", "Backup and import", () => { push({ lg:"backup" }); renderBackup(); }));
+    if(autoNative()) w.appendChild(el("div", "fine abline", esc(autoLine())));
     view.appendChild(w);
   }
   // progress dial: pct 0-100, size in px, stroke width, label in the middle
@@ -6141,7 +6149,7 @@ const Logbook = (() => {
   const KINDS = [["Tandem", "Tandem"], ["AFF", "AFF level"], ["Consol", "Consolidation"], ["Fun", "Fun jump"]];
   const newJid = () => "j" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
   function loadSky(){ try{ const s = JSON.parse(localStorage.getItem(SKEY) || "null"); if(s && Array.isArray(s.jumps)) sky = Object.assign({ training:[], bf:{ jumps:0, ff:0 }, ct:false }, s); }catch(e){} }
-  function saveSky(){ try{ localStorage.setItem(SKEY, JSON.stringify(sky)); }catch(e){} }
+  function saveSky(){ try{ localStorage.setItem(SKEY, JSON.stringify(sky)); }catch(e){} autoSoon(); }
   function cleanJump(j){
     const s = v => typeof v === "string" ? v.slice(0, 4000) : "";
     const n = (v, lo, hi) => { const x = Math.round(+v); return isFinite(x) ? Math.max(lo, Math.min(hi, x)) : 0; };
@@ -6279,6 +6287,7 @@ const Logbook = (() => {
       w.appendChild(list);
     }
     w.appendChild(btn("bigbtn ghost", "Backup and import", () => { push({ lg:"backup" }); renderBackup(); }));
+    if(autoNative()) w.appendChild(el("div", "fine abline", esc(autoLine())));
     view.appendChild(w);
   }
 
@@ -6384,6 +6393,74 @@ const Logbook = (() => {
   }
 
   // ---------- backup and import ----------
+  // ---------- automatic backup (Android app only) ----------
+  // The chosen file holds the latest backup plus one copy from each of the last 7 days
+  // it was written, so a mistake can be undone by restoring an earlier day.
+  const AKEY = "ppl-autobk-v1", KEEP_DAYS = 7;
+  const autoNative = () => !!(window.AndroidBridge && AndroidBridge.autoBackup);
+  function autoInfo(){ try{ return JSON.parse(AndroidBridge.autoBackupInfo()); }catch(e){ return { on:false }; } }
+  function currentStorage(){ const st = {}; BACKUP_KEYS.forEach(k => { try{ const v = localStorage.getItem(k); if(v != null) st[k] = v; }catch(e){} }); return st; }
+  function autoText(){
+    const storage = currentStorage(), now = new Date(), day = today();
+    let hist = []; try{ hist = JSON.parse(localStorage.getItem(AKEY) || "[]"); }catch(e){}
+    hist = hist.filter(h => h && h.day !== day && h.storage);
+    const text = JSON.stringify({ app:"PPL Kneeboard", kind:"backup", v:1, auto:true, exported:now.toISOString(), storage,
+      history: hist.slice(0, KEEP_DAYS).map(h => ({ exported:h.at, storage:h.storage })) }, null, 1);
+    hist.unshift({ day, at:now.toISOString(), storage });
+    try{ localStorage.setItem(AKEY, JSON.stringify(hist.slice(0, KEEP_DAYS + 1))); }catch(e){}
+    return text;
+  }
+  let autoTimer = null;
+  function autoSoon(){
+    if(!autoNative() || !autoInfo().on) return;
+    clearTimeout(autoTimer); autoTimer = setTimeout(autoNow, 3000);
+  }
+  function autoNow(){ clearTimeout(autoTimer); autoTimer = null; if(autoNative() && autoInfo().on) AndroidBridge.autoBackup(autoText()); }
+  window.pplAutoBackup = autoSoon;
+  window.pplAutoBackupFlush = () => { if(autoTimer) autoNow(); };
+  window.onAutoBackupChosen = err => {
+    if(err === null) return;
+    toast(err ? err : "Automatic backup is on");
+    if(history.state && history.state.lg === "backup") renderBackup();
+  };
+  window.onAutoBackupDone = err => {
+    if(err) toast("Automatic backup: " + err);
+    if(history.state && history.state.lg === "backup" && !pendingImport) renderBackup();
+  };
+  function stamp(ms){
+    if(!ms) return "";
+    const d = new Date(ms), mins = Math.round((Date.now() - ms) / 60000);
+    if(mins < 1) return "just now"; if(mins < 60) return `${mins} min ago`;
+    return `${fmtDate(dayKeyOf(d))}, ${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+  }
+  const dayKeyOf = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  function autoLine(){
+    if(!autoNative()) return "";
+    const i = autoInfo();
+    return i.on ? (i.err ? `Automatic backup: ${i.err}` : `Automatic backup on · ${i.last ? "last saved " + stamp(i.last) : "not written yet"}`) : "Automatic backup is off: turn it on in Backup and import";
+  }
+  function autoCard(){
+    const c = el("div", "card autobk");
+    if(!autoNative()){
+      c.innerHTML = `<div class="learn"><h3>Automatic backup</h3><p>Works in the Android app: choose a file once, on Google Drive for example, and the app keeps it up to date.</p></div>`;
+      return c;
+    }
+    const i = autoInfo();
+    c.innerHTML = `<div class="learn"><h3>Automatic backup</h3>` + (i.on
+      ? `<p>Saving to <b>${esc(i.label || "your backup file")}</b> after every change and at least once a day. The file also keeps a copy from each of the last ${KEEP_DAYS} days.</p><p class="abst${i.err ? " bad" : ""}">${esc(i.err || (i.last ? "Last saved " + stamp(i.last) : "Not written yet."))}</p>`
+      : `<p>Choose a file once and the app rewrites it after every change: flights, jumps, exam answers and settings. In the save screen open the menu, pick <b>Drive</b>, choose a folder and keep the name. Restore it on a new phone with <b>Choose a file to import</b>.</p><p class="abst bad">Not set up yet.</p>`) + `</div>`;
+    if(i.on){
+      const row = el("div", "row2");
+      row.appendChild(btn("bigbtn", "Save now", () => { autoNow(); toast("Saving backup"); }));
+      row.appendChild(btn("bigbtn ghost", "Change file", () => AndroidBridge.chooseAutoBackup("ppl-kneeboard-autobackup.json", autoText())));
+      c.appendChild(row);
+      c.appendChild(armedButton("resetbtn", "Turn off automatic backup", "Tap again to turn off", () => { AndroidBridge.autoBackupOff(); toast("Automatic backup off"); renderBackup(); }));
+    } else {
+      c.appendChild(btn("bigbtn", "Choose backup file", () => AndroidBridge.chooseAutoBackup("ppl-kneeboard-autobackup.json", autoText())));
+    }
+    return c;
+  }
+
   function exportText(){
     const storage = {};
     BACKUP_KEYS.forEach(k => { try{ const v = localStorage.getItem(k); if(v != null) storage[k] = v; }catch(e){} });
@@ -6399,9 +6476,12 @@ const Logbook = (() => {
     return false;
   }
   // Called with the text of a chosen file (from Android) or pasted text (elsewhere)
-  function handleImport(text){
+  function handleImport(text, versions, vi){
     let data = null;
     try{ data = JSON.parse(text); }catch(e){}
+    if(data && data.kind === "backup" && !versions && Array.isArray(data.history) && data.history.length){
+      versions = [{ exported:data.exported, storage:data.storage }, ...data.history.filter(h => h && h.storage)]; vi = 0;
+    }
     if(!data || data.app !== "PPL Kneeboard"){ pendingImport = { error:"That file isn't a PPL Kneeboard backup or logbook file." }; }
     else {
       let flights = [];
@@ -6419,7 +6499,7 @@ const Logbook = (() => {
       const fresh = flights.filter(f => !exists(f));
       let answers = 0;
       if(data.kind === "backup" && data.storage && data.storage["ppl-study-v2"]){ try{ answers = Object.keys(JSON.parse(data.storage["ppl-study-v2"]).ans || {}).length; }catch(e){} }
-      pendingImport = { data, fresh, dupes:flights.length - fresh.length, answers, freshJ, dupesJ:jumps.length - freshJ.length, freshT, bf, ctFlag };
+      pendingImport = { data, fresh, dupes:flights.length - fresh.length, answers, freshJ, dupesJ:jumps.length - freshJ.length, freshT, bf, ctFlag, versions, vi };
     }
     if(!(history.state && history.state.lg === "backup")) push({ lg:"backup" });
     renderBackup();
@@ -6434,6 +6514,7 @@ const Logbook = (() => {
     if(p.data.kind === "backup"){
       ["c150cl.prefs", "ppl-study-v2"].forEach(k => { if(p.data.storage[k] != null){ try{ localStorage.setItem(k, p.data.storage[k]); }catch(e){} } });
       pendingImport = null;
+      autoNow();   // the backup file now matches what was restored
       toast("Backup restored");
       setTimeout(() => location.reload(), 600);   // settings and answers load at start-up
       return;
@@ -6455,6 +6536,14 @@ const Logbook = (() => {
           : [p.fresh.length || p.dupes ? `${p.fresh.length} new flight${p.fresh.length === 1 ? "" : "s"} to add${p.dupes ? `, ${p.dupes} already in your logbook and skipped` : ""}.` : "",
              p.freshJ.length || p.dupesJ ? `${p.freshJ.length} new jump${p.freshJ.length === 1 ? "" : "s"} for your skydiving log${p.dupesJ ? `, ${p.dupesJ} already there and skipped` : ""}${p.freshT.length ? `, plus ${p.freshT.length} ground school and refresher record${p.freshT.length === 1 ? "" : "s"}` : ""}.` : ""].filter(Boolean).join(" ");
         c.innerHTML = `<h3>Ready to import</h3><p>${what}</p>`;
+        if(p.versions && p.versions.length > 1){
+          c.appendChild(el("div", "zlabel", "This file has earlier copies. Which one?"));
+          const vr = el("div", "quick");
+          p.versions.forEach((v, i) => vr.appendChild(btn("qchip" + (i === p.vi ? " on" : ""), (i ? "" : "Latest · ") + esc(stamp(Date.parse(v.exported))), () => {
+            handleImport(JSON.stringify(Object.assign({}, p.data, { storage:v.storage, exported:v.exported })), p.versions, i);
+          })));
+          c.appendChild(vr);
+        }
         const row = el("div", "row2");
         row.appendChild(btn("bigbtn", p.data.kind === "backup" ? "Restore backup" : p.freshJ.length && !p.fresh.length ? "Add jumps" : p.freshJ.length ? "Add flights and jumps" : "Add flights", applyImport, (p.fresh.length || p.freshJ.length || p.freshT.length || p.data.kind === "backup") ? null : { disabled:"" }));
         row.appendChild(btn("bigbtn ghost", "Cancel", () => { pendingImport = null; renderBackup(); }));
@@ -6463,7 +6552,8 @@ const Logbook = (() => {
       w.appendChild(c);
     }
     const t = totals();
-    w.appendChild(el("div", "card", `<div class="learn"><h3>Back up everything</h3><p>Saves your logbook (${t.n} flight${t.n === 1 ? "" : "s"}, ${sky.jumps.length} jump${sky.jumps.length === 1 ? "" : "s"}), exam answers and display settings to one file. Keep it somewhere safe, such as Google Drive. Do this before uninstalling the app or changing phone.</p></div>`));
+    w.appendChild(autoCard());
+    w.appendChild(el("div", "card", `<div class="learn"><h3>Back up everything</h3><p>Saves your logbook (${t.n} flight${t.n === 1 ? "" : "s"}, ${sky.jumps.length} jump${sky.jumps.length === 1 ? "" : "s"}), exam answers and display settings to one file. Keep it somewhere safe, such as Google Drive. A dated copy like this is worth keeping before uninstalling the app or changing phone.</p></div>`));
     const native = !!(window.AndroidBridge && AndroidBridge.exportFile);
     w.appendChild(btn("bigbtn", "Save a backup file", () => { if(!exportAll()) showText(); }));
     w.appendChild(el("div", "card", `<div class="learn"><h3>Restore or import</h3><p>Choose a backup file to restore, or a logbook file (for example your paper logbooks typed up for you) to add its flights and jumps. Entries already in your logbook are skipped.</p></div>`));
@@ -6510,6 +6600,8 @@ const Logbook = (() => {
   window.onExportDone = ok => toast(ok ? "Backup saved" : "Backup not saved");
 
   load(); loadSky();
+  // at least once a day, even if nothing changed in the logbook (exam answers save elsewhere)
+  setTimeout(() => { if(autoNative()){ const i = autoInfo(); if(i.on && Date.now() - (i.last || 0) > 864e5) autoNow(); } }, 5000);
   return { show, fromState, back, exportAll, pickImport, handleImport, renderBackupFromSettings:() => { push({ lg:"backup" }); renderBackup(); } };
 })();
 
