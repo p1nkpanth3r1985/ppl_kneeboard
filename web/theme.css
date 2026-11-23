@@ -196,3 +196,34 @@
   #studyView .wout .o.hl{border-color:var(--accent);background:var(--accent-tint);}
   #studyView .wout .o .k{text-transform:none;letter-spacing:0;}
   #studyView svg .t, #studyView svg .tb, #studyView svg .big, #studyView svg text{font-family:"Jakarta",-apple-system,"Segoe UI",Roboto,sans-serif;}
+
+  /* ---------- logbook: flying / skydiving switch ---------- */
+  #studyView .lgswitch{display:flex;gap:4px;padding:4px;margin:0 0 14px;border-radius:16px;background:var(--track);}
+  #studyView .lgsw{flex:1;min-height:44px;border:0;border-radius:12px;background:transparent;color:var(--muted);font-weight:800;font-size:.92rem;}
+  #studyView .lgsw.on{background:var(--card);color:var(--accent);box-shadow:var(--shadow);}
+  body[data-mode="sun"] #studyView .lgswitch{background:#fff;border:2px solid #000;}
+  body[data-mode="sun"] #studyView .lgsw.on{background:#000;color:#fff;}
+
+  /* ---------- skydiving log ---------- */
+  #studyView .currency{margin:0 0 14px;border-left:5px solid var(--streak);}
+  #studyView .currency.warn{border-left-color:var(--emerg);background:var(--emerg-tint);}
+  #studyView .currency .ck{display:block;font-size:1rem;margin-bottom:4px;}
+  #studyView .currency p{font-size:.88rem;line-height:1.5;color:var(--ink);}
+  #studyView .req.tapreq{cursor:pointer;}
+  #studyView .levels{display:flex;gap:6px;margin:10px 0 4px;}
+  #studyView .lvl{flex:1;text-align:center;padding:8px 0;border-radius:12px;font-weight:800;font-size:.82rem;background:var(--track);color:var(--muted);}
+  #studyView .lvl.on{background:var(--tick);color:#fff;}
+  body[data-mode="sun"] #studyView .lvl{background:#fff;border:2px solid #000;color:#000;}
+  body[data-mode="sun"] #studyView .lvl.on{background:#006622;border-color:#006622;color:#fff;}
+  #studyView .jno{font-weight:800;font-size:1rem;color:var(--accent);min-width:2.6em;font-variant-numeric:tabular-nums;}
+  #studyView .fpill.aff{background:var(--accent-tint);color:var(--accent);}
+  #studyView .fpill.consol{background:var(--tick-tint);color:var(--tick);}
+  #studyView .fpill.tandem, #studyView .fpill.fun{background:var(--magtint);color:var(--mag);}
+  #studyView .tlist{display:grid;gap:6px;margin-bottom:10px;}
+  #studyView .trow{display:flex;align-items:center;gap:12px;background:var(--card);border:var(--bw) solid var(--edge);border-radius:14px;padding:8px 8px 8px 12px;}
+  #studyView .trow .fdate{width:6.5em;flex:0 0 auto;}
+  #studyView .tw{flex:1;min-width:0;display:flex;flex-direction:column;}
+  #studyView .tw b{font-size:.9rem;} #studyView .tw span{font-size:.75rem;color:var(--muted);}
+  #studyView .xdel{flex:0 0 auto;min-width:40px;height:40px;border-radius:12px;border:var(--bw) solid var(--edge);background:transparent;color:var(--muted);font-weight:800;font-size:.8rem;padding:0 10px;}
+  #studyView .xdel.armed{background:var(--emerg);border-color:var(--emerg);color:#fff;}
+  #studyView .affbox{margin-top:10px;}
